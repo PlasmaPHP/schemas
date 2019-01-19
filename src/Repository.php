@@ -15,10 +15,11 @@ namespace Plasma\Schemas;
  * The repository implements the ClientInterface to allow it to be passed around
  * and get directly used. Internally it uses an actual plasma client,
  * itself has no client implementations.
+ *
+ * SELECT queries will be wrapped (if a schema builder exists for the table) within a `SchemaCollection`.
+ * All other queries get returned as is.
  */
 class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInterface {
-    use \Evenement\EventEmitterTrait;
-    
     /**
      * @var \Plasma\ClientInterface
      */
@@ -42,27 +43,16 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
      * @param \Plasma\DriverFactoryInterface  $factory
      * @param string                          $uri      The connect uri, which consists of `username:password@host:port`.
      * @param array                           $options  Any options for the client, see client implementation for details.
-     * @return self
+     * @return \Plasma\ClientInterface
      * @throws \Throwable  The client implementation may throw any exception during this operation.
      */
-    static function create(\Plasma\DriverFactoryInterface $factory, string $uri, array $options = array()): self {
+    static function create(\Plasma\DriverFactoryInterface $factory, string $uri, array $options = array()): \Plasma\ClientInterface {
         $client = \Plasma\Client::create($factory, $uri, $options);
         return (new static($client));
     }
     
     /**
-     * Redirects all non-interface methods to the client implicitely.
-     * @param string  $name
-     * @param array   $arguments
-     * @return mixed
-     * @internal
-     */
-    function __call($name, $arguments) {
-        return $this->client->$name(...$arguments);
-    }
-    
-    /**
-     * Get the client used internally.
+     * Get the internally used client.
      * @return \Plasma\ClientInterface
      */
     function getClient(): \Plasma\ClientInterface {
@@ -70,13 +60,27 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
     }
     
     /**
+     * Get the Schema Builder for the schema.
+     * @param string  $schemaName  The schema name. This would be the table name.
+     * @return \Plasma\Schemas\SchemaBuilderInterface
+     * @throws \Plasma\Exception
+     */
+    function getSchemaBuilder(string $schemaName): \Plasma\Schemas\SchemaBuilderInterface {
+        if(!isset($this->builders[$schemaName])) {
+            throw new \Plasma\Exception('The schema is not registered');
+        }
+        
+        return $this->builders[$schemaName];
+    }
+    
+    /**
      * Register a Schema Builder for the schema to be used by the Repository.
-     * @param string                                  $schemaName     The schema name.
+     * @param string                                  $schemaName     The schema name. This would be the table name.
      * @param \Plasma\Schemas\SchemaBuilderInterface  $schemaBuilder  The schema builder for the schema.
      * @return $this
      * @throws \Plasma\Exception
      */
-    function registerSchemaBuilder(string $schemaName, \Plasma\Schemas\SchemaBuilderInterface $schemaBuilder): self {
+    function registerSchemaBuilder(string $schemaName, \Plasma\Schemas\SchemaBuilderInterface $schemaBuilder) {
         if(isset($this->builders[$schemaName])) {
             throw new \Plasma\Exception('The schema is already registered');
         }
@@ -88,17 +92,13 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
     }
     
     /**
-     * Get the Schema Builder for the schema.
-     * @param string  $schemaName  The schema name.
-     * @return \Plasma\Schemas\SchemaBuilderInterface
-     * @throws \Plasma\Exception
+     * Unregister the Schema Builder of the schema.
+     * @param string  $schemaName  The schema name. This would be the table name.
+     * @return $this
      */
-    function getSchemaBuilder(string $schemaName): \Plasma\Schemas\SchemaBuilderInterface {
-        if(!isset($this->builders[$schemaName])) {
-            throw new \Plasma\Exception('The schema is not registered');
-        }
-        
-        return $this->builders[$schemaName];
+    function unregisterSchemaBuilder(string $schemaName) {
+        unset($this->builders[$schemaName]);
+        return $this;
     }
     
     /**
@@ -115,7 +115,7 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
      * @return void
      */
     function checkinConnection(\Plasma\DriverInterface $driver): void {
-        return $this->client->checkinConnection($driver);
+        $this->client->checkinConnection($driver);
     }
     
     /**
@@ -260,9 +260,10 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
     }
     
     /**
-     * Handles a query result and maps it. Rows get buffered.
+     * Handles a query result and maps it. Rows get buffered. Returns a `SchemaCollection`, if a SELECT query.
      * @param \Plasma\QueryResultInterface  $result
-     * @return 
+     * @return \Plasma\Schemas\SchemaCollection|\Plasma\QueryResultInterface|\React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
      * @internal
      */
     function handleQueryResult(\Plasma\QueryResultInterface $result) {
@@ -270,8 +271,16 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
             return $result->all()->then(array($this, 'handleQueryResult'));
         }
         
-        if($result->getFieldDefinitions() !== null) {
+        $fields = $result->getFieldDefinitions();
+        if($fields !== null) {
+            if(empty($fields)) {
+                return (new \Plasma\Schemas\SchemaCollection(array(), $result));
+            }
             
+            $table = $fields[0]->getTableName();
+            if(isset($this->builders[$table])) {
+                return $this->getSchemaBuilder($table)->buildSchemas($result);
+            }
         }
         
         return $result;
@@ -280,7 +289,7 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
     /**
      * Handles a prepared statement and wraps it.
      * @param \Plasma\StatementInterface  $statement
-     * @return 
+     * @return \Plasma\Schemas\Statement
      * @internal
      */
     function handlePrepareStatement(\Plasma\StatementInterface $statement) {

@@ -10,11 +10,7 @@
 namespace Plasma\Schemas;
 
 /**
- * The repository is responsible for turning rows into specified PHP object.
- *
- * The repository implements the ClientInterface to allow it to be passed around
- * and get directly used. Internally it uses an actual plasma client,
- * itself has no client implementations.
+ * Represents a Prepared Statement. This class however wraps a statement instance.
  */
 class Statement implements \Plasma\StatementInterface {
     /**
@@ -31,7 +27,6 @@ class Statement implements \Plasma\StatementInterface {
      * Constructor.
      * @param \Plasma\Schemas\Repository  $repo
      * @param \Plasma\StatementInterface  $statement
-     * @internal
      */
     function __construct(\Plasma\Schemas\Repository $repo, \Plasma\StatementInterface $statement) {
         $this->repo = $repo;

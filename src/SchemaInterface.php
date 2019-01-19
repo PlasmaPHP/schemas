@@ -15,29 +15,42 @@ namespace Plasma\Schemas;
 interface SchemaInterface {
     /**
      * Builds a schema instance.
-     * @param \Plasma\Schemas\Repository         $repository
-     * @param \Plasma\QueryResultInterface|null  $result
-     * @param array                              $row
-     * @return self
+     * @param \Plasma\Schemas\Repository  $repository
+     * @param array                       $row
+     * @return \Plasma\Schemas\SchemaInterface
      * @throws \Plasma\Exception
      */
-    static function build(\Plasma\Schemas\Repository $repository, ?\Plasma\QueryResultInterface $result, array $row);
+    static function build(\Plasma\Schemas\Repository $repository, array $row): \Plasma\Schemas\SchemaInterface;
     
     /**
-     * Returns the name of the identifier column (primary or unique).
+     * Returns the schema definition.
+     * @return \Plasma\ColumnDefinitionInterface[]
+     */
+    static function getDefinition(): array;
+    
+    /**
+     * Returns the name of the table.
      * @return string
      */
-    function getIdentifierColumn(): string;
+    static function getTableName(): string;
+    
+    /**
+     * Returns the name of the identifier column (primary or unique), or null.
+     * @return string|null
+     */
+    static function getIdentifierColumn(): ?string;
     
     /**
      * Updates the row with the new data.
      * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
      */
     function update(array $data): \React\Promise\PromiseInterface;
     
     /**
      * Deletes the row.
      * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
      */
     function delete(): \React\Promise\PromiseInterface;
 }

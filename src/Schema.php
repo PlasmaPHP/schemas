@@ -22,33 +22,24 @@ abstract class Schema implements SchemaInterface {
     protected $repo;
     
     /**
-     * @var string
-     */
-    protected $table;
-    
-    /**
      * @var array
      */
     protected static $schemaFieldsMapper = array();
     
     /**
      * Constructor.
-     * @param \Plasma\Schemas\Repository         $repo
-     * @param \Plasma\QueryResultInterface|null  $result  This argument must not be null when invoking for the first time.
-     * @param array                              $row
+     * @param \Plasma\Schemas\Repository  $repo
+     * @param array                       $row
      * @throws \Plasma\Exception
      */
-    function __construct(\Plasma\Schemas\Repository $repo, ?\Plasma\QueryResultInterface $result, array $row) {
-        $table = $this->getTableIdentifier($result);
+    function __construct(\Plasma\Schemas\Repository $repo, array $row) {
+        $this->repo = $repo;
+        $table = $this->getTableName();
         
         if(!isset(static::$schemaFieldsMapper[$table])) {
-            if($result === null) {
-                throw new \Plasma\Exception('The query result must not be null when invoking for the first time');
-            }
-            
             static::$schemaFieldsMapper[$table] = array();
             
-            $fields = $result->getFieldDefinitions();
+            $fields = $this->getDefinition();
             foreach($fields as $field) {
                 $colname = $field->getName();
                 $name = $this->convertColumnName($colname);
@@ -62,60 +53,90 @@ abstract class Schema implements SchemaInterface {
             }
             
             $uniq = $this->getIdentifierColumn();
-            if(!isset(static::$schemaFieldsMapper[$this->table][$uniq])) {
+            if(!isset(static::$schemaFieldsMapper[$table][$uniq])) {
                 throw new \Plasma\Exception('Field "'.$uniq.'" for identifier column does not exist');
-            } elseif(!\property_exists($this, static::$schemaFieldsMapper[$this->table][$uniq])) {
-                throw new \Plasma\Exception(
-                    'Property "'.static::$schemaFieldsMapper[$this->table][$uniq].'" for identifier column "'.$uniq.'" does not exist'
-                );
             }
         }
         
-        $this->repo = $repo;
-        $this->table = $table;
+        foreach($row as $colname => $value) {
+            if(!isset(static::$schemaFieldsMapper[$table][$colname])) {
+                throw new \Plasma\Exception('Unknown column "'.$colname.'"');
+            }
+            
+            $name = static::$schemaFieldsMapper[$table][$colname];
+            $this->$name = $value;
+        }
         
-        $this->mapData($row);
+        $this->validateData();
+    }
+    
+    /**
+     * Child classes can override this method to implement some sort of validation.
+     * This method gets invoked after assigning the properties. It has no functionality by default.
+     * @return void
+     */
+    function validateData() {
+        
     }
     
     /**
      * Builds a schema instance.
-     * @param \Plasma\Schemas\Repository         $repository
-     * @param \Plasma\QueryResultInterface|null  $result      This argument must not be null when invoking for the first time.
-     * @param array                              $row
-     * @return self
+     * @param \Plasma\Schemas\Repository  $repository
+     * @param array                       $row
+     * @return \Plasma\Schemas\SchemaInterface
      * @throws \Plasma\Exception
      */
-    static function build(\Plasma\Schemas\Repository $repository, ?\Plasma\QueryResultInterface $result, array $row) {
-        return (new static($repository, $result, $row));
+    static function build(\Plasma\Schemas\Repository $repository, array $row): \Plasma\Schemas\SchemaInterface {
+        return (new static($repository, $row));
     }
     
     /**
-     * Returns the name of the identifier column (primary or unique).
+     * Returns the schema definition.
+     * @return \Plasma\ColumnDefinitionInterface[]
+     */
+    abstract static function getDefinition(): array;
+    
+    /**
+     * Returns the name of the table.
      * @return string
      */
-    abstract function getIdentifierColumn(): string;
+    abstract static function getTableName(): string;
+    
+    /**
+     * Returns the name of the identifier column (primary or unique), or null.
+     * @return string|null
+     */
+    abstract static function getIdentifierColumn(): ?string;
     
     /**
      * Updates the row with the new data. Resolves with a `QueryResultInterface` instance.
      * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
      */
     function update(array $data): \React\Promise\PromiseInterface {
+        $uniqcol = $this->getIdentifierColumn();
+        if($uniqcol === null) {
+            throw new \Plasma\Exception('Schema has no unique or primary column');
+        }
+        
         $keys = array();
+        $table = $this->getTableName();
         
         foreach($data as $key => $value) {
-            $name = static::$schemaFieldsMapper[$this->table][$key];
+            $name = static::$schemaFieldsMapper[$table][$key];
             $keys[] = $this->repo->quote($name, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER).' = ?';
         }
         
-        $uniqcol = $this->getIdentifierColumn();
-        $uniqname = static::$schemaFieldsMapper[$this->table][$uniqcol];
+        $uniqname = static::$schemaFieldsMapper[$table][$uniqcol];
         $uniq = $this->repo->quote($uniqcol, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER).' = ?';
+        
+        $table = $this->repo->quote($table, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
         
         $data = \array_values($data);
         $data[] = $this->$uniqname;
         
         return $this->repo->execute(
-            'UPDATE '.static::$schemaName.' SET '.\implode(', ', $keys).' WHERE '.$uniq,
+            'UPDATE '.$table.' SET '.\implode(', ', $keys).' WHERE '.$uniq,
             $data
         );
     }
@@ -123,35 +144,22 @@ abstract class Schema implements SchemaInterface {
     /**
      * Deletes the row. Resolves with a `QueryResultInterface` instance.
      * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
      */
     function delete(): \React\Promise\PromiseInterface {
         $uniqcol = $this->getIdentifierColumn();
-        $uniqname = static::$schemaFieldsMapper[$this->table][$uniqcol];
+        if($uniqcol === null) {
+            throw new \Plasma\Exception('Schema has no unique or primary column');
+        }
+        
+        $table = $this->getTableName();
+        
+        $uniqname = static::$schemaFieldsMapper[$table][$uniqcol];
         $uniq = $this->repo->quote($uniqcol, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER).' = ?';
         
-        return $this->repo->execute('DELETE FROM '.static::$schemaName.' WHERE '.$uniq, array($this->$uniqname));
-    }
-    
-    /**
-     * Maps data to the properties.
-     * @param array  $row
-     * @return void
-     */
-    protected function mapData(array $row): void {
-        foreach($row as $key => $value) {
-            $name = static::$schemaFieldsMapper[$this->table][$colname];
-            $this->$name = $value;
-        }
-    }
-    
-    /**
-     * Get the table identifier (databaseName_tableName)
-     * @param \Plasma\QueryResultInterface  $result
-     * @return string
-     */
-    protected function getTableIdentifier(\Plasma\QueryResultInterface $result): string {
-        $field = $result->getFieldDefinitions()[0];
-        return $field->getDatabaseName().'_'.$field->getTableName();
+        $table = $this->repo->quote($table, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
+        
+        return $this->repo->execute('DELETE FROM '.$table.' WHERE '.$uniq, array($this->$uniqname));
     }
     
     /**
@@ -164,6 +172,16 @@ abstract class Schema implements SchemaInterface {
             return $name;
         }
         
-        return \str_replace('_', '', \ucwords($name, '_'));
+        return \lcfirst(\str_replace('_', '', \ucwords($name, '_')));
+    }
+    
+    /**
+     * Internally used.
+     * @return array
+     * @internal
+     * @codeCoverageIgnore
+     */
+    static function getMapper(): array {
+        return static::$schemaFieldsMapper;
     }
 }
