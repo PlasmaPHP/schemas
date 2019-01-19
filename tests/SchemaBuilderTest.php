@@ -104,6 +104,37 @@ class SchemaBuilderTest extends TestCase {
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
     }
     
+    function testFetchNoUnique() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+            public $help;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder8', 'help', 'BIGINT', '', 20, false, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_schemabuilder8';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return null;
+            }
+        });
+        
+        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder->setRepository($repo);
+        
+        $this->expectException(\Plasma\Exception::class);
+        $this->expectExceptionMessage('Schema has no unique or primary column');
+        
+        $builder->fetch(5);
+    }
+    
     function testInsert() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);

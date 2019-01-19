@@ -53,7 +53,7 @@ abstract class Schema implements SchemaInterface {
             }
             
             $uniq = $this->getIdentifierColumn();
-            if(!isset(static::$schemaFieldsMapper[$table][$uniq])) {
+            if($uniq !== null && !isset(static::$schemaFieldsMapper[$table][$uniq])) {
                 throw new \Plasma\Exception('Field "'.$uniq.'" for identifier column does not exist');
             }
         }

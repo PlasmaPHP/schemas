@@ -63,7 +63,13 @@ class SchemaBuilder implements SchemaBuilderInterface {
      */
     function fetch($value): \React\Promise\PromiseInterface {
         $schema = $this->schema;
-        return $this->fetchBy($schema::getIdentifierColumn(), $value);
+        $column = $schema::getIdentifierColumn();
+        
+        if($column === null) {
+            throw new \Plasma\Exception('Schema has no unique or primary column');
+        }
+        
+        return $this->fetchBy($column, $value);
     }
     
     /**
