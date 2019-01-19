@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "plasma/core": "^0.1.0"
+        "plasma/core": "^0.1.0|dev-master"
     },
     "require-dev": {
         "clue/block-react": "^1.3",
