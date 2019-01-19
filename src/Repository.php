@@ -277,7 +277,7 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
                 return (new \Plasma\Schemas\SchemaCollection(array(), $result));
             }
             
-            $table = $fields[0]->getTableName();
+            $table = \reset($fields)->getTableName();
             if(isset($this->builders[$table])) {
                 return $this->getSchemaBuilder($table)->buildSchemas($result);
             }
