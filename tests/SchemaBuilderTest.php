@@ -141,6 +141,7 @@ class SchemaBuilderTest extends TestCase {
         
         $schema = (new class() extends \Plasma\Schemas\Schema {
             public $help;
+            public $help2;
             
             // Let Schemabuilder::insert create the mapper
             function __construct() {
@@ -151,7 +152,8 @@ class SchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder3', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder3', 'help', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder3', 'help2', 'BIGINT', '', 20, false, 0, null))
                 );
             }
             
@@ -164,7 +166,8 @@ class SchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'INSERT INTO `test_schemabuilder3` (`help`) VALUES (?)';
+        $query = 'INSERT INTO `test_schemabuilder3` (`help2`) VALUES (?)';
+        $result = new \Plasma\QueryResult(1, 0, 1, $schema::getDefinition(), null);
         
         $client
             ->expects($this->any())
@@ -177,13 +180,21 @@ class SchemaBuilderTest extends TestCase {
             ->expects($this->once())
             ->method('execute')
             ->with($query, array(5))
-            ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
+            ->will($this->returnValue(\React\Promise\resolve($result)));
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $name = \get_class($schema);
+        
+        $builder = new \Plasma\Schemas\SchemaBuilder($name);
         $builder->setRepository($repo);
         
-        $promise = $builder->insert(array('help' => 5));
+        $promise = $builder->insert(array('help2' => 5));
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $res = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
+        
+        $expected = new $name($repo, array('help' => 1, 'help2' => 5));
+        $this->assertEquals($expected, $res->getSchemas()[0]);
     }
     
     function testInsertEmptySet() {

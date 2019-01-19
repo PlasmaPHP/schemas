@@ -56,7 +56,7 @@ class SchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
-     * Fetch a row by the unique identifier.
+     * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
@@ -73,7 +73,7 @@ class SchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
-     * Fetch a row by the specified column.
+     * Fetch a row by the specified column. Resolves with an instance of `SchemaCollection`.
      * @param string  $name
      * @param mixed   $value
      * @return \React\Promise\PromiseInterface
@@ -92,7 +92,7 @@ class SchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
-     * Inserts a row.
+     * Inserts a row. Resolves with an instance of `SchemaCollection`.
      * @param array  $data
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
@@ -112,14 +112,16 @@ class SchemaBuilder implements SchemaBuilderInterface {
             $mapper = \Plasma\Schemas\Schema::getMapper()[$table] ?? array();
         }
         
+        $realValues = array();
         $fields = array();
         $values = array();
         
-        foreach($data as $colname => $_) {
+        foreach($data as $colname => $value) {
             if(empty($mapper[$colname])) {
                 throw new \Plasma\Exception('Unknown field "'.$colname.'"');
             }
             
+            $realValues[$mapper[$colname]] = $value;
             $fields[] = $this->repo->quote($mapper[$colname], \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
             $values[] = '?';
         }
@@ -129,7 +131,13 @@ class SchemaBuilder implements SchemaBuilderInterface {
         return $this->repo->execute(
             'INSERT INTO '.$table.' ('.\implode(', ', $fields).') VALUES ('.\implode(', ', $values).')',
             \array_values($data)
-        );
+        )->then(function (\Plasma\QueryResultInterface $result) use ($realValues, $schema) {
+            if($result->getInsertID() !== null && $schema::getIdentifierColumn()) {
+                $realValues[$schema::getIdentifierColumn()] = $result->getInsertID();
+            }
+            
+            return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $realValues)), $result));
+        });
     }
     
     /**

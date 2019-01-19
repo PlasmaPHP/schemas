@@ -21,7 +21,7 @@ interface SchemaBuilderInterface {
     function setRepository(\Plasma\Schemas\Repository $repository): void;
     
     /**
-     * Fetch a row by the unique identifier.
+     * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
@@ -29,7 +29,7 @@ interface SchemaBuilderInterface {
     function fetch($value): \React\Promise\PromiseInterface;
     
     /**
-     * Fetch a row by the specified column.
+     * Fetch a row by the specified column. Resolves with an instance of `SchemaCollection`.
      * @param string  $name
      * @param mixed   $value
      * @return \React\Promise\PromiseInterface
@@ -38,7 +38,7 @@ interface SchemaBuilderInterface {
     function fetchBy(string $name, $value): \React\Promise\PromiseInterface;
     
     /**
-     * Inserts a row.
+     * Inserts a row. Resolves with an instance of `SchemaCollection`.
      * @param array  $data
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
