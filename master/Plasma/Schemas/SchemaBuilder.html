@@ -154,7 +154,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_insert">insert</a>(array $data)
         
-                                            <p>Inserts a row. Resolves with an instance of <code>SchemaCollection</code>.</p>                </div>
+                                            <p>Inserts a row. Resolves with an instance of <code>SchemaCollection</code>, if there is a primary column. Otherwise resolves with the query result.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -217,7 +217,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_buildSchemas">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaBuilder.php#L148">line 148</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaBuilder.php#L167">line 167</a></div>
         <code>                    <a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a>
     <strong>buildSchemas</strong>(<abbr title="Plasma\QueryResult">QueryResult</abbr> $result)
         </code>
@@ -408,7 +408,7 @@
     
 
                     <div class="method-description">
-                                    <p>Inserts a row. Resolves with an instance of <code>SchemaCollection</code>.</p>                                                </div>
+                                    <p>Inserts a row. Resolves with an instance of <code>SchemaCollection</code>, if there is a primary column. Otherwise resolves with the query result.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
