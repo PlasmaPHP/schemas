@@ -109,6 +109,23 @@ abstract class Schema implements SchemaInterface {
     abstract static function getIdentifierColumn(): ?string;
     
     /**
+     * Inserts the schema.
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function insert(): \React\Promise\PromiseInterface {
+        $values = array();
+        
+        foreach(static::$schemaFieldsMapper[static::getTableName()] as $name) {
+            if(\property_exists($this, $name)) {
+                $values[$name] = $this->$name;
+            }
+        }
+        
+        return $this->repo->getSchemaBuilder(static::getTableName())->insert($values)->then(array($this, 'handleQueryResult'));
+    }
+    
+    /**
      * Updates the row with the new data. Resolves with a `QueryResultInterface` instance.
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
@@ -138,7 +155,7 @@ abstract class Schema implements SchemaInterface {
         return $this->repo->execute(
             'UPDATE '.$table.' SET '.\implode(', ', $keys).' WHERE '.$uniq,
             $data
-        );
+        )->then(array($this, 'handleQueryResult'));
     }
     
     /**
@@ -159,7 +176,7 @@ abstract class Schema implements SchemaInterface {
         
         $table = $this->repo->quote($table, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
         
-        return $this->repo->execute('DELETE FROM '.$table.' WHERE '.$uniq, array($this->$uniqname));
+        return $this->repo->execute('DELETE FROM '.$table.' WHERE '.$uniq, array($this->$uniqname))->then(array($this, 'handleQueryResult'));
     }
     
     /**
@@ -183,5 +200,27 @@ abstract class Schema implements SchemaInterface {
      */
     static function getMapper(): array {
         return static::$schemaFieldsMapper;
+    }
+    
+    /**
+     * Handles the query result.
+     * @param \Plasma\QueryResultInterface|self  $result
+     * @return self|\Plasma\QueryResultInterface
+     */
+    function handleQueryResult($result) {
+        if($result instanceof static) {
+            if($result != $this) { // Whether the two objects are not equal in terms of properties
+                $vars = \get_object_vars($result);
+                unset($vars['repo'], $vars['schemaFieldsMapper']);
+                
+                foreach($vars as $name => $value) {
+                    $this->$name = $value;
+                }
+            }
+            
+            return $this;
+        }
+        
+        return $result;
     }
 }

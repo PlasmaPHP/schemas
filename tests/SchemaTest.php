@@ -25,6 +25,70 @@ class SchemaTest extends TestCase {
         $this->assertEquals($expected, $actual);
     }
     
+    function testInsert() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $mock = $this->getSchema();
+        $name = \get_class($mock);
+        
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SchemaBuilder::class)
+            ->setConstructorArgs(array($name))
+            ->getMock();
+        
+        $result = new $name($repo, array('help' => 0));
+        
+        $builder
+            ->expects($this->once())
+            ->method('insert')
+            ->with(array(
+                'help' => 5
+            ))
+            ->will($this->returnValue(\React\Promise\resolve($result)));
+        
+        $repo->registerSchemaBuilder('test5', $builder);
+        
+        $schema = new $name($repo, array('help' => 5));
+        
+        $insert = $schema->insert();
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $insert);
+        
+        $res = $this->await($insert);
+        $this->assertSame($schema, $res);
+    }
+    
+    function testInsertQueryResult() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $mock = $this->getSchema();
+        $name = \get_class($mock);
+        
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SchemaBuilder::class)
+            ->setConstructorArgs(array($name))
+            ->getMock();
+        
+        $result = new \Plasma\QueryResult(1, 0, null, null, null);
+        
+        $builder
+            ->expects($this->once())
+            ->method('insert')
+            ->with(array(
+                'help' => 5
+            ))
+            ->will($this->returnValue(\React\Promise\resolve($result)));
+        
+        $repo->registerSchemaBuilder('test5', $builder);
+        
+        $schema = new $name($repo, array('help' => 5));
+        
+        $insert = $schema->insert();
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $insert);
+        
+        $res = $this->await($insert);
+        $this->assertSame($result, $res);
+    }
+    
     function testUpdate() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);

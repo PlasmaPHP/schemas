@@ -41,6 +41,13 @@ interface SchemaInterface {
     static function getIdentifierColumn(): ?string;
     
     /**
+     * Inserts the row.
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function insert(): \React\Promise\PromiseInterface;
+    
+    /**
      * Updates the row with the new data.
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
