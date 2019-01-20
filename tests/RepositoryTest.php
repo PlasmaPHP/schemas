@@ -171,7 +171,7 @@ class RepositoryTest extends TestCase {
         $stream->emit('close', array());
         
         $res = $this->await($promise);
-        $this->assertInstanceOf(\Plasma\QueryResultInterface::class, $res);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
     }
     
     /**

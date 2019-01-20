@@ -271,13 +271,16 @@ class Repository implements \Evenement\EventEmitterInterface, \Plasma\ClientInte
             return $result->all()->then(array($this, 'handleQueryResult'));
         }
         
-        $fields = $result->getFieldDefinitions();
-        if($fields !== null) {
-            if(empty($fields)) {
+        $rows = $result->getRows();
+        
+        if($rows !== null) {
+            if(empty($rows)) {
                 return (new \Plasma\Schemas\SchemaCollection(array(), $result));
             }
             
+            $fields = $result->getFieldDefinitions();
             $table = \reset($fields)->getTableName();
+            
             if(isset($this->builders[$table])) {
                 return $this->getSchemaBuilder($table)->buildSchemas($result);
             }

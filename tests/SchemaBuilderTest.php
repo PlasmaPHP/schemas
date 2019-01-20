@@ -197,6 +197,134 @@ class SchemaBuilderTest extends TestCase {
         $this->assertEquals($expected, $res->getSchemas()[0]);
     }
     
+    function testInsertNotAllFieldsGiven() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class() extends \Plasma\Schemas\Schema {
+            public $help;
+            public $help2;
+            public $help3;
+            
+            // Let Schemabuilder::insert create the mapper
+            function __construct() {
+                if(\func_num_args() > 0) {
+                    parent::__construct(...\func_get_args());
+                }
+            }
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder9', 'help', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder9', 'help2', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder9', 'help3', 'BIGINT', '', 20, false, 0, null)),
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_schemabuilder9';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help';
+            }
+        });
+        
+        $query = 'INSERT INTO `test_schemabuilder9` (`help2`) VALUES (?)';
+        $result = new \Plasma\QueryResult(1, 0, 1, null, null);
+        
+        $query2 = 'SELECT * FROM `test_schemabuilder9` WHERE `help` = ?';
+        $result2 = new \Plasma\QueryResult(0, 0, 0, $schema::getDefinition(), array(array('help' => 1, 'help2' => 5, 'help3' => 0)));
+        
+        $client
+            ->expects($this->any())
+            ->method('quote')
+            ->will($this->returnCallback(function ($a) {
+                return '`'.$a.'`';
+            }));
+        
+        $client
+            ->expects($this->exactly(2))
+            ->method('execute')
+            ->withConsecutive(array($query, array(5)), array($query2, array(1)))
+            ->willReturnOnConsecutiveCalls($this->returnValue(\React\Promise\resolve($result)), $this->returnValue(\React\Promise\resolve($result2)));
+        
+        $name = \get_class($schema);
+        
+        $builder = new \Plasma\Schemas\SchemaBuilder($name);
+        $repo->registerSchemaBuilder('test_schemabuilder9', $builder);
+        
+        $promise = $builder->insert(array('help2' => 5));
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $res = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
+        
+        $expected = new $name($repo, array('help' => 1, 'help2' => 5, 'help3' => 0));
+        $this->assertEquals($expected, $res->getSchemas()[0]);
+    }
+    
+    function testInsertNoUnique() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class() extends \Plasma\Schemas\Schema {
+            public $help;
+            public $help2;
+            public $help3;
+            
+            // Let Schemabuilder::insert create the mapper
+            function __construct() {
+                if(\func_num_args() > 0) {
+                    parent::__construct(...\func_get_args());
+                }
+            }
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder10', 'help', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder10', 'help2', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder10', 'help3', 'BIGINT', '', 20, false, 0, null)),
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_schemabuilder10';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return null;
+            }
+        });
+        
+        $query = 'INSERT INTO `test_schemabuilder10` (`help2`) VALUES (?)';
+        $result = new \Plasma\QueryResult(1, 0, 1, $schema::getDefinition(), null);
+        
+        $client
+            ->expects($this->any())
+            ->method('quote')
+            ->will($this->returnCallback(function ($a) {
+                return '`'.$a.'`';
+            }));
+        
+        $client
+            ->expects($this->once())
+            ->method('execute')
+            ->with($query, array(5))
+            ->will($this->returnValue(\React\Promise\resolve($result)));
+        
+        $name = \get_class($schema);
+        
+        $builder = new \Plasma\Schemas\SchemaBuilder($name);
+        $builder->setRepository($repo);
+        
+        $promise = $builder->insert(array('help2' => 5));
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $res = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\QueryResultInterface::class, $res);
+    }
+    
     function testInsertEmptySet() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);

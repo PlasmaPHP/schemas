@@ -92,7 +92,7 @@ class SchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
-     * Inserts a row. Resolves with an instance of `SchemaCollection`.
+     * Inserts a row. Resolves with an instance of `SchemaCollection`, if there is a primary column. Otherwise resolves with the query result.
      * @param array  $data
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
@@ -128,16 +128,35 @@ class SchemaBuilder implements SchemaBuilderInterface {
         
         $table = $this->repo->quote($table, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
         
+        if($schema::getIdentifierColumn() === null) {
+            $callback = function (\Plasma\QueryResultInterface $result) {
+                return $result;
+            };
+        } elseif(\count($data) === \count($schema::getDefinition()) - 1) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues, $schema) {
+                if($result->getInsertID() !== null) {
+                    $realValues[$schema::getIdentifierColumn()] = $result->getInsertID();
+                }
+                
+                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $realValues)), $result));
+            };
+        } else {
+            // If not all columns were filled by the user, we fetch the row from the DB instead
+            $callback = function (\Plasma\QueryResultInterface $result) {
+                if($result->getInsertID() !== null) {
+                    return $this->fetch($result->getInsertID());
+                }
+                
+                return $result;
+            };
+        }
+        
+        $realValues = null;
+        
         return $this->repo->execute(
             'INSERT INTO '.$table.' ('.\implode(', ', $fields).') VALUES ('.\implode(', ', $values).')',
             \array_values($data)
-        )->then(function (\Plasma\QueryResultInterface $result) use ($realValues, $schema) {
-            if($result->getInsertID() !== null && $schema::getIdentifierColumn()) {
-                $realValues[$schema::getIdentifierColumn()] = $result->getInsertID();
-            }
-            
-            return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $realValues)), $result));
-        });
+        )->then($callback);
     }
     
     /**

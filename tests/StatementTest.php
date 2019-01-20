@@ -77,7 +77,7 @@ class StatementTest extends TestCase {
         $mock = $this->getMock();
         $statement = new \Plasma\Schemas\Statement($repo, $mock);
         
-        $result = new \Plasma\QueryResult(0, 0, null, array(), null);
+        $result = new \Plasma\QueryResult(0, 0, null, array(), array());
         
         $mock
             ->expects($this->once())
