@@ -206,6 +206,7 @@ abstract class Schema implements SchemaInterface {
      * Handles the query result.
      * @param \Plasma\QueryResultInterface|\Plasma\Schemas\SchemaCollection  $result
      * @return \Plasma\QueryResultInterface|\Plasma\Schemas\SchemaCollection|self
+     * @internal
      */
     function handleQueryResult($result) {
         if($result instanceof \Plasma\Schemas\SchemaCollection) {
