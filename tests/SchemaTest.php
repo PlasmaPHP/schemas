@@ -36,7 +36,8 @@ class SchemaTest extends TestCase {
             ->setConstructorArgs(array($name))
             ->getMock();
         
-        $result = new $name($repo, array('help' => 0));
+        $result = new \Plasma\QueryResult(1, 0, null, null, null);
+        $result = new \Plasma\Schemas\SchemaCollection(array((new $name($repo, array('help' => 0)))), $result);
         
         $builder
             ->expects($this->once())

@@ -204,21 +204,26 @@ abstract class Schema implements SchemaInterface {
     
     /**
      * Handles the query result.
-     * @param \Plasma\QueryResultInterface|self  $result
+     * @param \Plasma\QueryResultInterface|\Plasma\Schemas\SchemaCollection  $result
      * @return self|\Plasma\QueryResultInterface
      */
     function handleQueryResult($result) {
-        if($result instanceof static) {
-            if($result != $this) { // Whether the two objects are not equal in terms of properties
-                $vars = \get_object_vars($result);
-                unset($vars['repo'], $vars['schemaFieldsMapper']);
-                
-                foreach($vars as $name => $value) {
-                    $this->$name = $value;
-                }
-            }
+        if($result instanceof \Plasma\Schemas\SchemaCollection) {
+            $schemas = $result->getSchemas();
+            $schema = \reset($schemas);
             
-            return $this;
+            if($schema instanceof static) {
+                if($schema != $this) { // Whether the two objects are not equal in terms of properties
+                    $vars = \get_object_vars($schema);
+                    unset($vars['repo'], $vars['schemaFieldsMapper']);
+                    
+                    foreach($vars as $name => $value) {
+                        $this->$name = $value;
+                    }
+                }
+                
+                return $this;
+            }
         }
         
         return $result;
