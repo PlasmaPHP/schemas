@@ -160,6 +160,26 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <a href="../../Plasma/Schemas/Schema.html"><abbr title="Plasma\Schemas\Schema">Schema</abbr></a>|<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_handleQueryResult">handleQueryResult</a>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>|<a href="../../Plasma/Schemas/Schema.html"><abbr title="Plasma\Schemas\Schema">Schema</abbr></a> $result)
+        
+                                            <p>Handles the query result.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_insert">insert</a>()
+        
+                                            <p>Inserts the schema.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
@@ -289,7 +309,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L149">line 149</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L166">line 166</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>delete</strong>()
         </code>
@@ -425,8 +445,91 @@ This allows validation and match expectations.</p>                    </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_update">
+                    <h3 id="method_handleQueryResult">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L210">line 210</a></div>
+        <code>                    <a href="../../Plasma/Schemas/Schema.html"><abbr title="Plasma\Schemas\Schema">Schema</abbr></a>|<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>
+    <strong>handleQueryResult</strong>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>|<a href="../../Plasma/Schemas/Schema.html"><abbr title="Plasma\Schemas\Schema">Schema</abbr></a> $result)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Handles the query result.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>|<a href="../../Plasma/Schemas/Schema.html"><abbr title="Plasma\Schemas\Schema">Schema</abbr></a></td>
+                <td>$result</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Plasma/Schemas/Schema.html"><abbr title="Plasma\Schemas\Schema">Schema</abbr></a>|<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_insert">
         <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L116">line 116</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>insert</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Inserts the schema.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_update">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L133">line 133</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>update</strong>(array $data)
         </code>
