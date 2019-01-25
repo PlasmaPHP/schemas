@@ -39,19 +39,6 @@ class Repository implements \Evenement\EventEmitterInterface {
     }
     
     /**
-     * Creates a plasma client (`\Plasma\Client`) with the specified factory and options and invokes this constructor with it.
-     * @param \Plasma\DriverFactoryInterface  $factory
-     * @param string                          $uri      The connect uri, which consists of `username:password@host:port`.
-     * @param array                           $options  Any options for the client, see client implementation for details.
-     * @return \Plasma\ClientInterface
-     * @throws \Throwable  The client implementation may throw any exception during this operation.
-     */
-    static function create(\Plasma\DriverFactoryInterface $factory, string $uri, array $options = array()): \Plasma\ClientInterface {
-        $client = \Plasma\Client::create($factory, $uri, $options);
-        return (new static($client));
-    }
-    
-    /**
      * Get the internally used client.
      * @return \Plasma\ClientInterface
      */
