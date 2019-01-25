@@ -10,17 +10,6 @@
 namespace Plasma\Schemas\Tests;
 
 class RepositoryTest extends TestCase {
-    function testCreate() {
-        $factory = $this->getMockBuilder(\Plasma\DriverFactoryInterface::class)
-            ->setMethods(array(
-                'createDriver'
-            ))
-            ->getMock();
-        
-        $repo = \Plasma\Schemas\Repository::create($factory, '', array('connections.lazy' => true));
-        $this->assertInstanceOf(\Plasma\Schemas\Repository::class, $repo);
-    }
-    
     function testGetClient() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
