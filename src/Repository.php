@@ -12,8 +12,7 @@ namespace Plasma\Schemas;
 /**
  * The repository is responsible for turning rows into specified PHP object.
  *
- * The repository implements the ClientInterface methods to allow it to used like an actual Plasma client.
- * Internally it uses an actual plasma client, itself has no client implementations.
+ * The repository uses internally an actual plasma client, itself has no client implementation.
  * Not implementing the interface prevents bugs (expecting a query result but getting a schema collection).
  *
  * SELECT queries will be wrapped (if a schema builder exists for the table) within a `SchemaCollection`.
