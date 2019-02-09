@@ -243,6 +243,16 @@ All other queries get returned as is.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_runQuery">runQuery</a>(<abbr title="Plasma\QuerybuilderInterface">QuerybuilderInterface</abbr> $query)
+        
+                                            <p>Runs the given querybuilder on an underlying driver instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     $this
                 </div>
                 <div class="col-md-8 type">
@@ -434,7 +444,7 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L184">line 184</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L196">line 196</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>execute</strong>(string $query, array $params = array())
         </code>
@@ -617,7 +627,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
             </div>
                     <div class="method-item">
                     <h3 id="method_prepare">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L170">line 170</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L182">line 182</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>prepare</strong>(string $query)
         </code>
@@ -679,7 +689,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
             </div>
                     <div class="method-item">
                     <h3 id="method_query">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L159">line 159</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L171">line 171</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>query</strong>(string $query)
         </code>
@@ -773,7 +783,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
             </div>
                     <div class="method-item">
                     <h3 id="method_quote">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L196">line 196</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L208">line 208</a></div>
         <code>                    string
     <strong>quote</strong>(string $str, int $type = \Plasma\DriverInterface::QUOTE_TYPE_VALUE)
         </code>
@@ -928,6 +938,58 @@ If you need to execute a query multiple times, prepare the query manually for pe
                     <tr>
                 <td><abbr title="Plasma\Exception">Exception</abbr></td>
                 <td>Thrown if the client is closing all connections.</td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_runQuery">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L160">line 160</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>runQuery</strong>(<abbr title="Plasma\QuerybuilderInterface">QuerybuilderInterface</abbr> $query)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Runs the given querybuilder on an underlying driver instance.</p>                    <p>The driver CAN throw an exception if the given querybuilder is not supported.
+An example would be a SQL querybuilder and a Cassandra driver.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\QuerybuilderInterface">QuerybuilderInterface</abbr></td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
             </tr>
             </table>
 
