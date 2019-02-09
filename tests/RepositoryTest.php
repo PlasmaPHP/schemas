@@ -182,6 +182,13 @@ class RepositoryTest extends TestCase {
     function providerInherited() {
         $driver = $this->getDriverMock();
         $command = $this->getCommandMock();
+        $query = $this->getMockBuilder(\Plasma\QuerybuilderInterface::class)
+            ->setMethods(array(
+                'create',
+                'getQuery',
+                'getParameters'
+            ))
+            ->getMock();
         
         return array(
             array('getConnectionCount', array(), 0),
@@ -190,6 +197,7 @@ class RepositoryTest extends TestCase {
             array('close', array(), (new \React\Promise\Promise(function () {}))),
             array('quit', array(), null),
             array('runCommand', array($command), (new \React\Promise\Promise(function () {}))),
+            array('runQuery', array($query), (new \React\Promise\Promise(function () {}))),
             array('quote', array('help'), '`help`'),
             array('on', array('data', function () {}), null),
             array('once', array('data', function () {}), null),
@@ -215,6 +223,7 @@ class RepositoryTest extends TestCase {
                 'close',
                 'quit',
                 'runCommand',
+                'runQuery',
                 'query',
                 'prepare',
                 'execute',

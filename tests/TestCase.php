@@ -33,6 +33,7 @@ class TestCase extends \PHPUnit\Framework\TestCase {
                 'close',
                 'quit',
                 'runCommand',
+                'runQuery',
                 'query',
                 'prepare',
                 'execute',
