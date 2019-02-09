@@ -9,7 +9,7 @@
 
 namespace Plasma\Schemas\Tests;
 
-class SchemaBuilderTest extends TestCase {
+class SQLSchemaBuilderTest extends TestCase {
     function testConstructor() {
         $schema = (new class() extends \Plasma\Schemas\Schema {
             public $help;
@@ -34,7 +34,7 @@ class SchemaBuilderTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
         $builder->setRepository($repo);
         
         $this->assertSame($repo, $builder->getRepository());
@@ -47,7 +47,7 @@ class SchemaBuilderTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Schema class does not exist');
         
-        $builder = new \Plasma\Schemas\SchemaBuilder('a');
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder('a');
     }
     
     function testConstructorInvalidClass() {
@@ -57,7 +57,7 @@ class SchemaBuilderTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Schema class does not implement Schema Interface');
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\stdClass::class);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\stdClass::class);
     }
     
     function testFetch() {
@@ -97,7 +97,7 @@ class SchemaBuilderTest extends TestCase {
             ->with($query, array(5))
             ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
         $builder->setRepository($repo);
         
         $promise = $builder->fetch(5);
@@ -126,7 +126,7 @@ class SchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -184,7 +184,7 @@ class SchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SchemaBuilder($name);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name);
         $builder->setRepository($repo);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -251,7 +251,7 @@ class SchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SchemaBuilder($name);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name);
         $repo->registerSchemaBuilder('test_schemabuilder9', $builder);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -315,7 +315,7 @@ class SchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SchemaBuilder($name);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name);
         $builder->setRepository($repo);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -347,7 +347,7 @@ class SchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -378,7 +378,7 @@ class SchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -409,7 +409,7 @@ class SchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
         $builder->setRepository($repo);
         
         $rows = array(

@@ -32,7 +32,7 @@ class SchemaTest extends TestCase {
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SchemaBuilder::class)
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
             ->setConstructorArgs(array($name))
             ->getMock();
         
@@ -65,7 +65,7 @@ class SchemaTest extends TestCase {
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SchemaBuilder::class)
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
             ->setConstructorArgs(array($name))
             ->getMock();
         

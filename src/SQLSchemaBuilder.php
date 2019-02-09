@@ -10,9 +10,9 @@
 namespace Plasma\Schemas;
 
 /**
- * Schema Builders are responsible for creating individual schemas from query results.
+ * This is a SQL Schema Builder implementation.
  */
-class SchemaBuilder implements SchemaBuilderInterface {
+class SQLSchemaBuilder implements SchemaBuilderInterface {
     /**
      * @var \Plasma\Schemas\Repository
      */
