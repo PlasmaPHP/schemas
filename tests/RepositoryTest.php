@@ -263,7 +263,7 @@ class RepositoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_repository', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_repository', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             

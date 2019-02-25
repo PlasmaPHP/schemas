@@ -69,7 +69,7 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder2', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder2', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -113,7 +113,7 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder8', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder8', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -152,8 +152,8 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder3', 'help', 'BIGINT', '', 20, false, 0, null)),
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder3', 'help2', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder3', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder3', 'help2', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -215,9 +215,9 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder9', 'help', 'BIGINT', '', 20, false, 0, null)),
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder9', 'help2', 'BIGINT', '', 20, false, 0, null)),
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder9', 'help3', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder9', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder9', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder9', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
             }
             
@@ -282,9 +282,9 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder10', 'help', 'BIGINT', '', 20, false, 0, null)),
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder10', 'help2', 'BIGINT', '', 20, false, 0, null)),
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder10', 'help3', 'BIGINT', '', 20, false, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder10', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder10', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder10', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
             }
             
@@ -334,7 +334,7 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder4', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder4', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -365,7 +365,7 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder5', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder5', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -396,7 +396,7 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test_schemabuilder7', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder7', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             

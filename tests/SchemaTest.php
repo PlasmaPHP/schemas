@@ -142,7 +142,7 @@ class SchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test3', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test3', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -213,7 +213,7 @@ class SchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test4', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test4', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -241,7 +241,7 @@ class SchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -267,7 +267,7 @@ class SchemaTest extends TestCase {
         $schema = (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\Schema {
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test7', 'help_me', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test7', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -291,7 +291,7 @@ class SchemaTest extends TestCase {
         $schema = (new class($repo, array('help' => 50)) extends \Plasma\Schemas\Schema {
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test8', 'help_me', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test8', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -317,7 +317,7 @@ class SchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test6', 'help_me', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test6', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -351,7 +351,7 @@ class SchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\ColumnDefinition('test', 'test5', 'help', 'BIGINT', '', 20, false, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test5', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
