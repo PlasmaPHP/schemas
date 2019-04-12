@@ -84,6 +84,7 @@ window.projectVersion = 'master';
                     {"type": "Method", "fromName": "Plasma\\Schemas\\Statement", "fromLink": "Plasma/Schemas/Statement.html", "link": "Plasma/Schemas/Statement.html#method_isClosed", "name": "Plasma\\Schemas\\Statement::isClosed", "doc": "&quot;Whether the statement has been closed.&quot;"},
                     {"type": "Method", "fromName": "Plasma\\Schemas\\Statement", "fromLink": "Plasma/Schemas/Statement.html", "link": "Plasma/Schemas/Statement.html#method_close", "name": "Plasma\\Schemas\\Statement::close", "doc": "&quot;Closes the prepared statement and frees the associated resources on the server.&quot;"},
                     {"type": "Method", "fromName": "Plasma\\Schemas\\Statement", "fromLink": "Plasma/Schemas/Statement.html", "link": "Plasma/Schemas/Statement.html#method_execute", "name": "Plasma\\Schemas\\Statement::execute", "doc": "&quot;Executes the prepared statement. Resolves with a &lt;code&gt;QueryResult&lt;\/code&gt; instance.&quot;"},
+                    {"type": "Method", "fromName": "Plasma\\Schemas\\Statement", "fromLink": "Plasma/Schemas/Statement.html", "link": "Plasma/Schemas/Statement.html#method_runQuery", "name": "Plasma\\Schemas\\Statement::runQuery", "doc": "&quot;Runs the given querybuilder on an underlying driver instance.&quot;"},
             
                                         // Fix trailing commas in the index
         {}
