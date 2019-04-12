@@ -25,6 +25,13 @@
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
+                    <form action="#" method="GET">
+                <select id="version-switcher" name="version">
+                                            <option value="../../../v0.1.0/index.html" data-version="v0.1.0">v0.1.0</option>
+                                            <option value="../../../v0.2.0/index.html" data-version="v0.2.0">v0.2.0</option>
+                                            <option value="../../../master/index.html" data-version="master">master</option>
+                                    </select>
+            </form>
                 <script>
             $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
         </script>
@@ -132,6 +139,16 @@
                     <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
+                    <a href="#method_fetchAll">fetchAll</a>()
+        
+                                            <p>Fetches all rows. Resolves with an instance of <code>SchemaCollection</code>.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
                     <a href="#method_fetchBy">fetchBy</a>(string $name, mixed $value)
         
                                             <p>Fetch a row by the specified column. Resolves with an instance of <code>SchemaCollection</code>.</p>                </div>
@@ -217,7 +234,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_buildSchemas">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L167">line 167</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L179">line 179</a></div>
         <code>                    <a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a>
     <strong>buildSchemas</strong>(<abbr title="Plasma\QueryResult">QueryResult</abbr> $result)
         </code>
@@ -259,7 +276,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_fetch">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L64">line 64</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L76">line 76</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>fetch</strong>(mixed $value)
         </code>
@@ -309,8 +326,49 @@
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_fetchAll">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L63">line 63</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>fetchAll</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Fetches all rows. Resolves with an instance of <code>SchemaCollection</code>.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_fetchBy">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L82">line 82</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L94">line 94</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>fetchBy</strong>(string $name, mixed $value)
         </code>
@@ -398,7 +456,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_insert">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L100">line 100</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLSchemaBuilder.php#L112">line 112</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>insert</strong>(array $data)
         </code>

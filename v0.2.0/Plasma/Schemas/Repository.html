@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Plasma\Schemas\Repository | schemas</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <link rel="stylesheet" type="text/css" href="../../css/prism.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <script src="../../js/prism.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Plasma_Schemas_Repository" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                    <form action="#" method="GET">
+                <select id="version-switcher" name="version">
+                                            <option value="../../../v0.1.0/index.html" data-version="v0.1.0">v0.1.0</option>
+                                            <option value="../../../v0.2.0/index.html" data-version="v0.2.0">v0.2.0</option>
+                                            <option value="../../../master/index.html" data-version="master">master</option>
+                                    </select>
+            </form>
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">schemas</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                                                <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Plasma.html">Plasma</a></li><li class="backslash">\</li><li><a href="../../Plasma/Schemas.html">Schemas</a></li><li class="backslash">\</li><li>Repository</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            Repository
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>Repository</strong>        implements
+        <abbr title="Evenement\EventEmitterInterface">EventEmitterInterface</abbr>        (<a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php" target="_blank">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>The repository is responsible for turning rows into specified PHP object.</p>            <p>The repository uses internally an actual plasma client, itself has no client implementation.
+Not implementing the interface prevents bugs (expecting a query result but getting a schema collection).</p>
+
+<p>SELECT queries will be wrapped (if a schema builder exists for the table) within a <code>SchemaCollection</code>.
+All other queries get returned as is.</p>                    </div>
+    
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>(<abbr title="Plasma\ClientInterface">ClientInterface</abbr> $client)
+        
+                                            <p>Constructor.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_beginTransaction">beginTransaction</a>(int $isolation = \Plasma\TransactionInterface::ISOLATION_COMMITTED)
+        
+                                            <p>Begins a transaction. Resolves with a <code>TransactionInterface</code> instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_checkinConnection">checkinConnection</a>(<abbr title="Plasma\DriverInterface">DriverInterface</abbr> $driver)
+        
+                                            <p>Checks a connection back in, if usable and not closing.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_close">close</a>()
+        
+                                            <p>Closes all connections gracefully after processing all outstanding requests.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_execute">execute</a>(string $query, array $params = array())
+        
+                                            <p>Prepares and executes a query. Resolves with a <code>QueryResultInterface</code> instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getClient">getClient</a>()
+        
+                                            <p>Get the internally used client.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getConnectionCount">getConnectionCount</a>()
+        
+                                            <p>Get the amount of connections.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSchemaBuilder">getSchemaBuilder</a>(string $schemaName)
+        
+                                            <p>Get the Schema Builder for the schema.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_prepare">prepare</a>(string $query)
+        
+                                            <p>Prepares a query. Resolves with a <code>StatementInterface</code> instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_query">query</a>(string $query)
+        
+                                            <p>Executes a plain query. Resolves with a <code>QueryResultInterface</code> instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_quit">quit</a>()
+        
+                                            <p>Forcefully closes the connection, without waiting for any outstanding requests. This will reject all outstanding requests.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_quote">quote</a>(string $str, int $type = \Plasma\DriverInterface::QUOTE_TYPE_VALUE)
+        
+                                            <p>Quotes the string for use in the query.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_registerSchemaBuilder">registerSchemaBuilder</a>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+        
+                                            <p>Register a Schema Builder for the schema to be used by the Repository.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_runCommand">runCommand</a>(<abbr title="Plasma\CommandInterface">CommandInterface</abbr> $command)
+        
+                                            <p>Runs the given command.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_runQuery">runQuery</a>(<abbr title="Plasma\QuerybuilderInterface">QuerybuilderInterface</abbr> $query)
+        
+                                            <p>Runs the given querybuilder on an underlying driver instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_unregisterSchemaBuilder">unregisterSchemaBuilder</a>(string $schemaName)
+        
+                                            <p>Unregister the Schema Builder of the schema.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L36">line 36</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Plasma\ClientInterface">ClientInterface</abbr> $client)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Constructor.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\ClientInterface">ClientInterface</abbr></td>
+                <td>$client</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_beginTransaction">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L122">line 122</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>beginTransaction</strong>(int $isolation = \Plasma\TransactionInterface::ISOLATION_COMMITTED)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Begins a transaction. Resolves with a <code>TransactionInterface</code> instance.</p>                    <p>Checks out a connection until the transaction gets committed or rolled back.
+It must be noted that the user is responsible for finishing the transaction. The client WILL NOT automatically
+check the connection back into the pool, as long as the transaction is not finished.</p>
+
+<p>Some databases, including MySQL, automatically issue an implicit COMMIT when a database definition language (DDL)
+statement such as DROP TABLE or CREATE TABLE is issued within a transaction.
+The implicit COMMIT will prevent you from rolling back any other changes within the transaction boundary.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>int</td>
+                <td>$isolation</td>
+                <td>See the <code>TransactionInterface</code> constants.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <abbr title="Plasma\TransactionInterface">TransactionInterface</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_checkinConnection">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L103">line 103</a></div>
+        <code>                    void
+    <strong>checkinConnection</strong>(<abbr title="Plasma\DriverInterface">DriverInterface</abbr> $driver)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Checks a connection back in, if usable and not closing.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\DriverInterface">DriverInterface</abbr></td>
+                <td>$driver</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_close">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L130">line 130</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>close</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Closes all connections gracefully after processing all outstanding requests.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_execute">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L196">line 196</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>execute</strong>(string $query, array $params = array())
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Prepares and executes a query. Resolves with a <code>QueryResultInterface</code> instance.</p>                    <p>This is equivalent to prepare -> execute -> close.
+If you need to execute a query multiple times, prepare the query manually for performance reasons.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$params</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <abbr title="Plasma\StatementInterface">StatementInterface</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getClient">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L44">line 44</a></div>
+        <code>                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
+    <strong>getClient</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the internally used client.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Plasma\ClientInterface">ClientInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConnectionCount">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L94">line 94</a></div>
+        <code>                    int
+    <strong>getConnectionCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the amount of connections.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSchemaBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L54">line 54</a></div>
+        <code>                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+    <strong>getSchemaBuilder</strong>(string $schemaName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the Schema Builder for the schema.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$schemaName</td>
+                <td>The schema name. This would be the table name.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_prepare">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L182">line 182</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>prepare</strong>(string $query)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Prepares a query. Resolves with a <code>StatementInterface</code> instance.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <abbr title="Plasma\StatementInterface">StatementInterface</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_query">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L171">line 171</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>query</strong>(string $query)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Executes a plain query. Resolves with a <code>QueryResultInterface</code> instance.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_quit">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L138">line 138</a></div>
+        <code>                    void
+    <strong>quit</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Forcefully closes the connection, without waiting for any outstanding requests. This will reject all outstanding requests.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_quote">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L208">line 208</a></div>
+        <code>                    string
+    <strong>quote</strong>(string $str, int $type = \Plasma\DriverInterface::QUOTE_TYPE_VALUE)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Quotes the string for use in the query.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$str</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$type</td>
+                <td>For types, see the driver interface constants.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="https://secure.php.net/LogicException" target="_blank">LogicException</a></td>
+                <td>Thrown if the driver does not support quoting.</td>
+            </tr>
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerSchemaBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L69">line 69</a></div>
+        <code>                    $this
+    <strong>registerSchemaBuilder</strong>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Register a Schema Builder for the schema to be used by the Repository.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$schemaName</td>
+                <td>The schema name. This would be the table name.</td>
+            </tr>
+                    <tr>
+                <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+                <td>$schemaBuilder</td>
+                <td>The schema builder for the schema.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_runCommand">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L148">line 148</a></div>
+        <code>                    mixed
+    <strong>runCommand</strong>(<abbr title="Plasma\CommandInterface">CommandInterface</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Runs the given command.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\CommandInterface">CommandInterface</abbr></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td>Return depends on command and driver.</td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td>Thrown if the client is closing all connections.</td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_runQuery">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L160">line 160</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>runQuery</strong>(<abbr title="Plasma\QuerybuilderInterface">QuerybuilderInterface</abbr> $query)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Runs the given querybuilder on an underlying driver instance.</p>                    <p>The driver CAN throw an exception if the given querybuilder is not supported.
+An example would be a SQL querybuilder and a Cassandra driver.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\QuerybuilderInterface">QuerybuilderInterface</abbr></td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_unregisterSchemaBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/v0.2.0/src/Repository.php#L85">line 85</a></div>
+        <code>                    $this
+    <strong>unregisterSchemaBuilder</strong>(string $schemaName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Unregister the Schema Builder of the schema.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$schemaName</td>
+                <td>The schema name. This would be the table name.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
