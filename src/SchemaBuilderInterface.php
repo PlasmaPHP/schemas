@@ -21,6 +21,13 @@ interface SchemaBuilderInterface {
     function setRepository(\Plasma\Schemas\Repository $repository): void;
     
     /**
+     * Fetches all rows. Resolves with an instance of `SchemaCollection`.
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function fetchAll(): \React\Promise\PromiseInterface;
+    
+    /**
      * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
      * @return \React\Promise\PromiseInterface
