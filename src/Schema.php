@@ -180,6 +180,23 @@ abstract class Schema implements SchemaInterface {
     }
     
     /**
+     * Returns an array with all values mapped by the column name.
+     * @return array
+     */
+    function toArray(): array {
+        $table = $this->getTableName();
+        $row = array();
+        
+        foreach($this as $key => $val) {
+            if(isset(static::$schemaFieldsMapper[$table][$key])) {
+                $row[$key] = $val;
+            }
+        }
+        
+        return $row;
+    }
+    
+    /**
      * Converts a snake case column to a camelcase identifier
      * @param string  $name
      * @return string

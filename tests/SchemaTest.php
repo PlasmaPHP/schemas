@@ -331,6 +331,37 @@ class SchemaTest extends TestCase {
         });
     }
     
+    function testToArray() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help_me' => \PHP_INT_MAX)) extends \Plasma\Schemas\Schema {
+            public $helpMe;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                static $table;
+                
+                if(!$table) {
+                    $table = \bin2hex(\random_bytes(5));
+                }
+                
+                return $table;
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help_me';
+            }
+        });
+        
+        $this->assertSame(array('helpMe' => \PHP_INT_MAX), $schema->toArray());
+    }
+    
     function getSchema(...$args): \Plasma\Schemas\Schema {
         return (new class(...$args) extends \Plasma\Schemas\Schema {
             public $help;
