@@ -101,10 +101,17 @@ class StatementTest extends TestCase {
         
         $result = new \Plasma\QueryResult(0, 0, null, array(), array());
         
-        $qb = \Plasma\SQL\QueryBuilder::create()
-            ->from('test')
-            ->where('abc', '=', 'bar')
-            ->select();
+        $qb = (new class() implements \Plasma\SQLQueryBuilderInterface {
+            static function create(): \Plasma\QueryBuilderInterface {}
+            
+            function getQuery() {
+                return 'SELECT 1';
+            }
+            
+            function getParameters(): array {
+                return array();
+            }
+        });
         
         $mock
             ->expects($this->once())
