@@ -183,7 +183,7 @@ class RepositoryTest extends TestCase {
     function providerInherited() {
         $driver = $this->getDriverMock();
         $command = $this->getCommandMock();
-        $query = $this->getMockBuilder(\Plasma\QuerybuilderInterface::class)
+        $query = $this->getMockBuilder(\Plasma\QueryBuilderInterface::class)
             ->setMethods(array(
                 'create',
                 'getQuery',
