@@ -56,6 +56,18 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
+     * Fetches all rows. Resolves with an instance of `SchemaCollection`.
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function fetchAll(): \React\Promise\PromiseInterface {
+        $schema = $this->schema;
+        $table = $this->repo->quote($schema::getTableName(), \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
+        
+        return $this->repo->execute('SELECT * FROM '.$table, array());
+    }
+    
+    /**
      * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
      * @return \React\Promise\PromiseInterface

@@ -60,6 +60,50 @@ class SQLSchemaBuilderTest extends TestCase {
         $builder = new \Plasma\Schemas\SQLSchemaBuilder(\stdClass::class);
     }
     
+    function testFetchAll() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+            public $help;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder_fetchall', 'help', 'BIGINT', '', 20, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_schemabuilder_fetchall';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help';
+            }
+        });
+        
+        $query = 'SELECT * FROM `test_schemabuilder_fetchall`';
+        
+        $client
+            ->expects($this->any())
+            ->method('quote')
+            ->will($this->returnCallback(function ($a) {
+                return '`'.$a.'`';
+            }));
+        
+        $client
+            ->expects($this->once())
+            ->method('execute')
+            ->with($query, array())
+            ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
+        
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder->setRepository($repo);
+        
+        $promise = $builder->fetchAll();
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+    }
+    
     function testFetch() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
