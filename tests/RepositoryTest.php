@@ -115,7 +115,8 @@ class RepositoryTest extends TestCase {
                 'getQuery',
                 'isClosed',
                 'close',
-                'execute'
+                'execute',
+                'runQuery'
             ))
             ->getMock();
         

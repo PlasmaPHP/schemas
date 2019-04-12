@@ -14,6 +14,7 @@
         "plasma/core": "^0.2|dev-master"
     },
     "require-dev": {
+        "plasma/sql-common": "^0.1|dev-master",
         "clue/block-react": "^1.3",
         "phpunit/phpunit": "^7.0"
     },

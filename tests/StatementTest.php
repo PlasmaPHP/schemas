@@ -92,6 +92,33 @@ class StatementTest extends TestCase {
         $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
     }
     
+    function testRunQuery() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $mock = $this->getMock();
+        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        
+        $result = new \Plasma\QueryResult(0, 0, null, array(), array());
+        
+        $qb = \Plasma\SQL\QueryBuilder::create()
+            ->from('test')
+            ->where('abc', '=', 'bar')
+            ->select();
+        
+        $mock
+            ->expects($this->once())
+            ->method('runQuery')
+            ->with($qb)
+            ->will($this->returnValue(\React\Promise\resolve($result)));
+        
+        $promise = $statement->runQuery($qb);
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $res = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
+    }
+    
     function getMock(): \Plasma\StatementInterface {
         return $this->getMockBuilder(\Plasma\StatementInterface::class)
             ->setMethods(array(
@@ -99,7 +126,8 @@ class StatementTest extends TestCase {
                 'getQuery',
                 'isClosed',
                 'close',
-                'execute'
+                'execute',
+                'runQuery'
             ))
             ->getMock();
     }
