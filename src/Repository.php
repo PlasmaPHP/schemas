@@ -158,7 +158,7 @@ class Repository implements \Evenement\EventEmitterInterface {
      * @throws \Plasma\Exception
      */
     function runQuery(\Plasma\QueryBuilderInterface $query): \React\Promise\PromiseInterface {
-        return $this->client->runQuery($query);
+        return $this->client->runQuery($query)->then(array($this, 'handleQueryResult'));
     }
     
     /**
