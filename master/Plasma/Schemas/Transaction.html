@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Plasma\Schemas\Repository | schemas</title>
+    <title>Plasma\Schemas\Transaction | schemas</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -21,7 +21,7 @@
     
     </head>
 
-    <body id="class" data-name="class:Plasma_Schemas_Repository" data-root-path="../../">
+    <body id="class" data-name="class:Plasma_Schemas_Transaction" data-root-path="../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,32 +75,28 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Plasma.html">Plasma</a></li><li class="backslash">\</li><li><a href="../../Plasma/Schemas.html">Schemas</a></li><li class="backslash">\</li><li>Repository</li>
+                        <li><a href="../../Plasma.html">Plasma</a></li><li class="backslash">\</li><li><a href="../../Plasma/Schemas.html">Schemas</a></li><li class="backslash">\</li><li>Transaction</li>
             </ol>
         </div>
                 <div id="page-content">
                 
     <div class="page-header">
         <h1>
-            Repository
+            Transaction
                 
         </h1>
     </div>
 
     <p>    class
-    <strong>Repository</strong>        implements
-        <abbr title="Evenement\EventEmitterInterface">EventEmitterInterface</abbr>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php" target="_blank">View source</a>)
+    <strong>Transaction</strong>        implements
+        <abbr title="Plasma\TransactionInterface">TransactionInterface</abbr>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php" target="_blank">View source</a>)
 </p>
 
         
     
 
             <div class="description">
-            <p>The repository is responsible for turning rows into specified PHP object.</p>            <p>The repository uses internally an actual plasma client, itself has no client implementation.
-Not implementing the interface prevents bugs (expecting a query result but getting a schema collection).</p>
-
-<p>SELECT queries will be wrapped (if a schema builder exists for the table) within a <code>SchemaCollection</code>.
-All other queries get returned as is.</p>                    </div>
+            <p>Represents a Transaction. This class wraps a Transaction.</p>                                </div>
     
     
     
@@ -113,19 +109,9 @@ All other queries get returned as is.</p>                    </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(<abbr title="Plasma\ClientInterface">ClientInterface</abbr> $client)
+                    <a href="#method___construct">__construct</a>(<a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a> $repo, <abbr title="Plasma\TransactionInterface">TransactionInterface</abbr> $transaction)
         
                                             <p>Constructor.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_beginTransaction">beginTransaction</a>(int $isolation = \Plasma\TransactionInterface::ISOLATION_COMMITTED)
-        
-                                            <p>Begins a transaction. Resolves with a <code>TransactionInterface</code> instance.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -133,9 +119,9 @@ All other queries get returned as is.</p>                    </div>
                     void
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_checkinConnection">checkinConnection</a>(<abbr title="Plasma\DriverInterface">DriverInterface</abbr> $driver)
+                    <a href="#method___destruct">__destruct</a>()
         
-                                            <p>Checks a connection back in, if usable and not closing.</p>                </div>
+                                            <p>Destructor.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -143,9 +129,9 @@ All other queries get returned as is.</p>                    </div>
                     <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_close">close</a>()
+                    <a href="#method_commit">commit</a>()
         
-                                            <p>Closes all connections gracefully after processing all outstanding requests.</p>                </div>
+                                            <p>Commits the changes.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -153,9 +139,9 @@ All other queries get returned as is.</p>                    </div>
                     <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_createReadCursor">createReadCursor</a>(string $query, array $params = array())
+                    <a href="#method_createSavepoint">createSavepoint</a>(string $identifier)
         
-                                            <p>Creates a new cursor to seek through SELECT query results. Resolves with a <code>CursorInterface</code> instance.</p>                </div>
+                                            <p>Creates a savepoint with the given identifier.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -170,32 +156,22 @@ All other queries get returned as is.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_getClient">getClient</a>()
-        
-                                            <p>Get the internally used client.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     int
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getConnectionCount">getConnectionCount</a>()
+                    <a href="#method_getIsolationLevel">getIsolationLevel</a>()
         
-                                            <p>Get the amount of connections.</p>                </div>
+                                            <p>Get the isolation level for this transaction.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+                    bool
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getSchemaBuilder">getSchemaBuilder</a>(string $schemaName)
+                    <a href="#method_isActive">isActive</a>()
         
-                                            <p>Get the Schema Builder for the schema.</p>                </div>
+                                            <p>Whether the transaction is still active, or has been committed/rolled back.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -215,17 +191,7 @@ All other queries get returned as is.</p>                    </div>
                 <div class="col-md-8 type">
                     <a href="#method_query">query</a>(string $query)
         
-                                            <p>Executes a plain query. Resolves with a <code>QueryResultInterface</code> instance.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_quit">quit</a>()
-        
-                                            <p>Forcefully closes the connection, without waiting for any outstanding requests. This will reject all outstanding requests.</p>                </div>
+                                            <p>Executes a plain query. Resolves with a <code>QueryResult</code> instance.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -240,22 +206,32 @@ All other queries get returned as is.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    $this
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_registerSchemaBuilder">registerSchemaBuilder</a>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+                    <a href="#method_releaseSavepoint">releaseSavepoint</a>(string $identifier)
         
-                                            <p>Register a Schema Builder for the schema to be used by the Repository.</p>                </div>
+                                            <p>Releases the savepoint with the given identifier.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    mixed
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_runCommand">runCommand</a>(<abbr title="Plasma\CommandInterface">CommandInterface</abbr> $command)
+                    <a href="#method_rollback">rollback</a>()
         
-                                            <p>Runs the given command.</p>                </div>
+                                            <p>Rolls back the changes.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_rollbackTo">rollbackTo</a>(string $identifier)
+        
+                                            <p>Rolls back to the savepoint with the given identifier.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -265,17 +241,7 @@ All other queries get returned as is.</p>                    </div>
                 <div class="col-md-8 type">
                     <a href="#method_runQuery">runQuery</a>(<abbr title="Plasma\QueryBuilderInterface">QueryBuilderInterface</abbr> $query)
         
-                                            <p>Runs the given querybuilder on an underlying driver instance.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    $this
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_unregisterSchemaBuilder">unregisterSchemaBuilder</a>(string $schemaName)
-        
-                                            <p>Unregister the Schema Builder of the schema.</p>                </div>
+                                            <p>Runs the given querybuilder on the underlying driver instance.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -286,9 +252,9 @@ All other queries get returned as is.</p>                    </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L36">line 36</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L31">line 31</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Plasma\ClientInterface">ClientInterface</abbr> $client)
+    <strong>__construct</strong>(<a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a> $repo, <abbr title="Plasma\TransactionInterface">TransactionInterface</abbr> $transaction)
         </code>
     </h3>
     <div class="details">
@@ -302,8 +268,13 @@ All other queries get returned as is.</p>                    </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\ClientInterface">ClientInterface</abbr></td>
-                <td>$client</td>
+                <td><a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a></td>
+                <td>$repo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Plasma\TransactionInterface">TransactionInterface</abbr></td>
+                <td>$transaction</td>
                 <td></td>
             </tr>
             </table>
@@ -318,78 +289,10 @@ All other queries get returned as is.</p>                    </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_beginTransaction">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L122">line 122</a></div>
-        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
-    <strong>beginTransaction</strong>(int $isolation = \Plasma\TransactionInterface::ISOLATION_COMMITTED)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Begins a transaction. Resolves with a <code>TransactionInterface</code> instance.</p>                    <p>Checks out a connection until the transaction gets committed or rolled back.
-It must be noted that the user is responsible for finishing the transaction. The client WILL NOT automatically
-check the connection back into the pool, as long as the transaction is not finished.</p>
-
-<p>Some databases, including MySQL, automatically issue an implicit COMMIT when a database definition language (DDL)
-statement such as DROP TABLE or CREATE TABLE is issued within a transaction.
-The implicit COMMIT will prevent you from rolling back any other changes within the transaction boundary.</p>                            </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>int</td>
-                <td>$isolation</td>
-                <td>See the <code>TransactionInterface</code> constants.</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>See also</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                            <abbr title="Plasma\TransactionInterface">TransactionInterface</abbr>
-                                    </td>
-                <td></td>
-            </tr>
-            </table>
-
-                        
-                        
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_checkinConnection">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L103">line 103</a></div>
+                    <h3 id="method___destruct">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L40">line 40</a></div>
         <code>                    void
-    <strong>checkinConnection</strong>(<abbr title="Plasma\DriverInterface">DriverInterface</abbr> $driver)
+    <strong>__destruct</strong>()
         </code>
     </h3>
     <div class="details">
@@ -397,18 +300,8 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
     
 
                     <div class="method-description">
-                                    <p>Checks a connection back in, if usable and not closing.</p>                                                </div>
+                                    <p>Destructor.</p>                                                </div>
                 <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Plasma\DriverInterface">DriverInterface</abbr></td>
-                <td>$driver</td>
-                <td></td>
-            </tr>
-            </table>
-
             
                             <h4>Return Value</h4>
 
@@ -428,10 +321,10 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_close">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L132">line 132</a></div>
+                    <h3 id="method_commit">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L128">line 128</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
-    <strong>close</strong>()
+    <strong>commit</strong>()
         </code>
     </h3>
     <div class="details">
@@ -439,7 +332,7 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
     
 
                     <div class="method-description">
-                                    <p>Closes all connections gracefully after processing all outstanding requests.</p>                                                </div>
+                                    <p>Commits the changes.</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -452,6 +345,15 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
     </table>
 
             
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
+            </tr>
+            </table>
+
             
                         
                         
@@ -460,10 +362,10 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_createReadCursor">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L174">line 174</a></div>
+                    <h3 id="method_createSavepoint">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L147">line 147</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
-    <strong>createReadCursor</strong>(string $query, array $params = array())
+    <strong>createSavepoint</strong>(string $identifier)
         </code>
     </h3>
     <div class="details">
@@ -471,19 +373,14 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
     
 
                     <div class="method-description">
-                                    <p>Creates a new cursor to seek through SELECT query results. Resolves with a <code>CursorInterface</code> instance.</p>                                                </div>
+                                    <p>Creates a savepoint with the given identifier.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$query</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$params</td>
+                <td>$identifier</td>
                 <td></td>
             </tr>
             </table>
@@ -503,12 +400,8 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="https://secure.php.net/LogicException" target="_blank">LogicException</a></td>
-                <td>Thrown if the driver or DBMS does not support cursors.</td>
-            </tr>
-                    <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
             </tr>
             </table>
 
@@ -521,7 +414,7 @@ The implicit COMMIT will prevent you from rolling back any other changes within 
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L210">line 210</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L95">line 95</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>execute</strong>(string $query, array $params = array())
         </code>
@@ -564,6 +457,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
                     <tr>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
+            </tr>
+                    <tr>
                 <td><abbr title="Plasma\Exception">Exception</abbr></td>
                 <td></td>
             </tr>
@@ -588,42 +485,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getClient">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L44">line 44</a></div>
-        <code>                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
-    <strong>getClient</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Get the internally used client.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Plasma\ClientInterface">ClientInterface</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                        
-                        
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getConnectionCount">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L94">line 94</a></div>
+                    <h3 id="method_getIsolationLevel">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L48">line 48</a></div>
         <code>                    int
-    <strong>getConnectionCount</strong>()
+    <strong>getIsolationLevel</strong>()
         </code>
     </h3>
     <div class="details">
@@ -631,7 +496,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Get the amount of connections.</p>                                                </div>
+                                    <p>Get the isolation level for this transaction.</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -652,10 +517,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getSchemaBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L54">line 54</a></div>
-        <code>                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
-    <strong>getSchemaBuilder</strong>(string $schemaName)
+                    <h3 id="method_isActive">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L56">line 56</a></div>
+        <code>                    bool
+    <strong>isActive</strong>()
         </code>
     </h3>
     <div class="details">
@@ -663,38 +528,19 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Get the Schema Builder for the schema.</p>                                                </div>
+                                    <p>Whether the transaction is still active, or has been committed/rolled back.</p>                                                </div>
                 <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$schemaName</td>
-                <td>The schema name. This would be the table name.</td>
-            </tr>
-            </table>
-
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+            <td>bool</td>
             <td></td>
         </tr>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
             
                         
                         
@@ -704,7 +550,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
             </div>
                     <div class="method-item">
                     <h3 id="method_prepare">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L196">line 196</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L78">line 78</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>prepare</strong>(string $query)
         </code>
@@ -741,8 +587,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
             </tr>
             </table>
 
@@ -766,7 +612,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
             </div>
                     <div class="method-item">
                     <h3 id="method_query">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L185">line 185</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L67">line 67</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>query</strong>(string $query)
         </code>
@@ -776,7 +622,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Executes a plain query. Resolves with a <code>QueryResultInterface</code> instance.</p>                                                </div>
+                                    <p>Executes a plain query. Resolves with a <code>QueryResult</code> instance.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -803,8 +649,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
             </tr>
             </table>
 
@@ -827,40 +673,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_quit">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L140">line 140</a></div>
-        <code>                    void
-    <strong>quit</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Forcefully closes the connection, without waiting for any outstanding requests. This will reject all outstanding requests.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                        
-                        
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_quote">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L222">line 222</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L107">line 107</a></div>
         <code>                    string
     <strong>quote</strong>(string $str, int $type = \Plasma\DriverInterface::QUOTE_TYPE_VALUE)
         </code>
@@ -906,8 +720,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
                 <td>Thrown if the driver does not support quoting.</td>
             </tr>
                     <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
             </tr>
             </table>
 
@@ -919,10 +733,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_registerSchemaBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L69">line 69</a></div>
-        <code>                    $this
-    <strong>registerSchemaBuilder</strong>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+                    <h3 id="method_releaseSavepoint">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L167">line 167</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>releaseSavepoint</strong>(string $identifier)
         </code>
     </h3>
     <div class="details">
@@ -930,20 +744,15 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Register a Schema Builder for the schema to be used by the Repository.</p>                                                </div>
+                                    <p>Releases the savepoint with the given identifier.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$schemaName</td>
-                <td>The schema name. This would be the table name.</td>
-            </tr>
-                    <tr>
-                <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
-                <td>$schemaBuilder</td>
-                <td>The schema builder for the schema.</td>
+                <td>$identifier</td>
+                <td></td>
             </tr>
             </table>
 
@@ -952,7 +761,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
         <tr>
-            <td>$this</td>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
             <td></td>
         </tr>
     </table>
@@ -962,8 +771,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td></td>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
             </tr>
             </table>
 
@@ -975,10 +784,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_runCommand">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L150">line 150</a></div>
-        <code>                    mixed
-    <strong>runCommand</strong>(<abbr title="Plasma\CommandInterface">CommandInterface</abbr> $command)
+                    <h3 id="method_rollback">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L137">line 137</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>rollback</strong>()
         </code>
     </h3>
     <div class="details">
@@ -986,14 +795,55 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Runs the given command.</p>                                                </div>
+                                    <p>Rolls back the changes.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rollbackTo">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L157">line 157</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>rollbackTo</strong>(string $identifier)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Rolls back to the savepoint with the given identifier.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\CommandInterface">CommandInterface</abbr></td>
-                <td>$command</td>
+                <td>string</td>
+                <td>$identifier</td>
                 <td></td>
             </tr>
             </table>
@@ -1003,8 +853,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
         <tr>
-            <td>mixed</td>
-            <td>Return depends on command and driver.</td>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1013,8 +863,8 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\Exception">Exception</abbr></td>
-                <td>Thrown if the client is closing all connections.</td>
+                <td><abbr title="Plasma\TransactionException">TransactionException</abbr></td>
+                <td>Thrown if the transaction has been committed or rolled back.</td>
             </tr>
             </table>
 
@@ -1027,7 +877,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
             </div>
                     <div class="method-item">
                     <h3 id="method_runQuery">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L162">line 162</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Transaction.php#L119">line 119</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>runQuery</strong>(<abbr title="Plasma\QueryBuilderInterface">QueryBuilderInterface</abbr> $query)
         </code>
@@ -1037,7 +887,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Runs the given querybuilder on an underlying driver instance.</p>                    <p>The driver CAN throw an exception if the given querybuilder is not supported.
+                                    <p>Runs the given querybuilder on the underlying driver instance.</p>                    <p>The driver CAN throw an exception if the given querybuilder is not supported.
 An example would be a SQL querybuilder and a Cassandra driver.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
@@ -1070,48 +920,6 @@ An example would be a SQL querybuilder and a Cassandra driver.</p>              
             </tr>
             </table>
 
-            
-                        
-                        
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_unregisterSchemaBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L85">line 85</a></div>
-        <code>                    $this
-    <strong>unregisterSchemaBuilder</strong>(string $schemaName)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Unregister the Schema Builder of the schema.</p>                                                </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$schemaName</td>
-                <td>The schema name. This would be the table name.</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>$this</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
             
                         
                         
