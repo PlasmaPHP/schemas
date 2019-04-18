@@ -120,7 +120,9 @@ class Repository implements \Evenement\EventEmitterInterface {
      * @see \Plasma\TransactionInterface
      */
     function beginTransaction(int $isolation = \Plasma\TransactionInterface::ISOLATION_COMMITTED): \React\Promise\PromiseInterface {
-        return $this->client->beginTransaction($isolation);
+        return $this->client->beginTransaction($isolation)->then(function (\Plasma\TransactionInterface $transaction) {
+            return (new \Plasma\Schemas\Transaction($this, $transaction));
+        });
     }
     
     /**
@@ -159,6 +161,18 @@ class Repository implements \Evenement\EventEmitterInterface {
      */
     function runQuery(\Plasma\QueryBuilderInterface $query): \React\Promise\PromiseInterface {
         return $this->client->runQuery($query)->then(array($this, 'handleQueryResult'));
+    }
+    
+    /**
+     * Creates a new cursor to seek through SELECT query results. Resolves with a `CursorInterface` instance.
+     * @param string                   $query
+     * @param array                    $params
+     * @return \React\Promise\PromiseInterface
+     * @throws \LogicException  Thrown if the driver or DBMS does not support cursors.
+     * @throws \Plasma\Exception
+     */
+    function createReadCursor(string $query, array $params = array()): \React\Promise\PromiseInterface {
+        return $this->client->createReadCursor($query, $params);
     }
     
     /**

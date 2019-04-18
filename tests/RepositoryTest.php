@@ -199,6 +199,7 @@ class RepositoryTest extends TestCase {
             array('quit', array(), null),
             array('runCommand', array($command), (new \React\Promise\Promise(function () {}))),
             array('runQuery', array($query), (new \React\Promise\Promise(function () {}))),
+            array('createReadCursor', array('SELECT 1', array()), (new \React\Promise\Promise(function () {}))),
             array('quote', array('help'), '`help`'),
             array('on', array('data', function () {}), null),
             array('once', array('data', function () {}), null),
@@ -206,6 +207,63 @@ class RepositoryTest extends TestCase {
             array('removeAllListeners', array('data'), null),
             array('listeners', array('data'), array()),
             array('emit', array('data', array()), null)
+        );
+    }
+    
+    /**
+     * @dataProvider providerInheritedType
+     */
+    function testInheritedType($method, $args, $returnValue, $expectedReturnType) {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $client
+            ->expects($this->once())
+            ->method($method)
+            ->with(...$args)
+            ->will($this->returnValue($returnValue));
+        
+        $return = $repo->$method(...$args);
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $return);
+        
+        $return = $this->await($return);
+        $this->assertInstanceOf($expectedReturnType, $return);
+    }
+    
+    function providerInheritedType() {
+        $client = $this->getClientMock();
+        $driver = $this->getDriverMock();
+        
+        $command = $this->getCommandMock();
+        $query = $this->getMockBuilder(\Plasma\QueryBuilderInterface::class)
+            ->setMethods(array(
+                'create',
+                'getQuery',
+                'getParameters'
+            ))
+            ->getMock();
+        
+        $transaction = new \Plasma\Transaction($client, $driver, 0);
+        
+        $qr1 = new \Plasma\QueryResult(0, 0, null, array(), array());
+        $qr2 = new \Plasma\QueryResult(0, 0, null, null, null);
+        
+        $cursor = $this->getMockBuilder(\Plasma\CursorInterface::class)
+            ->setMethods(array(
+                'isClosed',
+                'close',
+                'fetch'
+            ))
+            ->getMock();
+        
+        return array(
+            array('beginTransaction', array(), \React\Promise\resolve($transaction), \Plasma\Schemas\Transaction::class),
+            array('query', array('SELECT 1'), \React\Promise\resolve($qr2), \Plasma\QueryResultInterface::class),
+            array('query', array('SELECT 1'), \React\Promise\resolve($qr1), \Plasma\Schemas\SchemaCollection::class),
+            array('execute', array('SELECT 1', array()), \React\Promise\resolve($qr2), \Plasma\QueryResultInterface::class),
+            array('execute', array('SELECT 1', array()), \React\Promise\resolve($qr1), \Plasma\Schemas\SchemaCollection::class),
+            array('runQuery', array($query), \React\Promise\resolve($qr1), \Plasma\Schemas\SchemaCollection::class),
+            array('createReadCursor', array('SELECT 1', array()), \React\Promise\resolve($cursor), \Plasma\CursorInterface::class)
         );
     }
     
@@ -228,6 +286,7 @@ class RepositoryTest extends TestCase {
                 'query',
                 'prepare',
                 'execute',
+                'createReadCursor',
                 'quote',
                 'on',
                 'once',
