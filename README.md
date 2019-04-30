@@ -17,7 +17,7 @@ A call to `Repository::prepare` will give you, if successful, a `Statement` with
 
 ```php
 $loop = \React\EventLoop\Factory::create();
-$factory = new \Plasma\Drivers\MySQL\DriverFactory($loop);
+$factory = new \Plasma\Drivers\MySQL\DriverFactory($loop, array());
 
 $client = \Plasma\Client::create($factory, 'root:1234@localhost');
 $repository = new \Plasma\Schemas\Repository($client);
@@ -25,7 +25,7 @@ $repository = new \Plasma\Schemas\Repository($client);
 class A implements \Plasma\Schemas\SchemaInterface {}
 
 $builderA = new \Plasma\Schemas\SchemaBuilder('A'); // Schema "A" for the database table "table_a"
-$repository->register('table_a', $builderA);
+$repository->registerSchemaBuilder('table_a', $builderA);
 
 $repository->execute('SELECT * FROM `table_a`', array())
     ->done(function (\Plasma\Schemas\SchemaCollection $collection) {
