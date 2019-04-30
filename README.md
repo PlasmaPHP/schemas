@@ -17,7 +17,7 @@ A call to `Repository::prepare` will give you, if successful, a `Statement` with
 
 ```php
 $loop = \React\EventLoop\Factory::create();
-$factory = new \Plasma\Drivers\MySQL\DriverFactory($loop);
+$factory = new \Plasma\Drivers\MySQL\DriverFactory($loop, []);
 
 $client = \Plasma\Client::create($factory, 'root:1234@localhost');
 $repository = new \Plasma\Schemas\Repository($client);
