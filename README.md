@@ -25,7 +25,7 @@ $repository = new \Plasma\Schemas\Repository($client);
 class A implements \Plasma\Schemas\SchemaInterface {}
 
 $builderA = new \Plasma\Schemas\SchemaBuilder('A'); // Schema "A" for the database table "table_a"
-$repository->register('table_a', $builderA);
+$repository->registerSchemaBuilder('table_a', $builderA);
 
 $repository->execute('SELECT * FROM `table_a`', array())
     ->done(function (\Plasma\Schemas\SchemaCollection $collection) {
