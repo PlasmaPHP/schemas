@@ -310,6 +310,10 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
             return \React\Promise\resolve((new \Plasma\Schemas\SchemaCollection($insertedRows, $result)));
         }
         
+        foreach($params as $par) {
+            $par->setValue(null);
+        }
+        
         foreach($data as $col => $val) {
             $params[$col]->setValue($val);
         }
