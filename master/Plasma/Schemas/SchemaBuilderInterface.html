@@ -108,7 +108,7 @@
                     <a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_buildSchemas">buildSchemas</a>(<abbr title="Plasma\QueryResult">QueryResult</abbr> $result)
+                    <a href="#method_buildSchemas">buildSchemas</a>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result)
         
                                             <p>Builds schemas for the given SELECT query result.</p>                </div>
                 <div class="col-md-2"></div>
@@ -155,6 +155,16 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_insertAll">insertAll</a>(array $data, array $options = array())
+        
+                                            <p>Inserts a list of rows. Resolves with an instance of <code>SchemaCollection</code>.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     void
                 </div>
                 <div class="col-md-8 type">
@@ -171,9 +181,9 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_buildSchemas">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaBuilderInterface.php#L60">line 60</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaBuilderInterface.php#L79">line 79</a></div>
         <code>                    <a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a>
-    <strong>buildSchemas</strong>(<abbr title="Plasma\QueryResult">QueryResult</abbr> $result)
+    <strong>buildSchemas</strong>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result)
         </code>
     </h3>
     <div class="details">
@@ -187,7 +197,7 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Plasma\QueryResult">QueryResult</abbr></td>
+                <td><abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr></td>
                 <td>$result</td>
                 <td></td>
             </tr>
@@ -379,6 +389,69 @@
                     <tr>
                 <td>array</td>
                 <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_insertAll">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaBuilderInterface.php#L72">line 72</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
+    <strong>insertAll</strong>(array $data, array $options = array())
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Inserts a list of rows. Resolves with an instance of <code>SchemaCollection</code>.</p>                    <p>Options is an optional array, which supports these options:</p>
+
+<pre><code>array(
+    'ignoreConflict' =&gt; bool, (whether duplicate key conflicts get ignored, defaults to false)
+)
+</code></pre>
+
+<p>Some builders may support more options.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
                 <td></td>
             </tr>
             </table>
