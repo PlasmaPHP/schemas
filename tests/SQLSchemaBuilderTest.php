@@ -228,7 +228,7 @@ class SQLSchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -295,7 +295,7 @@ class SQLSchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
         $repo->registerSchemaBuilder('test_schemabuilder9', $builder);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -359,14 +359,14 @@ class SQLSchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->insert(array('help2' => 5));
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
         
         $res = $this->await($promise);
-        $this->assertInstanceOf(\Plasma\QueryResultInterface::class, $res);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
     }
     
     function testInsertEmptySet() {
@@ -391,7 +391,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -422,13 +422,102 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Unknown field "helpMe"');
         
         $builder->insert(array('helpMe' => 50));
+    }
+    
+    function testInsertAll() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+    
+        $schema = (new class() extends \Plasma\Schemas\Schema {
+            public $help;
+            public $help2;
+            public $help3;
+            
+            // Let Schemabuilder::insert create the mapper
+            function __construct() {
+                if(\func_num_args() > 0) {
+                    parent::__construct(...\func_get_args());
+                }
+            }
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder101', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder101', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder101', 'help3', 'BIGINT', '', 20, 0, null)),
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_schemabuilder101';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return null;
+            }
+        });
+        
+        $query = 'INSERT INTO `test_schemabuilder101` (`help2`) VALUES (?)';
+        $result = new \Plasma\QueryResult(1, 0, 1, $schema::getDefinition(), null);
+        
+        $transaction = $this->getMockBuilder(\Plasma\TransactionInterface::class)
+            ->getMock();
+        
+        $statement = $this->getMockBuilder(\Plasma\StatementInterface::class)
+            ->getMock();
+        
+        $transaction
+            ->expects($this->once())
+            ->method('prepare')
+            ->with($query)
+            ->will($this->returnValue(\React\Promise\resolve($statement)));
+        
+        $transaction
+            ->expects($this->once())
+            ->method('commit')
+            ->will($this->returnValue(\React\Promise\resolve()));
+        
+        $statement
+            ->expects($this->exactly(2))
+            ->method('execute')
+            ->will($this->returnValue(\React\Promise\resolve($result)));
+        
+        $client
+            ->expects($this->once())
+            ->method('beginTransaction')
+            ->will($this->returnValue(\React\Promise\resolve($transaction)));
+        
+        $client
+            ->expects($this->any())
+            ->method('quote')
+            ->will($this->returnCallback(function ($a) {
+                return '`'.$a.'`';
+            }));
+    
+        $name = \get_class($schema);
+    
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
+        $builder->setRepository($repo);
+        
+        $promise = $builder->insertAll(array(
+            array('help2' => 5),
+            array('help2' => 250)
+         ));
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $res = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
+        
+        $this->assertSame(2, \count($res->getSchemas()));
+        $this->assertSame(5, $res->getSchemas()[0]->help2);
+        $this->assertSame(250, $res->getSchemas()[1]->help2);
     }
     
     function testBuildSchemas() {
@@ -453,7 +542,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $rows = array(
