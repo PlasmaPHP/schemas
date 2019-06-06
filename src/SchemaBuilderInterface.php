@@ -53,9 +53,28 @@ interface SchemaBuilderInterface {
     function insert(array $data): \React\Promise\PromiseInterface;
     
     /**
+     * Inserts a list of rows. Resolves with an instance of `SchemaCollection`.
+     *
+     * Options is an optional array, which supports these options:
+     * ```
+     * array(
+     *     'ignoreConflict' => bool, (whether duplicate key conflicts get ignored, defaults to false)
+     * )
+     * ```
+     *
+     * Some builders may support more options.
+     *
+     * @param array  $data
+     * @param array  $options
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function insertAll(array $data, array $options = array()): \React\Promise\PromiseInterface;
+    
+    /**
      * Builds schemas for the given SELECT query result.
-     * @param \Plasma\QueryResult  $result
+     * @param \Plasma\QueryResultInterface  $result
      * @return \Plasma\Schemas\SchemaCollection
      */
-    function buildSchemas(\Plasma\QueryResult $result): \Plasma\Schemas\SchemaCollection;
+    function buildSchemas(\Plasma\QueryResultInterface $result): \Plasma\Schemas\SchemaCollection;
 }
