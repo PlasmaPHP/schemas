@@ -63,26 +63,6 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
-     * Fetches all rows. Resolves with an instance of `SchemaCollection`.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
-     */
-    function fetchAll(): \React\Promise\PromiseInterface {
-        $query = \Plasma\SQL\QueryBuilder::create()
-            ->select()
-            ->from($this->schema::getTableName());
-        
-        if($this->grammar !== null) {
-            $query = $query->withGrammar($this->grammar);
-        }
-        
-        return $this->repo->execute(
-            $query->getQuery(),
-            array()
-        );
-    }
-    
-    /**
      * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
      * @return \React\Promise\PromiseInterface
@@ -118,6 +98,26 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
         return $this->repo->execute(
             $query->getQuery(),
             $query->getParameters()
+        );
+    }
+    
+    /**
+     * Fetches all rows. Resolves with an instance of `SchemaCollection`.
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function fetchAll(): \React\Promise\PromiseInterface {
+        $query = \Plasma\SQL\QueryBuilder::create()
+            ->select()
+            ->from($this->schema::getTableName());
+        
+        if($this->grammar !== null) {
+            $query = $query->withGrammar($this->grammar);
+        }
+        
+        return $this->repo->execute(
+            $query->getQuery(),
+            array()
         );
     }
     
@@ -175,8 +175,8 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
         }
         
         $query = \Plasma\SQL\QueryBuilder::create()
-             ->insert($realValues)
-             ->into($table);
+            ->insert($realValues)
+            ->into($table);
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
@@ -279,9 +279,9 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      */
     function update(array $data, string $field, $value): \React\Promise\PromiseInterface {
         $query = \Plasma\SQL\QueryBuilder::create()
-             ->update($data)
-             ->from($this->schema::getTableName())
-             ->where($field, '=', $value);
+            ->update($data)
+            ->from($this->schema::getTableName())
+            ->where($field, '=', $value);
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
