@@ -89,14 +89,14 @@
 
     <p>    class
     <strong>Repository</strong>        implements
-        <abbr title="Evenement\EventEmitterInterface">EventEmitterInterface</abbr>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php" target="_blank">View source</a>)
+        <a href="../../Plasma/Schemas/RepositoryInterface.html"><abbr title="Plasma\Schemas\RepositoryInterface">RepositoryInterface</abbr></a>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php" target="_blank">View source</a>)
 </p>
 
         
     
 
             <div class="description">
-            <p>The repository is responsible for turning rows into specified PHP object.</p>            <p>The repository uses internally an actual plasma client, itself has no client implementation.
+            <p>The repository is responsible for turning row results into specified PHP object.</p>            <p>The repository uses internally an actual plasma client, itself has no client implementation.
 Not implementing the interface prevents bugs (expecting a query result but getting a schema collection).</p>
 
 <p>SELECT queries will be wrapped (if a schema builder exists for the table) within a <code>SchemaCollection</code>.

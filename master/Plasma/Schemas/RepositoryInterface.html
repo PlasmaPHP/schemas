@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Plasma\Schemas\RepositoryInterface | schemas</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <link rel="stylesheet" type="text/css" href="../../css/prism.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <script src="../../js/prism.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Plasma_Schemas_RepositoryInterface" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                    <form action="#" method="GET">
+                <select id="version-switcher" name="version">
+                                            <option value="../../../v0.1.0/index.html" data-version="v0.1.0">v0.1.0</option>
+                                            <option value="../../../v0.2.0/index.html" data-version="v0.2.0">v0.2.0</option>
+                                            <option value="../../../master/index.html" data-version="master">master</option>
+                                    </select>
+            </form>
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">schemas</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                                                <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">interface</span></li>
+                        <li><a href="../../Plasma.html">Plasma</a></li><li class="backslash">\</li><li><a href="../../Plasma/Schemas.html">Schemas</a></li><li class="backslash">\</li><li>RepositoryInterface</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            RepositoryInterface
+                
+        </h1>
+    </div>
+
+    <p>    interface
+    <strong>RepositoryInterface</strong>        implements
+        <abbr title="Evenement\EventEmitterInterface">EventEmitterInterface</abbr>, <abbr title="Plasma\QueryableInterface">QueryableInterface</abbr>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php" target="_blank">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>The Repository Interface describes the public API of repositories.</p>            <p>The repository is responsible for turning row results into specified PHP object.</p>                    </div>
+    
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getClient">getClient</a>()
+        
+                                            <p>Get the internally used client.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSchemaBuilder">getSchemaBuilder</a>(string $schemaName)
+        
+                                            <p>Get the Schema Builder for the schema.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_registerSchemaBuilder">registerSchemaBuilder</a>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+        
+                                            <p>Register a Schema Builder for the schema to be used by the Repository.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_unregisterSchemaBuilder">unregisterSchemaBuilder</a>(string $schemaName)
+        
+                                            <p>Unregister the Schema Builder of the schema.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_getClient">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L21">line 21</a></div>
+        <code>                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
+    <strong>getClient</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the internally used client.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Plasma\ClientInterface">ClientInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSchemaBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L29">line 29</a></div>
+        <code>                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+    <strong>getSchemaBuilder</strong>(string $schemaName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the Schema Builder for the schema.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$schemaName</td>
+                <td>The schema name. This would be the table name.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerSchemaBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L38">line 38</a></div>
+        <code>                    $this
+    <strong>registerSchemaBuilder</strong>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Register a Schema Builder for the schema to be used by the Repository.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$schemaName</td>
+                <td>The schema name. This would be the table name.</td>
+            </tr>
+                    <tr>
+                <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+                <td>$schemaBuilder</td>
+                <td>The schema builder for the schema.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_unregisterSchemaBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L45">line 45</a></div>
+        <code>                    $this
+    <strong>unregisterSchemaBuilder</strong>(string $schemaName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Unregister the Schema Builder of the schema.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$schemaName</td>
+                <td>The schema name. This would be the table name.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
