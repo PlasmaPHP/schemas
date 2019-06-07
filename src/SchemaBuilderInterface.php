@@ -72,6 +72,16 @@ interface SchemaBuilderInterface {
     function insertAll(array $data, array $options = array()): \React\Promise\PromiseInterface;
     
     /**
+     * Updates the row with the given data, identified by a specific field.
+     * @param array   $data
+     * @param string  $field
+     * @param mixed   $value
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function update(array $data, string $field, $value): \React\Promise\PromiseInterface;
+    
+    /**
      * Builds schemas for the given SELECT query result.
      * @param \Plasma\QueryResultInterface  $result
      * @return \Plasma\Schemas\SchemaCollection

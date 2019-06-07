@@ -121,12 +121,15 @@ abstract class Schema implements SchemaInterface {
                 $values[$name] = $this->$name;
             }
         }
-        
-        return $this->repo->getSchemaBuilder(static::getTableName())->insert($values)->then(array($this, 'handleQueryResult'));
+    
+        return $this->repo->getSchemaBuilder(static::getTableName())
+            ->insert($values)
+            ->then(array($this, 'handleQueryResult'));
     }
     
     /**
      * Updates the row with the new data. Resolves with a `QueryResultInterface` instance.
+     * @param array  $data
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
      */
@@ -136,26 +139,20 @@ abstract class Schema implements SchemaInterface {
             throw new \Plasma\Exception('Schema has no unique or primary column');
         }
         
-        $keys = array();
-        $table = $this->getTableName();
+        $uniq = static::$schemaFieldsMapper[static::getTableName()][$uniqcol];
         
-        foreach($data as $key => $value) {
-            $name = static::$schemaFieldsMapper[$table][$key];
-            $keys[] = $this->repo->quote($name, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER).' = ?';
+        $values = array();
+        foreach($data as $name => $val) {
+            if(!\property_exists($this, $name)) {
+                throw new \Plasma\Exception('Unknown field given "'.$name.'", make sure you use the property name');
+            }
+            
+            $values[static::$schemaFieldsMapper[static::getTableName()][$name]] = $val;
         }
         
-        $uniqname = static::$schemaFieldsMapper[$table][$uniqcol];
-        $uniq = $this->repo->quote($uniqcol, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER).' = ?';
-        
-        $table = $this->repo->quote($table, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
-        
-        $data = \array_values($data);
-        $data[] = $this->$uniqname;
-        
-        return $this->repo->execute(
-            'UPDATE '.$table.' SET '.\implode(', ', $keys).' WHERE '.$uniq,
-            $data
-        )->then(array($this, 'handleQueryResult'));
+        return $this->repo->getSchemaBuilder(static::getTableName())
+            ->update($values, $uniqcol, $this->$uniq)
+            ->then(array($this, 'handleQueryResult'));
     }
     
     /**

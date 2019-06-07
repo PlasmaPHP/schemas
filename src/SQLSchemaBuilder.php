@@ -34,7 +34,7 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      * @param \Plasma\SQL\GrammarInterface|null  $grammar  The SQL grammar to use.
      * @throws \Plasma\Exception
      */
-    function __construct(string $schema, ?\Plasma\SQL\GrammarInterface $grammar = null) {
+    function __construct(string $schema, ?\Plasma\SQL\GrammarInterface $grammar) {
         if(!\class_exists($schema, true)) {
             throw new \Plasma\Exception('Schema class does not exist');
         } elseif(!\in_array(\Plasma\Schemas\SchemaInterface::class, \class_implements($schema))) {
@@ -68,10 +68,18 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      * @throws \Plasma\Exception
      */
     function fetchAll(): \React\Promise\PromiseInterface {
-        $schema = $this->schema;
-        $table = $this->repo->quote($schema::getTableName(), \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
+        $query = \Plasma\SQL\QueryBuilder::create()
+            ->select()
+            ->from($this->schema::getTableName());
         
-        return $this->repo->execute('SELECT * FROM '.$table, array());
+        if($this->grammar !== null) {
+            $query = $query->withGrammar($this->grammar);
+        }
+        
+        return $this->repo->execute(
+            $query->getQuery(),
+            array()
+        );
     }
     
     /**
@@ -81,8 +89,7 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      * @throws \Plasma\Exception
      */
     function fetch($value): \React\Promise\PromiseInterface {
-        $schema = $this->schema;
-        $column = $schema::getIdentifierColumn();
+        $column = $this->schema::getIdentifierColumn();
         
         if($column === null) {
             throw new \Plasma\Exception('Schema has no unique or primary column');
@@ -99,14 +106,18 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      * @throws \Plasma\Exception
      */
     function fetchBy(string $name, $value): \React\Promise\PromiseInterface {
-        $schema = $this->schema;
+        $query = \Plasma\SQL\QueryBuilder::create()
+            ->select()
+            ->from($this->schema::getTableName())
+            ->where($name, '=', $value);
         
-        $table = $this->repo->quote($schema::getTableName(), \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
-        $uniq = $this->repo->quote($name, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
+        if($this->grammar !== null) {
+            $query = $query->withGrammar($this->grammar);
+        }
         
         return $this->repo->execute(
-            'SELECT * FROM '.$table.' WHERE '.$uniq.' = ?',
-            array($value)
+            $query->getQuery(),
+            $query->getParameters()
         );
     }
     
@@ -121,19 +132,15 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
             throw new \Plasma\Exception('Nothing to insert, empty data set');
         }
         
-        $schema = $this->schema;
-        
-        $table = $schema::getTableName();
+        $table = $this->schema::getTableName();
         $mapper = \Plasma\Schemas\Schema::getMapper()[$table] ?? null;
         
         if($mapper === null) {
-            $schema::build($this->repo, $data); // Create a schema, so the mapper gets created
+            $this->schema::build($this->repo, $data); // Create a schema, so the mapper gets created
             $mapper = \Plasma\Schemas\Schema::getMapper()[$table] ?? array();
         }
         
         $realValues = array();
-        $fields = array();
-        $values = array();
         
         foreach($data as $colname => $value) {
             if(empty($mapper[$colname]) && !\array_search($colname, $mapper)) {
@@ -143,39 +150,37 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
             $realValues[($mapper[$colname] ?? $colname)] = $value;
         }
         
-        if($schema::getIdentifierColumn() === null) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues, $schema) {
-                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $realValues)), $result));
+        if($this->schema::getIdentifierColumn() === null) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues) {
+                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
             };
-        } elseif(\count($data) >= \count($schema::getDefinition()) - 1) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues, $schema) {
+        } elseif(\count($data) >= \count($this->schema::getDefinition()) - 1) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues) {
                 if($result->getInsertID() !== null) {
-                    $realValues[$schema::getIdentifierColumn()] = $result->getInsertID();
+                    $realValues[$this->schema::getIdentifierColumn()] = $result->getInsertID();
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $realValues)), $result));
+                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
             };
         } else {
             // If not all columns were filled by the user, we fetch the row from the DB instead
             // but only if it has an inserted ID, otherwise we just build the schema as is
-            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues, $schema) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues) {
                 if($result->getInsertID() !== null) {
                     return $this->fetch($result->getInsertID());
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $realValues)), $result));
+                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
             };
         }
         
         $query = \Plasma\SQL\QueryBuilder::create()
-             ->into($table)
-             ->insert($realValues);
+             ->insert($realValues)
+             ->into($table);
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
         }
-        
-        $realValues = null;
         
         return $this->repo->execute(
             $query->getQuery(),
@@ -205,8 +210,7 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      * @throws \Plasma\Exception
      */
     function insertAll(array $data, array $options = array()): \React\Promise\PromiseInterface {
-        $schema = $this->schema;
-        $table = $schema::getTableName();
+        $table = $this->schema::getTableName();
         
         $params = array();
         $columns = \array_reduce($data, function ($carry, $item) {
@@ -237,10 +241,10 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
         }
         
         $query = \Plasma\SQL\QueryBuilder::create()
-            ->into($table)
             ->insert($params, array(
                 'onConflict' => $onConflict
-            ));
+            ))
+            ->into($table);
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
@@ -266,6 +270,32 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
     }
     
     /**
+     * Updates the row with the given data, identified by a specific field.
+     * @param array   $data
+     * @param string  $field
+     * @param mixed   $value
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function update(array $data, string $field, $value): \React\Promise\PromiseInterface {
+        $query = \Plasma\SQL\QueryBuilder::create()
+             ->update($data)
+             ->from($this->schema::getTableName())
+             ->where($field, '=', $value);
+        
+        if($this->grammar !== null) {
+            $query = $query->withGrammar($this->grammar);
+        }
+        
+        return $this->repo->execute(
+            $query->getQuery(),
+            $query->getParameters()
+        )->then(function () use ($field, $value) {
+            return $this->fetchBy($field, $value);
+        });
+    }
+    
+    /**
      * Builds schemas for the given SELECT query result.
      * @param \Plasma\QueryResultInterface  $result
      * @return \Plasma\Schemas\SchemaCollection
@@ -273,11 +303,10 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
      */
     function buildSchemas(\Plasma\QueryResultInterface $result): \Plasma\Schemas\SchemaCollection {
         $schemas = array();
-        $schema = $this->schema;
         
         $rows = (array) $result->getRows();
         foreach($rows as $row) {
-            $schemas[] = $schema::build($this->repo, $row);
+            $schemas[] = $this->schema::build($this->repo, $row);
         }
         
         return (new \Plasma\Schemas\SchemaCollection($schemas, $result));
@@ -302,7 +331,6 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
         array $insertedRows,
         ?\Plasma\QueryResultInterface $result
     ): \React\Promise\PromiseInterface {
-        $schema = $this->schema;
         $data = \array_shift($rows);
         
         if($data === null) {
@@ -318,27 +346,27 @@ class SQLSchemaBuilder implements SchemaBuilderInterface {
             $params[$col]->setValue($val);
         }
         
-        if($schema::getIdentifierColumn() === null) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($data, $schema) {
-                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $data)), $result));
+        if($this->schema::getIdentifierColumn() === null) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($data) {
+                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
             };
-        } elseif(\count($data) >= \count($schema::getDefinition()) - 1) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($data, $schema) {
+        } elseif(\count($data) >= \count($this->schema::getDefinition()) - 1) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($data) {
                 if($result->getInsertID() !== null) {
-                    $data[$schema::getIdentifierColumn()] = $result->getInsertID();
+                    $data[$this->schema::getIdentifierColumn()] = $result->getInsertID();
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $data)), $result));
+                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
             };
         } else {
             // If not all columns were filled by the user, we fetch the row from the DB instead
             // but only if it has an inserted ID, otherwise we just build the schema as is
-            $callback = function (\Plasma\QueryResultInterface $result) use ($data, $schema) {
+            $callback = function (\Plasma\QueryResultInterface $result) use ($data) {
                 if($result->getInsertID() !== null) {
                     return $this->fetch($result->getInsertID());
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($schema::build($this->repo, $data)), $result));
+                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
             };
         }
         

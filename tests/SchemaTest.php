@@ -33,7 +33,7 @@ class SchemaTest extends TestCase {
         $name = \get_class($mock);
         
         $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
-            ->setConstructorArgs(array($name))
+            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
             ->getMock();
         
         $result = new \Plasma\QueryResult(1, 0, null, null, null);
@@ -66,7 +66,7 @@ class SchemaTest extends TestCase {
         $name = \get_class($mock);
         
         $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
-            ->setConstructorArgs(array($name))
+            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
             ->getMock();
         
         $result = new \Plasma\QueryResult(1, 0, null, null, null);
@@ -93,14 +93,29 @@ class SchemaTest extends TestCase {
     function testUpdate() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
+        
         $mock = $this->getSchema();
+        $name = \get_class($mock);
+        
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
+                        ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
+                        ->getMock();
         
         $schema = $mock->build($repo, array(
             'help' => 50
         ));
         
-        $query = 'UPDATE `test5` SET `help` = ? WHERE `help` = ?';
         $result = new \Plasma\QueryResult(1, 0, null, null, null);
+        
+        $builder
+            ->expects($this->once())
+            ->method('update')
+            ->with(array(
+               'help' => 10
+            ), 'help', 50)
+            ->will($this->returnValue(\React\Promise\resolve($result)));
+        
+        $repo->registerSchemaBuilder('test5', $builder);
         
         $client
             ->expects($this->any())
@@ -108,12 +123,6 @@ class SchemaTest extends TestCase {
             ->will($this->returnCallback(function ($a) {
                 return '`'.$a.'`';
             }));
-        
-        $client
-            ->expects($this->once())
-            ->method('execute')
-            ->with($query, array(10, 50))
-            ->will($this->returnValue(\React\Promise\resolve($result)));
         
         $promise = $schema->update(array('help' => 10));
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
