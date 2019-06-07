@@ -10,7 +10,7 @@
 namespace Plasma\Schemas;
 
 /**
- * The repository is responsible for turning rows into specified PHP object.
+ * The repository is responsible for turning row results into specified PHP object.
  *
  * The repository uses internally an actual plasma client, itself has no client implementation.
  * Not implementing the interface prevents bugs (expecting a query result but getting a schema collection).
@@ -18,7 +18,7 @@ namespace Plasma\Schemas;
  * SELECT queries will be wrapped (if a schema builder exists for the table) within a `SchemaCollection`.
  * All other queries get returned as is.
  */
-class Repository implements \Evenement\EventEmitterInterface {
+class Repository implements RepositoryInterface {
     /**
      * @var \Plasma\ClientInterface
      */
