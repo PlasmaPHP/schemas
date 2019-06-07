@@ -49,6 +49,7 @@ interface SchemaInterface {
     
     /**
      * Updates the row with the new data.
+     * @param array  $data
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
      */

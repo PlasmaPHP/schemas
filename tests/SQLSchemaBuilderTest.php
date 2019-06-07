@@ -34,7 +34,7 @@ class SQLSchemaBuilderTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->assertSame($repo, $builder->getRepository());
@@ -47,7 +47,7 @@ class SQLSchemaBuilderTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Schema class does not exist');
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder('a');
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder('a', (new \Plasma\SQL\Grammar\MySQL()));
     }
     
     function testConstructorInvalidClass() {
@@ -57,7 +57,7 @@ class SQLSchemaBuilderTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Schema class does not implement Schema Interface');
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\stdClass::class);
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\stdClass::class, (new \Plasma\SQL\Grammar\MySQL()));
     }
     
     function testFetchAll() {
@@ -97,7 +97,7 @@ class SQLSchemaBuilderTest extends TestCase {
             ->with($query, array())
             ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->fetchAll();
@@ -141,7 +141,7 @@ class SQLSchemaBuilderTest extends TestCase {
             ->with($query, array(5))
             ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->fetch(5);
@@ -170,7 +170,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -518,6 +518,50 @@ class SQLSchemaBuilderTest extends TestCase {
         $this->assertSame(2, \count($res->getSchemas()));
         $this->assertSame(5, $res->getSchemas()[0]->help2);
         $this->assertSame(250, $res->getSchemas()[1]->help2);
+    }
+    
+    function testUpdate() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+            public $help;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder2112', 'help', 'BIGINT', '', 20, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_schemabuilder2112';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help';
+            }
+        });
+        
+        $query = 'UPDATE `test_schemabuilder2112` SET `help` = ? WHERE `help` = ?';
+        
+        $client
+            ->expects($this->any())
+            ->method('quote')
+            ->will($this->returnCallback(function ($a) {
+                return '`'.$a.'`';
+            }));
+        
+        $client
+            ->expects($this->once())
+            ->method('execute')
+            ->with($query, array(5, 50))
+            ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
+        
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder->setRepository($repo);
+        
+        $promise = $builder->update(array('help' => 5), 'help', 50);
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
     }
     
     function testBuildSchemas() {

@@ -22,7 +22,7 @@ class RepositoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
         $this->assertSame($repo, $repo->registerSchemaBuilder('test', $builder));
         
         $this->assertSame($builder, $repo->getSchemaBuilder('test'));
@@ -42,7 +42,7 @@ class RepositoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
         $this->assertSame($repo, $repo->registerSchemaBuilder('test', $builder));
         
         $this->expectException(\Plasma\Exception::class);
@@ -55,7 +55,7 @@ class RepositoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
         $this->assertSame($repo, $repo->registerSchemaBuilder('test', $builder));
         
         $this->assertSame($repo, $repo->unregisterSchemaBuilder('test'));
@@ -137,7 +137,7 @@ class RepositoryTest extends TestCase {
         $repo = new \Plasma\Schemas\Repository($client);
         
         $schema = $this->getSchema($repo);
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema));
+        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $repo->registerSchemaBuilder($schema->getTableName(), $builder);
         
         $result = new \Plasma\QueryResult(0, 0, null, $schema->getDefinition(), array(
