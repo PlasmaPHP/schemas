@@ -59,7 +59,8 @@ class Users implements \Plasma\Schemas\SchemaInterface {
     }
 }
 
-$builderA = new \Plasma\Schemas\SchemaBuilder(Users::class, null); // null is the grammar (see plasma/sql-common)
+// null is the SQL grammar (see plasma/sql-common)
+$builderA = new \Plasma\Schemas\SQLSchemaBuilder(Users::class, null);
 $repository->registerSchemaBuilder('users', $builderA);
 
 $repository->execute('SELECT * FROM `users`', array())
