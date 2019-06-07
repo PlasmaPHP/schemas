@@ -22,10 +22,45 @@ $factory = new \Plasma\Drivers\MySQL\DriverFactory($loop, array());
 $client = \Plasma\Client::create($factory, 'root:1234@localhost');
 $repository = new \Plasma\Schemas\Repository($client);
 
-class A implements \Plasma\Schemas\SchemaInterface {}
+/**
+ * Our example table "users" consists of two rows:
+ * - id ; auto incremented integer primary
+ * - name ; varchar(255) utf8mb4_generl_ci
+ */
+class Users implements \Plasma\Schemas\SchemaInterface {
+    public $id;
+    public $name;
+    
+    /**
+     * Returns the schema definition.
+     * @return \Plasma\ColumnDefinitionInterface[]
+     */
+    static function getDefinition(): array {
+        return array(
+            // column definitions...
+            // coming soon as builder
+        );
+    }
+    
+    /**
+     * Returns the name of the table.
+     * @return string
+     */
+    static function getTableName(): string {
+        return 'users';
+    }
+    
+    /**
+     * Returns the name of the identifier column (primary or unique), or null.
+     * @return string|null
+     */
+    static function getIdentifierColumn(): ?string {
+        return 'id';
+    }
+}
 
-$builderA = new \Plasma\Schemas\SchemaBuilder('A'); // Schema "A" for the database table "table_a"
-$repository->registerSchemaBuilder('table_a', $builderA);
+$builderA = new \Plasma\Schemas\SchemaBuilder(Users::class);
+$repository->registerSchemaBuilder('users', $builderA);
 
 $repository->execute('SELECT * FROM `table_a`', array())
     ->done(function (\Plasma\Schemas\SchemaCollection $collection) {
