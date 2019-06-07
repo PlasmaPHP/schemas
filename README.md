@@ -23,7 +23,7 @@ $client = \Plasma\Client::create($factory, 'root:1234@localhost');
 $repository = new \Plasma\Schemas\Repository($client);
 
 /**
- * Our example table "users" consists of two rows:
+ * Our example table "users" consists of two columns:
  * - id ; auto incremented integer primary
  * - name ; varchar(255) utf8mb4_generl_ci
  */
@@ -62,7 +62,7 @@ class Users implements \Plasma\Schemas\SchemaInterface {
 $builderA = new \Plasma\Schemas\SchemaBuilder(Users::class);
 $repository->registerSchemaBuilder('users', $builderA);
 
-$repository->execute('SELECT * FROM `table_a`', array())
+$repository->execute('SELECT * FROM `users`', array())
     ->done(function (\Plasma\Schemas\SchemaCollection $collection) {
         // Do something with the collection
     });
