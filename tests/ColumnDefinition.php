@@ -9,9 +9,6 @@
 
 namespace Plasma\Schemas\Tests;
 
-/**
- * Column Definitions define columns (who would've thought of that?). Such as their name, type, length, etc.
- */
 class ColumnDefinition extends \Plasma\ColumnDefinition {
     /**
      * Whether the column is nullable (not `NOT NULL`).

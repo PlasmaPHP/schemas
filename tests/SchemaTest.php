@@ -154,6 +154,10 @@ class SchemaTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test3', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test3';
@@ -225,6 +229,10 @@ class SchemaTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test4', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test4';
@@ -253,6 +261,10 @@ class SchemaTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return \bin2hex(\random_bytes(5));
@@ -279,6 +291,10 @@ class SchemaTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test7', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test7';
@@ -302,6 +318,10 @@ class SchemaTest extends TestCase {
                 return array(
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test8', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -329,6 +349,10 @@ class SchemaTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test6', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test6';
@@ -351,6 +375,10 @@ class SchemaTest extends TestCase {
                 return array(
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -393,6 +421,10 @@ class SchemaTest extends TestCase {
                 return array(
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test5', 'help', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {

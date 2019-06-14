@@ -326,6 +326,10 @@ class RepositoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_repository', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_repository';

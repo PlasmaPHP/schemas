@@ -21,6 +21,10 @@ class SQLDirectoryTest extends TestCase {
             static function getDefinition(): array {
                 return array();
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_Directory';
@@ -72,6 +76,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory_fetchall', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_Directory_fetchall';
@@ -115,6 +123,10 @@ class SQLDirectoryTest extends TestCase {
                 return array(
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory2', 'help', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -160,6 +172,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory8', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_Directory8';
@@ -199,6 +215,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory3', 'help', 'BIGINT', '', 20, 0, null)),
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory3', 'help2', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -263,6 +283,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help2', 'BIGINT', '', 20, 0, null)),
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -331,6 +355,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_Directory10';
@@ -381,6 +409,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory4', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_Directory4';
@@ -411,6 +443,10 @@ class SQLDirectoryTest extends TestCase {
                 return array(
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory5', 'help', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -453,6 +489,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help2', 'BIGINT', '', 20, 0, null)),
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -532,6 +572,10 @@ class SQLDirectoryTest extends TestCase {
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory2112', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
+            }
             
             static function getTableName(): string {
                 return 'test_Directory2112';
@@ -575,6 +619,10 @@ class SQLDirectoryTest extends TestCase {
                 return array(
                     (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory7', 'help', 'BIGINT', '', 20, 0, null))
                 );
+            }
+    
+            static function getDatabaseName(): string {
+                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {

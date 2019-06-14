@@ -97,7 +97,13 @@ abstract class Schema implements SchemaInterface {
     abstract static function getDefinition(): array;
     
     /**
-     * Returns the name of the table.
+     * Returns the name of the database (or any other equivalent).
+     * @return string
+     */
+    abstract static function getDatabaseName(): string;
+    
+    /**
+     * Returns the name of the table (or any other equivalent).
      * @return string
      */
     abstract static function getTableName(): string;
@@ -191,6 +197,15 @@ abstract class Schema implements SchemaInterface {
         }
         
         return $row;
+    }
+    
+    /**
+     * Get a new instance of a column definition builder.
+     * @return \Plasma\Schemas\ColumnDefinitionBuilder
+     * @see \Plasma\Schemas\ColumnDefinitionBuilder::create()
+     */
+    function getColDefBuilder(): \Plasma\Schemas\ColumnDefinitionBuilder {
+        return \Plasma\Schemas\ColumnDefinitionBuilder::createWithSchema($this);
     }
     
     /**

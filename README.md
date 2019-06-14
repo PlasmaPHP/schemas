@@ -26,7 +26,7 @@ $repository = new \Plasma\Schemas\Repository($client);
 
 /**
  * Our example table "users" consists of two columns:
- * - id ; auto incremented integer primary
+ * - id ; auto incremented integer (length 12) primary
  * - name ; varchar(255) utf8mb4_generl_ci
  */
 class Users implements \Plasma\Schemas\SchemaInterface {
@@ -39,9 +39,33 @@ class Users implements \Plasma\Schemas\SchemaInterface {
      */
     static function getDefinition(): array {
         return array(
-            // column definitions...
-            // coming soon as builder
+            // A generic column definition builder
+            // solely for ease of use and does not
+            // have to be used.
+            // Any Plasma Column Definition
+            // can be used.
+            
+            $this->getColDefBuilder()
+                ->name('id')
+                ->type('INTEGER')
+                ->length(12)
+                ->autoIncremented()
+                ->primary()
+                ->getDefinition(),
+            $this->getColDefBuilder()
+                ->name('name')
+                ->type('VARCHAR')
+                ->length(255)
+                ->getDefinition()
         );
+    }
+    
+    /**
+     * Returns the name of the database.
+     * @return string
+     */
+    static function getDatabaseName(): string {
+        return 'my_database';
     }
     
     /**
