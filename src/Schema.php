@@ -122,7 +122,7 @@ abstract class Schema implements SchemaInterface {
             }
         }
     
-        return $this->repo->getSchemaBuilder(static::getTableName())
+        return $this->repo->getDirectory(static::getTableName())
             ->insert($values)
             ->then(array($this, 'handleQueryResult'));
     }
@@ -150,7 +150,7 @@ abstract class Schema implements SchemaInterface {
             $values[static::$schemaFieldsMapper[static::getTableName()][$name]] = $val;
         }
         
-        return $this->repo->getSchemaBuilder(static::getTableName())
+        return $this->repo->getDirectory(static::getTableName())
             ->update($values, $uniqcol, $this->$uniq)
             ->then(array($this, 'handleQueryResult'));
     }

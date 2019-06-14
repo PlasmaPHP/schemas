@@ -9,7 +9,7 @@
 
 namespace Plasma\Schemas\Tests;
 
-class SQLSchemaBuilderTest extends TestCase {
+class SQLDirectoryTest extends TestCase {
     function testConstructor() {
         $schema = (new class() extends \Plasma\Schemas\Schema {
             public $help;
@@ -23,7 +23,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder';
+                return 'test_Directory';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -34,7 +34,7 @@ class SQLSchemaBuilderTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->assertSame($repo, $builder->getRepository());
@@ -47,7 +47,7 @@ class SQLSchemaBuilderTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Schema class does not exist');
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder('a', (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory('a', (new \Plasma\SQL\Grammar\MySQL()));
     }
     
     function testConstructorInvalidClass() {
@@ -57,7 +57,7 @@ class SQLSchemaBuilderTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Schema class does not implement Schema Interface');
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\stdClass::class, (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\stdClass::class, (new \Plasma\SQL\Grammar\MySQL()));
     }
     
     function testFetchAll() {
@@ -69,12 +69,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder_fetchall', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory_fetchall', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder_fetchall';
+                return 'test_Directory_fetchall';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -82,7 +82,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'SELECT * FROM `test_schemabuilder_fetchall`';
+        $query = 'SELECT * FROM `test_Directory_fetchall`';
         
         $client
             ->expects($this->any())
@@ -97,7 +97,7 @@ class SQLSchemaBuilderTest extends TestCase {
             ->with($query, array())
             ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->fetchAll();
@@ -113,12 +113,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder2', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory2', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder2';
+                return 'test_Directory2';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -126,7 +126,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'SELECT * FROM `test_schemabuilder2` WHERE `help` = ?';
+        $query = 'SELECT * FROM `test_Directory2` WHERE `help` = ?';
         
         $client
             ->expects($this->any())
@@ -141,7 +141,7 @@ class SQLSchemaBuilderTest extends TestCase {
             ->with($query, array(5))
             ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->fetch(5);
@@ -157,12 +157,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder8', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory8', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder8';
+                return 'test_Directory8';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -170,7 +170,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -187,7 +187,7 @@ class SQLSchemaBuilderTest extends TestCase {
             public $help;
             public $help2;
             
-            // Let Schemabuilder::insert create the mapper
+            // Let Directory::insert create the mapper
             function __construct() {
                 if(\func_num_args() > 0) {
                     parent::__construct(...\func_get_args());
@@ -196,13 +196,13 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder3', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder3', 'help2', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory3', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory3', 'help2', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder3';
+                return 'test_Directory3';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -210,7 +210,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'INSERT INTO `test_schemabuilder3` (`help2`) VALUES (?)';
+        $query = 'INSERT INTO `test_Directory3` (`help2`) VALUES (?)';
         $result = new \Plasma\QueryResult(1, 0, 1, $schema::getDefinition(), null);
         
         $client
@@ -228,7 +228,7 @@ class SQLSchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory($name, (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -250,7 +250,7 @@ class SQLSchemaBuilderTest extends TestCase {
             public $help2;
             public $help3;
             
-            // Let Schemabuilder::insert create the mapper
+            // Let Directory::insert create the mapper
             function __construct() {
                 if(\func_num_args() > 0) {
                     parent::__construct(...\func_get_args());
@@ -259,14 +259,14 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder9', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder9', 'help2', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder9', 'help3', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder9';
+                return 'test_Directory9';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -274,10 +274,10 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'INSERT INTO `test_schemabuilder9` (`help2`) VALUES (?)';
+        $query = 'INSERT INTO `test_Directory9` (`help2`) VALUES (?)';
         $result = new \Plasma\QueryResult(1, 0, 1, null, null);
         
-        $query2 = 'SELECT * FROM `test_schemabuilder9` WHERE `help` = ?';
+        $query2 = 'SELECT * FROM `test_Directory9` WHERE `help` = ?';
         $result2 = new \Plasma\QueryResult(0, 0, 0, $schema::getDefinition(), array(array('help' => 1, 'help2' => 5, 'help3' => 0)));
         
         $client
@@ -295,8 +295,8 @@ class SQLSchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
-        $repo->registerSchemaBuilder('test_schemabuilder9', $builder);
+        $builder = new \Plasma\Schemas\SQLDirectory($name, (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory('test_Directory9', $builder);
         
         $promise = $builder->insert(array('help2' => 5));
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
@@ -317,7 +317,7 @@ class SQLSchemaBuilderTest extends TestCase {
             public $help2;
             public $help3;
             
-            // Let Schemabuilder::insert create the mapper
+            // Let Directory::insert create the mapper
             function __construct() {
                 if(\func_num_args() > 0) {
                     parent::__construct(...\func_get_args());
@@ -326,14 +326,14 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder10', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder10', 'help2', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder10', 'help3', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder10';
+                return 'test_Directory10';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -341,7 +341,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'INSERT INTO `test_schemabuilder10` (`help2`) VALUES (?)';
+        $query = 'INSERT INTO `test_Directory10` (`help2`) VALUES (?)';
         $result = new \Plasma\QueryResult(1, 0, 1, $schema::getDefinition(), null);
         
         $client
@@ -359,7 +359,7 @@ class SQLSchemaBuilderTest extends TestCase {
         
         $name = \get_class($schema);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory($name, (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->insert(array('help2' => 5));
@@ -378,12 +378,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder4', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory4', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder4';
+                return 'test_Directory4';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -391,7 +391,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -409,12 +409,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder5', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory5', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder5';
+                return 'test_Directory5';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -422,7 +422,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
@@ -440,7 +440,7 @@ class SQLSchemaBuilderTest extends TestCase {
             public $help2;
             public $help3;
             
-            // Let Schemabuilder::insert create the mapper
+            // Let Directory::insert create the mapper
             function __construct() {
                 if(\func_num_args() > 0) {
                     parent::__construct(...\func_get_args());
@@ -449,14 +449,14 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder101', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder101', 'help2', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder101', 'help3', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder101';
+                return 'test_Directory101';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -464,7 +464,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'INSERT INTO `test_schemabuilder101` (`help2`) VALUES (?)';
+        $query = 'INSERT INTO `test_Directory101` (`help2`) VALUES (?)';
         $result = new \Plasma\QueryResult(1, 0, 1, $schema::getDefinition(), null);
         
         $transaction = $this->getMockBuilder(\Plasma\TransactionInterface::class)
@@ -503,7 +503,7 @@ class SQLSchemaBuilderTest extends TestCase {
     
         $name = \get_class($schema);
     
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder($name, (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory($name, (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->insertAll(array(
@@ -529,12 +529,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder2112', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory2112', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder2112';
+                return 'test_Directory2112';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -542,7 +542,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $query = 'UPDATE `test_schemabuilder2112` SET `help` = ? WHERE `help` = ?';
+        $query = 'UPDATE `test_Directory2112` SET `help` = ? WHERE `help` = ?';
         
         $client
             ->expects($this->any())
@@ -557,7 +557,7 @@ class SQLSchemaBuilderTest extends TestCase {
             ->with($query, array(5, 50))
             ->will($this->returnValue((new \React\Promise\Promise(function () {}))));
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $promise = $builder->update(array('help' => 5), 'help', 50);
@@ -573,12 +573,12 @@ class SQLSchemaBuilderTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_schemabuilder7', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory7', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
             static function getTableName(): string {
-                return 'test_schemabuilder7';
+                return 'test_Directory7';
             }
             
             static function getIdentifierColumn(): ?string {
@@ -586,7 +586,7 @@ class SQLSchemaBuilderTest extends TestCase {
             }
         });
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
         $builder->setRepository($repo);
         
         $rows = array(

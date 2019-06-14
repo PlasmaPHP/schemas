@@ -10,8 +10,7 @@
 namespace Plasma\Schemas;
 
 /**
- * The Repository Interface describes the public API of repositories.
- * The repository is responsible for turning row results into specified PHP object.
+ * The repository is responsible for turning query results into schemas and interfaces with a Plasma Client implementation.
  */
 interface RepositoryInterface extends \Evenement\EventEmitterInterface, \Plasma\QueryableInterface {
     /**
@@ -21,26 +20,26 @@ interface RepositoryInterface extends \Evenement\EventEmitterInterface, \Plasma\
     function getClient(): \Plasma\ClientInterface;
     
     /**
-     * Get the Schema Builder for the schema.
+     * Get the directory for the schema.
      * @param string  $schemaName  The schema name. This would be the table name.
-     * @return \Plasma\Schemas\SchemaBuilderInterface
+     * @return \Plasma\Schemas\DirectoryInterface
      * @throws \Plasma\Exception
      */
-    function getSchemaBuilder(string $schemaName): \Plasma\Schemas\SchemaBuilderInterface;
+    function getDirectory(string $schemaName): \Plasma\Schemas\DirectoryInterface;
     
     /**
-     * Register a Schema Builder for the schema to be used by the Repository.
-     * @param string                                  $schemaName     The schema name. This would be the table name.
-     * @param \Plasma\Schemas\SchemaBuilderInterface  $schemaBuilder  The schema builder for the schema.
+     * Register a directory for the schema to be used by the repository.
+     * @param string                              $schemaName  The schema name. This would be the table name.
+     * @param \Plasma\Schemas\DirectoryInterface  $directory   The directory for the schema.
      * @return $this
      * @throws \Plasma\Exception
      */
-    function registerSchemaBuilder(string $schemaName, \Plasma\Schemas\SchemaBuilderInterface $schemaBuilder);
+    function registerDirectory(string $schemaName, \Plasma\Schemas\DirectoryInterface $directory);
     
     /**
-     * Unregister the Schema Builder of the schema.
+     * Unregister the directory of the schema.
      * @param string  $schemaName  The schema name. This would be the table name.
      * @return $this
      */
-    function unregisterSchemaBuilder(string $schemaName);
+    function unregisterDirectory(string $schemaName);
 }

@@ -25,7 +25,7 @@ class Repository implements RepositoryInterface {
     protected $client;
     
     /**
-     * @var \Plasma\Schemas\SchemaBuilderInterface[]
+     * @var \Plasma\Schemas\DirectoryInterface[]
      */
     protected $builders = array();
     
@@ -46,12 +46,12 @@ class Repository implements RepositoryInterface {
     }
     
     /**
-     * Get the Schema Builder for the schema.
+     * Get the directory for the schema.
      * @param string  $schemaName  The schema name. This would be the table name.
-     * @return \Plasma\Schemas\SchemaBuilderInterface
+     * @return \Plasma\Schemas\DirectoryInterface
      * @throws \Plasma\Exception
      */
-    function getSchemaBuilder(string $schemaName): \Plasma\Schemas\SchemaBuilderInterface {
+    function getDirectory(string $schemaName): \Plasma\Schemas\DirectoryInterface {
         if(!isset($this->builders[$schemaName])) {
             throw new \Plasma\Exception('The schema is not registered');
         }
@@ -60,29 +60,29 @@ class Repository implements RepositoryInterface {
     }
     
     /**
-     * Register a Schema Builder for the schema to be used by the Repository.
-     * @param string                                  $schemaName     The schema name. This would be the table name.
-     * @param \Plasma\Schemas\SchemaBuilderInterface  $schemaBuilder  The schema builder for the schema.
+     * Register a directory for the schema to be used by the repository.
+     * @param string                              $schemaName  The schema name. This would be the table name.
+     * @param \Plasma\Schemas\DirectoryInterface  $directory   The directory for the schema.
      * @return $this
      * @throws \Plasma\Exception
      */
-    function registerSchemaBuilder(string $schemaName, \Plasma\Schemas\SchemaBuilderInterface $schemaBuilder) {
+    function registerDirectory(string $schemaName, \Plasma\Schemas\DirectoryInterface $directory) {
         if(isset($this->builders[$schemaName])) {
             throw new \Plasma\Exception('The schema is already registered');
         }
-        
-        $schemaBuilder->setRepository($this);
-        $this->builders[$schemaName] = $schemaBuilder;
+    
+        $directory->setRepository($this);
+        $this->builders[$schemaName] = $directory;
         
         return $this;
     }
     
     /**
-     * Unregister the Schema Builder of the schema.
+     * Unregister the directory of the schema.
      * @param string  $schemaName  The schema name. This would be the table name.
      * @return $this
      */
-    function unregisterSchemaBuilder(string $schemaName) {
+    function unregisterDirectory(string $schemaName) {
         unset($this->builders[$schemaName]);
         return $this;
     }
@@ -294,7 +294,7 @@ class Repository implements RepositoryInterface {
             $table = \reset($fields)->getTableName();
             
             if(isset($this->builders[$table])) {
-                return $this->getSchemaBuilder($table)->buildSchemas($result);
+                return $this->getDirectory($table)->buildSchemas($result);
             }
         }
         

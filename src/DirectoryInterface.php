@@ -10,9 +10,9 @@
 namespace Plasma\Schemas;
 
 /**
- * Schema Builders are responsible for creating individual schemas from query results.
+ * Directories are responsible for building schemas from query results and interfaces with the repository for queries.
  */
-interface SchemaBuilderInterface {
+interface DirectoryInterface {
     /**
      * Sets the repository to use.
      * @param \Plasma\Schemas\Repository  $repository
