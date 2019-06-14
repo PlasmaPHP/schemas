@@ -137,6 +137,26 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getColDefBuilder">getColDefBuilder</a>()
+        
+                                            <p>Get a new instance of a column definition builder.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getDatabaseName">getDatabaseName</a>()
+        
+                                            <p>Returns the name of the database (or any other equivalent).</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     static&nbsp;<abbr title="Plasma\ColumnDefinitionInterface">ColumnDefinitionInterface</abbr>[]
                 </div>
                 <div class="col-md-8 type">
@@ -162,7 +182,7 @@ This allows validation and match expectations.</p>                    </div>
                 <div class="col-md-8 type">
                     <a href="#method_getTableName">getTableName</a>()
         
-                                            <p>Returns the name of the table.</p>                </div>
+                                            <p>Returns the name of the table (or any other equivalent).</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -316,7 +336,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L163">line 163</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L169">line 169</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>delete</strong>()
         </code>
@@ -348,6 +368,81 @@ This allows validation and match expectations.</p>                    </div>
             </tr>
             </table>
 
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getColDefBuilder">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L207">line 207</a></div>
+        <code>                    <a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a>
+    <strong>getColDefBuilder</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get a new instance of a column definition builder.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            \Plasma\Schemas\ColumnDefinitionBuilder::create()
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDatabaseName">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L103">line 103</a></div>
+        <code>    abstract    static            string
+    <strong>getDatabaseName</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the name of the database (or any other equivalent).</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
             
                         
                         
@@ -389,7 +484,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getIdentifierColumn">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L109">line 109</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L115">line 115</a></div>
         <code>    abstract    static            string|null
     <strong>getIdentifierColumn</strong>()
         </code>
@@ -421,7 +516,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTableName">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L103">line 103</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L109">line 109</a></div>
         <code>    abstract    static            string
     <strong>getTableName</strong>()
         </code>
@@ -431,7 +526,7 @@ This allows validation and match expectations.</p>                    </div>
     
 
                     <div class="method-description">
-                                    <p>Returns the name of the table.</p>                                                </div>
+                                    <p>Returns the name of the table (or any other equivalent).</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -453,7 +548,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_insert">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L116">line 116</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L122">line 122</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>insert</strong>()
         </code>
@@ -494,7 +589,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_toArray">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L183">line 183</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L189">line 189</a></div>
         <code>                    array
     <strong>toArray</strong>()
         </code>
@@ -526,7 +621,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L136">line 136</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Schema.php#L142">line 142</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>update</strong>(array $data)
         </code>
