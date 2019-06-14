@@ -49,7 +49,7 @@ class Users implements \Plasma\Schemas\SchemaInterface {
                 ->name('id')
                 ->type('INTEGER')
                 ->length(12)
-                ->autoIncremented()
+                ->autoIncrement()
                 ->primary()
                 ->getDefinition(),
             $this->getColDefBuilder()

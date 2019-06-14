@@ -195,11 +195,11 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals($expected, $coldef);
     }
     
-    function testAutoIncremented() {
+    function testAutoIncrement() {
         $builder = $this->getCDBuilder();
         
         $builder
-            ->autoIncremented();
+            ->autoIncrement();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
             'test', 'test1_cbt', 'cb', '', '', null, 0, null,

@@ -61,7 +61,7 @@ class ColumnDefinitionBuilder {
     /**
      * @var bool
      */
-    protected $autoIncremented = false;
+    protected $autoIncrement = false;
     
     /**
      * @var bool
@@ -193,11 +193,11 @@ class ColumnDefinitionBuilder {
     
     /**
      * Set the column as auto incremented.
-     * @param bool  $autoIncremented
+     * @param bool  $autoIncrement
      * @return $this
      */
-    function autoIncremented(bool $autoIncremented = true): self {
-        $this->autoIncremented = $autoIncremented;
+    function autoIncrement(bool $autoIncrement = true): self {
+        $this->autoIncrement = $autoIncrement;
         return $this;
     }
     
@@ -266,7 +266,7 @@ class ColumnDefinitionBuilder {
             $this->flags,
             $this->decimals,
             $this->nullable,
-            $this->autoIncremented,
+            $this->autoIncrement,
             $this->primary,
             $this->unique,
             $this->composite,
