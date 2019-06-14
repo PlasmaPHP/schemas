@@ -29,7 +29,13 @@ interface SchemaInterface {
     static function getDefinition(): array;
     
     /**
-     * Returns the name of the table.
+     * Returns the name of the database (or any other equivalent).
+     * @return string
+     */
+    static function getDatabaseName(): string;
+    
+    /**
+     * Returns the name of the table (or any other equivalent).
      * @return string
      */
     static function getTableName(): string;
