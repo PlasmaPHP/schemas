@@ -190,12 +190,12 @@ All other queries get returned as is.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+                    <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getSchemaBuilder">getSchemaBuilder</a>(string $schemaName)
+                    <a href="#method_getDirectory">getDirectory</a>(string $schemaName)
         
-                                            <p>Get the Schema Builder for the schema.</p>                </div>
+                                            <p>Get the directory for the schema.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -243,9 +243,9 @@ All other queries get returned as is.</p>                    </div>
                     $this
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_registerSchemaBuilder">registerSchemaBuilder</a>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+                    <a href="#method_registerDirectory">registerDirectory</a>(string $schemaName, <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a> $directory)
         
-                                            <p>Register a Schema Builder for the schema to be used by the Repository.</p>                </div>
+                                            <p>Register a directory for the schema to be used by the repository.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -273,9 +273,9 @@ All other queries get returned as is.</p>                    </div>
                     $this
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_unregisterSchemaBuilder">unregisterSchemaBuilder</a>(string $schemaName)
+                    <a href="#method_unregisterDirectory">unregisterDirectory</a>(string $schemaName)
         
-                                            <p>Unregister the Schema Builder of the schema.</p>                </div>
+                                            <p>Unregister the directory of the schema.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -652,10 +652,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getSchemaBuilder">
+                    <h3 id="method_getDirectory">
         <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L54">line 54</a></div>
-        <code>                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
-    <strong>getSchemaBuilder</strong>(string $schemaName)
+        <code>                    <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a>
+    <strong>getDirectory</strong>(string $schemaName)
         </code>
     </h3>
     <div class="details">
@@ -663,7 +663,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Get the Schema Builder for the schema.</p>                                                </div>
+                                    <p>Get the directory for the schema.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -680,7 +680,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+            <td><a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a></td>
             <td></td>
         </tr>
     </table>
@@ -919,10 +919,10 @@ If you need to execute a query multiple times, prepare the query manually for pe
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_registerSchemaBuilder">
+                    <h3 id="method_registerDirectory">
         <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L69">line 69</a></div>
         <code>                    $this
-    <strong>registerSchemaBuilder</strong>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+    <strong>registerDirectory</strong>(string $schemaName, <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a> $directory)
         </code>
     </h3>
     <div class="details">
@@ -930,7 +930,7 @@ If you need to execute a query multiple times, prepare the query manually for pe
     
 
                     <div class="method-description">
-                                    <p>Register a Schema Builder for the schema to be used by the Repository.</p>                                                </div>
+                                    <p>Register a directory for the schema to be used by the repository.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -941,9 +941,9 @@ If you need to execute a query multiple times, prepare the query manually for pe
                 <td>The schema name. This would be the table name.</td>
             </tr>
                     <tr>
-                <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
-                <td>$schemaBuilder</td>
-                <td>The schema builder for the schema.</td>
+                <td><a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a></td>
+                <td>$directory</td>
+                <td>The directory for the schema.</td>
             </tr>
             </table>
 
@@ -1078,10 +1078,10 @@ An example would be a SQL querybuilder and a Cassandra driver.</p>              
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_unregisterSchemaBuilder">
+                    <h3 id="method_unregisterDirectory">
         <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/Repository.php#L85">line 85</a></div>
         <code>                    $this
-    <strong>unregisterSchemaBuilder</strong>(string $schemaName)
+    <strong>unregisterDirectory</strong>(string $schemaName)
         </code>
     </h3>
     <div class="details">
@@ -1089,7 +1089,7 @@ An example would be a SQL querybuilder and a Cassandra driver.</p>              
     
 
                     <div class="method-description">
-                                    <p>Unregister the Schema Builder of the schema.</p>                                                </div>
+                                    <p>Unregister the directory of the schema.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 

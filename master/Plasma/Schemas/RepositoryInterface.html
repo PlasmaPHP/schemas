@@ -96,7 +96,7 @@
     
 
             <div class="description">
-            <p>The Repository Interface describes the public API of repositories.</p>            <p>The repository is responsible for turning row results into specified PHP object.</p>                    </div>
+            <p>The repository is responsible for turning query results into schemas and interfaces with a Plasma Client implementation.</p>                                </div>
     
     
     
@@ -116,12 +116,12 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
+                    <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getSchemaBuilder">getSchemaBuilder</a>(string $schemaName)
+                    <a href="#method_getDirectory">getDirectory</a>(string $schemaName)
         
-                                            <p>Get the Schema Builder for the schema.</p>                </div>
+                                            <p>Get the directory for the schema.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -129,9 +129,9 @@
                     $this
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_registerSchemaBuilder">registerSchemaBuilder</a>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+                    <a href="#method_registerDirectory">registerDirectory</a>(string $schemaName, <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a> $directory)
         
-                                            <p>Register a Schema Builder for the schema to be used by the Repository.</p>                </div>
+                                            <p>Register a directory for the schema to be used by the repository.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -139,9 +139,9 @@
                     $this
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_unregisterSchemaBuilder">unregisterSchemaBuilder</a>(string $schemaName)
+                    <a href="#method_unregisterDirectory">unregisterDirectory</a>(string $schemaName)
         
-                                            <p>Unregister the Schema Builder of the schema.</p>                </div>
+                                            <p>Unregister the directory of the schema.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -152,7 +152,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getClient">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L21">line 21</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L20">line 20</a></div>
         <code>                    <abbr title="Plasma\ClientInterface">ClientInterface</abbr>
     <strong>getClient</strong>()
         </code>
@@ -183,10 +183,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getSchemaBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L29">line 29</a></div>
-        <code>                    <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a>
-    <strong>getSchemaBuilder</strong>(string $schemaName)
+                    <h3 id="method_getDirectory">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L28">line 28</a></div>
+        <code>                    <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a>
+    <strong>getDirectory</strong>(string $schemaName)
         </code>
     </h3>
     <div class="details">
@@ -194,7 +194,7 @@
     
 
                     <div class="method-description">
-                                    <p>Get the Schema Builder for the schema.</p>                                                </div>
+                                    <p>Get the directory for the schema.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -211,7 +211,7 @@
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
+            <td><a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a></td>
             <td></td>
         </tr>
     </table>
@@ -234,10 +234,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_registerSchemaBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L38">line 38</a></div>
+                    <h3 id="method_registerDirectory">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L37">line 37</a></div>
         <code>                    $this
-    <strong>registerSchemaBuilder</strong>(string $schemaName, <a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a> $schemaBuilder)
+    <strong>registerDirectory</strong>(string $schemaName, <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a> $directory)
         </code>
     </h3>
     <div class="details">
@@ -245,7 +245,7 @@
     
 
                     <div class="method-description">
-                                    <p>Register a Schema Builder for the schema to be used by the Repository.</p>                                                </div>
+                                    <p>Register a directory for the schema to be used by the repository.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -256,9 +256,9 @@
                 <td>The schema name. This would be the table name.</td>
             </tr>
                     <tr>
-                <td><a href="../../Plasma/Schemas/SchemaBuilderInterface.html"><abbr title="Plasma\Schemas\SchemaBuilderInterface">SchemaBuilderInterface</abbr></a></td>
-                <td>$schemaBuilder</td>
-                <td>The schema builder for the schema.</td>
+                <td><a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a></td>
+                <td>$directory</td>
+                <td>The directory for the schema.</td>
             </tr>
             </table>
 
@@ -290,10 +290,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_unregisterSchemaBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L45">line 45</a></div>
+                    <h3 id="method_unregisterDirectory">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/RepositoryInterface.php#L44">line 44</a></div>
         <code>                    $this
-    <strong>unregisterSchemaBuilder</strong>(string $schemaName)
+    <strong>unregisterDirectory</strong>(string $schemaName)
         </code>
     </h3>
     <div class="details">
@@ -301,7 +301,7 @@
     
 
                     <div class="method-description">
-                                    <p>Unregister the Schema Builder of the schema.</p>                                                </div>
+                                    <p>Unregister the directory of the schema.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
