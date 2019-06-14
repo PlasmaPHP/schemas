@@ -10,9 +10,9 @@
 namespace Plasma\Schemas;
 
 /**
- * This is a SQL Schema Builder implementation.
+ * This is a SQL Directory implementation.
  */
-class SQLSchemaBuilder implements SchemaBuilderInterface {
+class SQLDirectory implements DirectoryInterface {
     /**
      * @var \Plasma\Schemas\Repository
      */

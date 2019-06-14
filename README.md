@@ -10,10 +10,12 @@ composer require plasma/schemas
 ```
 
 You first need to create a Plasma client and then create a `Repository` (which acts like a client) with the created client.
-Then you need to create your schema classes and the schema builders for these schema classes. You will need to register these builders to the Repository.
+Then you need to create your schema classes and the directory for these schema classes. You will need to register these directories to the Repository.
+
+Directories build schemas from query results and interface with the repository for queries.
 
 After that, each call onto the Repository `query` or `execute` methods will give you a dedicated `SchemaCollection` with the `Schema` instances.
-A call to `Repository::prepare` will give you, if successful, a `Statement` with `execute` method which acts like the Repository's `execute` method.
+A call to `Repository::prepare` will give you, if successful, a wrapped `Statement` instance. The wrapper has the same purpose as the `Repository`.
 
 ```php
 $loop = \React\EventLoop\Factory::create();
@@ -60,8 +62,8 @@ class Users implements \Plasma\Schemas\SchemaInterface {
 }
 
 // null is the SQL grammar (see plasma/sql-common)
-$builderA = new \Plasma\Schemas\SQLSchemaBuilder(Users::class, null);
-$repository->registerSchemaBuilder('users', $builderA);
+$builderA = new \Plasma\Schemas\SQLDirectory(Users::class, null);
+$repository->registerDirectory('users', $builderA);
 
 $repository->execute('SELECT * FROM `users`', array())
     ->done(function (\Plasma\Schemas\SchemaCollection $collection) {

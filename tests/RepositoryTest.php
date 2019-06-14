@@ -22,10 +22,10 @@ class RepositoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
-        $this->assertSame($repo, $repo->registerSchemaBuilder('test', $builder));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
+        $this->assertSame($repo, $repo->registerDirectory('test', $builder));
         
-        $this->assertSame($builder, $repo->getSchemaBuilder('test'));
+        $this->assertSame($builder, $repo->getDirectory('test'));
     }
     
     function testGetBuilderUnregistered() {
@@ -35,30 +35,30 @@ class RepositoryTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('The schema is not registered');
         
-        $repo->getSchemaBuilder('test');
+        $repo->getDirectory('test');
     }
     
     function testRegisterBuilderAlreadyRegistered() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
-        $this->assertSame($repo, $repo->registerSchemaBuilder('test', $builder));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
+        $this->assertSame($repo, $repo->registerDirectory('test', $builder));
         
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('The schema is already registered');
         
-        $repo->registerSchemaBuilder('test', $builder);
+        $repo->registerDirectory('test', $builder);
     }
     
     function testUnregisterBuilder() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
-        $this->assertSame($repo, $repo->registerSchemaBuilder('test', $builder));
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($this->getSchema($repo)), (new \Plasma\SQL\Grammar\MySQL()));
+        $this->assertSame($repo, $repo->registerDirectory('test', $builder));
         
-        $this->assertSame($repo, $repo->unregisterSchemaBuilder('test'));
+        $this->assertSame($repo, $repo->unregisterDirectory('test'));
     }
     
     function testQueryInvocation() {
@@ -137,8 +137,8 @@ class RepositoryTest extends TestCase {
         $repo = new \Plasma\Schemas\Repository($client);
         
         $schema = $this->getSchema($repo);
-        $builder = new \Plasma\Schemas\SQLSchemaBuilder(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
-        $repo->registerSchemaBuilder($schema->getTableName(), $builder);
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema->getTableName(), $builder);
         
         $result = new \Plasma\QueryResult(0, 0, null, $schema->getDefinition(), array(
             array('help' => 50),
@@ -153,7 +153,7 @@ class RepositoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $stream = new \Plasma\StreamQueryResult($this->getDriverMock(), $this->getCommandMock(), 0, 0, null, null);
+        $stream = new \Plasma\StreamQueryResult($this->getCommandMock(), 0, 0, null, null);
         
         $promise = $repo->handleQueryResult($stream);
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);

@@ -32,7 +32,7 @@ class SchemaTest extends TestCase {
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
             ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
             ->getMock();
         
@@ -47,7 +47,7 @@ class SchemaTest extends TestCase {
             ))
             ->will($this->returnValue(\React\Promise\resolve($result)));
         
-        $repo->registerSchemaBuilder('test5', $builder);
+        $repo->registerDirectory('test5', $builder);
         
         $schema = new $name($repo, array('help' => 5));
         
@@ -65,7 +65,7 @@ class SchemaTest extends TestCase {
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
             ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
             ->getMock();
         
@@ -79,7 +79,7 @@ class SchemaTest extends TestCase {
             ))
             ->will($this->returnValue(\React\Promise\resolve($result)));
         
-        $repo->registerSchemaBuilder('test5', $builder);
+        $repo->registerDirectory('test5', $builder);
         
         $schema = new $name($repo, array('help' => 5));
         
@@ -97,7 +97,7 @@ class SchemaTest extends TestCase {
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLSchemaBuilder::class)
+        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
                         ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
                         ->getMock();
         
@@ -115,7 +115,7 @@ class SchemaTest extends TestCase {
             ), 'help', 50)
             ->will($this->returnValue(\React\Promise\resolve($result)));
         
-        $repo->registerSchemaBuilder('test5', $builder);
+        $repo->registerDirectory('test5', $builder);
         
         $client
             ->expects($this->any())
