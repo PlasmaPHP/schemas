@@ -105,6 +105,21 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals($expected, $coldef);
     }
     
+    function testCharsetNull() {
+        $builder = $this->getCDBuilder();
+        
+        $builder
+            ->charset(null);
+        
+        $expected = new \Plasma\Schemas\ColumnDefinition(
+            'test', 'test1_cbt', 'cb', '', null, null, 0, null,
+            false, false, false, false, false, false, false
+        );
+        
+        $coldef = $builder->getDefinition();
+        $this->assertEquals($expected, $coldef);
+    }
+    
     function testLength() {
         $builder = $this->getCDBuilder();
         

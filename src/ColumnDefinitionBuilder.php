@@ -34,9 +34,9 @@ class ColumnDefinitionBuilder {
     protected $type = '';
     
     /**
-     * @var string
+     * @var string|null
      */
-    protected $charset = '';
+    protected $charset;
     
     /**
      * @var int|null
@@ -143,10 +143,10 @@ class ColumnDefinitionBuilder {
     
     /**
      * Set the column charset.
-     * @param string  $charset
+     * @param string|null  $charset
      * @return $this
      */
-    function charset(string $charset): self {
+    function charset(?string $charset): self {
         $this->charset = $charset;
         return $this;
     }

@@ -56,7 +56,7 @@ class ColumnDefinition extends \Plasma\ColumnDefinition {
      * @param string       $table
      * @param string       $name
      * @param string       $type
-     * @param string       $charset
+     * @param string|null  $charset
      * @param int|null     $length
      * @param int          $flags
      * @param int|null     $decimals
@@ -74,7 +74,7 @@ class ColumnDefinition extends \Plasma\ColumnDefinition {
         string $table,
         string $name,
         string $type,
-        string $charset,
+        ?string $charset,
         ?int $length,
         int $flags,
         ?int $decimals,
