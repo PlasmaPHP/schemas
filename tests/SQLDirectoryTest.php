@@ -10,65 +10,11 @@
 namespace Plasma\Schemas\Tests;
 
 class SQLDirectoryTest extends TestCase {
-    function testConstructor() {
-        $schema = (new class() extends \Plasma\Schemas\Schema {
-            public $help;
-            
-            function __construct() {
-                
-            }
-            
-            static function getDefinition(): array {
-                return array();
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
-            }
-            
-            static function getTableName(): string {
-                return 'test_Directory';
-            }
-            
-            static function getIdentifierColumn(): ?string {
-                return null;
-            }
-        });
-        
-        $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
-        
-        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
-        $builder->setRepository($repo);
-        
-        $this->assertSame($repo, $builder->getRepository());
-    }
-    
-    function testConstructorUnknownClass() {
-        $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
-        
-        $this->expectException(\Plasma\Exception::class);
-        $this->expectExceptionMessage('Schema class does not exist');
-        
-        $builder = new \Plasma\Schemas\SQLDirectory('a', (new \Plasma\SQL\Grammar\MySQL()));
-    }
-    
-    function testConstructorInvalidClass() {
-        $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
-        
-        $this->expectException(\Plasma\Exception::class);
-        $this->expectExceptionMessage('Schema class does not implement Schema Interface');
-        
-        $builder = new \Plasma\Schemas\SQLDirectory(\stdClass::class, (new \Plasma\SQL\Grammar\MySQL()));
-    }
-    
     function testFetchAll() {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {
@@ -116,7 +62,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {
@@ -164,7 +110,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {
@@ -190,7 +136,7 @@ class SQLDirectoryTest extends TestCase {
         $builder->setRepository($repo);
         
         $this->expectException(\Plasma\Exception::class);
-        $this->expectExceptionMessage('Schema has no unique or primary column');
+        $this->expectExceptionMessage('AbstractSchema has no unique or primary column');
         
         $builder->fetch(5);
     }
@@ -199,7 +145,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class() extends \Plasma\Schemas\Schema {
+        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
             public $help;
             public $help2;
             
@@ -265,7 +211,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class() extends \Plasma\Schemas\Schema {
+        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
             public $help;
             public $help2;
             public $help3;
@@ -336,7 +282,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class() extends \Plasma\Schemas\Schema {
+        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
             public $help;
             public $help2;
             public $help3;
@@ -401,7 +347,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {
@@ -436,7 +382,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {
@@ -471,7 +417,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
     
-        $schema = (new class() extends \Plasma\Schemas\Schema {
+        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
             public $help;
             public $help2;
             public $help3;
@@ -564,7 +510,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {
@@ -612,7 +558,7 @@ class SQLDirectoryTest extends TestCase {
         $client = $this->getClientMock();
         $repo = new \Plasma\Schemas\Repository($client);
         
-        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        $schema = (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {

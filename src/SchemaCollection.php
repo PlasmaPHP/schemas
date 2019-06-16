@@ -10,7 +10,7 @@
 namespace Plasma\Schemas;
 
 /**
- * Schema Collections hold schemas and the associated query result together.
+ * AbstractSchema Collections hold schemas and the associated query result together.
  */
 class SchemaCollection {
     /**

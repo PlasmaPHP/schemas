@@ -10,7 +10,7 @@
 namespace Plasma\Schemas;
 
 /**
- * Schemas represent data rows and as such can be used to interact with the DBMS through the Repository and Schema Builder.
+ * Schemas represent data rows and as such can be used to interact with the DBMS through the Repository and AbstractSchema Builder.
  */
 interface SchemaInterface {
     /**
@@ -47,6 +47,14 @@ interface SchemaInterface {
     static function getIdentifierColumn(): ?string;
     
     /**
+     * Returns the asynchronous resolver to wait for before returning the schema.
+     * May resolve with a new schema, which will get used instead.
+     * @param bool  $autoloading  Whether this method gets called for autoloading (not manually).
+     * @return \React\Promise\PromiseInterface|null
+     */
+    function getAsyncResolver(bool $autoloading = false): ?\React\Promise\PromiseInterface;
+    
+    /**
      * Inserts the row.
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
@@ -62,7 +70,7 @@ interface SchemaInterface {
     function update(array $data): \React\Promise\PromiseInterface;
     
     /**
-     * Deletes the row.
+     * Deletes the row. Resolves with a `QueryResultInterface` instance.
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
      */

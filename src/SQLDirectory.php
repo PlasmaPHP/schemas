@@ -12,17 +12,7 @@ namespace Plasma\Schemas;
 /**
  * This is a SQL Directory implementation.
  */
-class SQLDirectory implements DirectoryInterface {
-    /**
-     * @var \Plasma\Schemas\Repository
-     */
-    protected $repo;
-    
-    /**
-     * @var \Plasma\Schemas\SchemaInterface
-     */
-    protected $schema;
-    
+class SQLDirectory extends AbstractDirectory {
     /**
      * @var \Plasma\SQL\GrammarInterface
      */
@@ -35,31 +25,8 @@ class SQLDirectory implements DirectoryInterface {
      * @throws \Plasma\Exception
      */
     function __construct(string $schema, ?\Plasma\SQL\GrammarInterface $grammar) {
-        if(!\class_exists($schema, true)) {
-            throw new \Plasma\Exception('Schema class does not exist');
-        } elseif(!\in_array(\Plasma\Schemas\SchemaInterface::class, \class_implements($schema))) {
-            throw new \Plasma\Exception('Schema class does not implement Schema Interface');
-        }
-        
-        $this->schema = $schema;
+        parent::__construct($schema);
         $this->grammar = $grammar;
-    }
-    
-    /**
-     * Gets the repository.
-     * @return \Plasma\Schemas\Repository
-     */
-    function getRepository(): \Plasma\Schemas\Repository {
-        return $this->repo;
-    }
-    
-    /**
-     * Sets the repository to use.
-     * @param \Plasma\Schemas\Repository  $repository
-     * @return void
-     */
-    function setRepository(\Plasma\Schemas\Repository $repository): void {
-        $this->repo = $repository;
     }
     
     /**
@@ -72,7 +39,7 @@ class SQLDirectory implements DirectoryInterface {
         $column = $this->schema::getIdentifierColumn();
         
         if($column === null) {
-            throw new \Plasma\Exception('Schema has no unique or primary column');
+            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
         }
         
         return $this->fetchBy($column, $value);
@@ -133,11 +100,11 @@ class SQLDirectory implements DirectoryInterface {
         }
         
         $table = $this->schema::getTableName();
-        $mapper = \Plasma\Schemas\Schema::getMapper()[$table] ?? null;
+        $mapper = \Plasma\Schemas\AbstractSchema::getMapper()[$table] ?? null;
         
         if($mapper === null) {
             $this->schema::build($this->repo, $data); // Create a schema, so the mapper gets created
-            $mapper = \Plasma\Schemas\Schema::getMapper()[$table] ?? array();
+            $mapper = \Plasma\Schemas\AbstractSchema::getMapper()[$table] ?? array();
         }
         
         $realValues = array();
@@ -196,7 +163,7 @@ class SQLDirectory implements DirectoryInterface {
      * ```
      * array(
      *     'ignoreConflict' => bool, (whether duplicate key conflicts get ignored, defaults to false)
-     *     'conflictResolution' => \Plasma\Schema\OnConflict, (a conflict resolution strategy, this option takes precedence)
+     *     'conflictResolution' => \Plasma\AbstractSchema\OnConflict, (a conflict resolution strategy, this option takes precedence)
      *     'transactionIsolation' => int, (a transaction isolation level from the TransactionInterface constants, defaults to ISOLATION_COMMITTED)
      * )
      * ```
@@ -296,20 +263,42 @@ class SQLDirectory implements DirectoryInterface {
     }
     
     /**
-     * Builds schemas for the given SELECT query result.
-     * @param \Plasma\QueryResultInterface  $result
-     * @return \Plasma\Schemas\SchemaCollection
+     * Deletes a row by the unique identifier. Resolves with a `QueryResultInterface` instance.
+     * @param mixed   $value
+     * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
      */
-    function buildSchemas(\Plasma\QueryResultInterface $result): \Plasma\Schemas\SchemaCollection {
-        $schemas = array();
+    function delete($value): \React\Promise\PromiseInterface {
+        $column = $this->schema::getIdentifierColumn();
         
-        $rows = (array) $result->getRows();
-        foreach($rows as $row) {
-            $schemas[] = $this->schema::build($this->repo, $row);
+        if($column === null) {
+            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
         }
         
-        return (new \Plasma\Schemas\SchemaCollection($schemas, $result));
+        return $this->deleteBy($column, $value);
+    }
+    
+    /**
+     * Deletes a row by the specified column. Resolves with a `QueryResultInterface` instance.
+     * @param string  $name
+     * @param mixed   $value
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function deleteBy(string $name, $value): \React\Promise\PromiseInterface {
+        $query = \Plasma\SQL\QueryBuilder::create()
+            ->delete()
+            ->from($this->schema::getTableName())
+            ->where($name, '=', $value);
+        
+        if($this->grammar !== null) {
+            $query = $query->withGrammar($this->grammar);
+        }
+        
+        return $this->repo->execute(
+            $query->getQuery(),
+            $query->getParameters()
+        );
     }
     
     /**

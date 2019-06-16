@@ -15,7 +15,7 @@ namespace Plasma\Schemas;
  * This class must be extended and the properties must be provided by the extending class (but not as private).
  * This allows validation and match expectations.
  */
-abstract class Schema implements SchemaInterface {
+abstract class AbstractSchema implements SchemaInterface {
     /**
      * @var \Plasma\Schemas\Repository
      */
@@ -37,10 +37,12 @@ abstract class Schema implements SchemaInterface {
         $table = $this->getTableName();
         
         if(!isset(static::$schemaFieldsMapper[$table])) {
-            static::$schemaFieldsMapper[$table] = array();
+            static::$schemaFieldsMapper[$table] = array(
+                '__definition__' => $this->getDefinition()
+            );
             
-            $fields = $this->getDefinition();
-            foreach($fields as $field) {
+            /** @var \Plasma\ColumnDefinitionInterface  $field */
+            foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $field) {
                 $colname = $field->getName();
                 $name = $this->convertColumnName($colname);
                 
@@ -58,16 +60,21 @@ abstract class Schema implements SchemaInterface {
             }
         }
         
-        foreach($row as $colname => $value) {
-            if(!isset(static::$schemaFieldsMapper[$table][$colname])) {
-                throw new \Plasma\Exception('Unknown column "'.$colname.'"');
+        /** @var \Plasma\ColumnDefinitionInterface  $column */
+        foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
+            $colname = $column->getName();
+            $name = $this->convertColumnName($colname);
+            
+            if(!isset($row[$colname])) {
+                continue;
             }
             
-            $name = static::$schemaFieldsMapper[$table][$colname];
-            $this->$name = $value;
+            $this->$name = $row[$colname];
         }
         
-        $this->validateData();
+        if(!$this->hasAsyncResolver(true)) {
+            $this->validateData();
+        }
     }
     
     /**
@@ -77,6 +84,16 @@ abstract class Schema implements SchemaInterface {
      */
     function validateData() {
         
+    }
+    
+    /**
+     * Returns the asynchronous resolver to wait for before returning the schema.
+     * May resolve with a new schema, which will get used instead.
+     * @param bool  $autoloading  Whether this method gets called for autoloading (not manually).
+     * @return \React\Promise\PromiseInterface|null
+     */
+    function getAsyncResolver(bool $autoloading = false): ?\React\Promise\PromiseInterface {
+        return null;
     }
     
     /**
@@ -91,44 +108,25 @@ abstract class Schema implements SchemaInterface {
     }
     
     /**
-     * Returns the schema definition.
-     * @return \Plasma\ColumnDefinitionInterface[]
-     */
-    abstract static function getDefinition(): array;
-    
-    /**
-     * Returns the name of the database (or any other equivalent).
-     * @return string
-     */
-    abstract static function getDatabaseName(): string;
-    
-    /**
-     * Returns the name of the table (or any other equivalent).
-     * @return string
-     */
-    abstract static function getTableName(): string;
-    
-    /**
-     * Returns the name of the identifier column (primary or unique), or null.
-     * @return string|null
-     */
-    abstract static function getIdentifierColumn(): ?string;
-    
-    /**
      * Inserts the schema.
      * @return \React\Promise\PromiseInterface
      * @throws \Plasma\Exception
      */
     function insert(): \React\Promise\PromiseInterface {
+        $table = $this->getTableName();
         $values = array();
         
-        foreach(static::$schemaFieldsMapper[static::getTableName()] as $name) {
+        foreach(static::$schemaFieldsMapper[$table] as $name) {
+            if(\is_array($name)) {
+                continue;
+            }
+            
             if(\property_exists($this, $name)) {
                 $values[$name] = $this->$name;
             }
         }
     
-        return $this->repo->getDirectory(static::getTableName())
+        return $this->repo->getDirectory($table)
             ->insert($values)
             ->then(array($this, 'handleQueryResult'));
     }
@@ -142,10 +140,11 @@ abstract class Schema implements SchemaInterface {
     function update(array $data): \React\Promise\PromiseInterface {
         $uniqcol = $this->getIdentifierColumn();
         if($uniqcol === null) {
-            throw new \Plasma\Exception('Schema has no unique or primary column');
+            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
         }
-        
-        $uniq = static::$schemaFieldsMapper[static::getTableName()][$uniqcol];
+    
+        $table = $this->getTableName();
+        $uniq = static::$schemaFieldsMapper[$table][$uniqcol];
         
         $values = array();
         foreach($data as $name => $val) {
@@ -153,10 +152,10 @@ abstract class Schema implements SchemaInterface {
                 throw new \Plasma\Exception('Unknown field given "'.$name.'", make sure you use the property name');
             }
             
-            $values[static::$schemaFieldsMapper[static::getTableName()][$name]] = $val;
+            $values[static::$schemaFieldsMapper[$table][$name]] = $val;
         }
         
-        return $this->repo->getDirectory(static::getTableName())
+        return $this->repo->getDirectory($table)
             ->update($values, $uniqcol, $this->$uniq)
             ->then(array($this, 'handleQueryResult'));
     }
@@ -169,17 +168,14 @@ abstract class Schema implements SchemaInterface {
     function delete(): \React\Promise\PromiseInterface {
         $uniqcol = $this->getIdentifierColumn();
         if($uniqcol === null) {
-            throw new \Plasma\Exception('Schema has no unique or primary column');
+            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
         }
         
         $table = $this->getTableName();
+        $uniq = static::$schemaFieldsMapper[$table][$uniqcol];
         
-        $uniqname = static::$schemaFieldsMapper[$table][$uniqcol];
-        $uniq = $this->repo->quote($uniqcol, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER).' = ?';
-        
-        $table = $this->repo->quote($table, \Plasma\DriverInterface::QUOTE_TYPE_IDENTIFIER);
-        
-        return $this->repo->execute('DELETE FROM '.$table.' WHERE '.$uniq, array($this->$uniqname))->then(array($this, 'handleQueryResult'));
+        return $this->repo->getDirectory($table)
+            ->deleteBy($uniqcol, $this->$uniq);
     }
     
     /**
@@ -219,6 +215,15 @@ abstract class Schema implements SchemaInterface {
         }
         
         return \lcfirst(\str_replace('_', '', \ucwords($name, '_')));
+    }
+    
+    /**
+     * Whether we have an async resolver.
+     * @param bool  $autoloading
+     * @return bool
+     */
+    protected function hasAsyncResolver(bool $autoloading): bool {
+        return false;
     }
     
     /**
