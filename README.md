@@ -29,13 +29,13 @@ $repository = new \Plasma\Schemas\Repository($client);
  * - id ; auto incremented integer (length 12) primary
  * - name ; varchar(255) utf8mb4_generl_ci
  */
-class Users implements \Plasma\Schemas\SchemaInterface {
+class Users extends \Plasma\Schemas\SQLSchema {
     public $id;
     public $name;
     
     /**
      * Returns the schema definition.
-     * @return \Plasma\ColumnDefinitionInterface[]
+     * @return \Plasma\Schemas\SQLColumnDefinitionInterface[]
      */
     static function getDefinition(): array {
         return array(
@@ -45,14 +45,14 @@ class Users implements \Plasma\Schemas\SchemaInterface {
             // Any Plasma Column Definition
             // can be used.
             
-            $this->getColDefBuilder()
+            $this->getSQLColDefBuilder()
                 ->name('id')
                 ->type('INTEGER')
                 ->length(12)
                 ->autoIncrement()
                 ->primary()
                 ->getDefinition(),
-            $this->getColDefBuilder()
+            $this->getSQLColDefBuilder()
                 ->name('name')
                 ->type('VARCHAR')
                 ->length(255)
