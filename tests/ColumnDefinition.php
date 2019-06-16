@@ -9,7 +9,7 @@
 
 namespace Plasma\Schemas\Tests;
 
-class ColumnDefinition extends \Plasma\ColumnDefinition {
+class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
     /**
      * Whether the column is nullable (not `NOT NULL`).
      * @return bool

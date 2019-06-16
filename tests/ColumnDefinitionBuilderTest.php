@@ -11,7 +11,7 @@ namespace Plasma\Schemas\Tests;
 
 class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
     function testCreateWithSchema() {
-        $schema = (new class() extends \Plasma\Schemas\Schema {
+        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
             public $help;
     
             /** @noinspection PhpMissingParentConstructorInspection */

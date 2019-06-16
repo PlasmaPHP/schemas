@@ -82,6 +82,23 @@ interface DirectoryInterface {
     function update(array $data, string $field, $value): \React\Promise\PromiseInterface;
     
     /**
+     * Deletes a row by the unique identifier. Resolves with a `QueryResultInterface` instance.
+     * @param mixed   $value
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function delete($value): \React\Promise\PromiseInterface;
+    
+    /**
+     * Deletes a row by the specified column. Resolves with a `QueryResultInterface` instance.
+     * @param string  $name
+     * @param mixed   $value
+     * @return \React\Promise\PromiseInterface
+     * @throws \Plasma\Exception
+     */
+    function deleteBy(string $name, $value): \React\Promise\PromiseInterface;
+    
+    /**
      * Builds schemas for the given SELECT query result.
      * @param \Plasma\QueryResultInterface  $result
      * @return \Plasma\Schemas\SchemaCollection

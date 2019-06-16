@@ -318,7 +318,7 @@ class RepositoryTest extends TestCase {
     }
     
     function getSchema(\Plasma\Schemas\Repository $repo): \Plasma\Schemas\SchemaInterface {
-        return (new class($repo, array('help' => 5)) extends \Plasma\Schemas\Schema {
+        return (new class($repo, array('help' => 5)) extends \Plasma\Schemas\AbstractSchema {
             public $help;
             
             static function getDefinition(): array {

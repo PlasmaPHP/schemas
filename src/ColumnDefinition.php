@@ -14,7 +14,7 @@ namespace Plasma\Schemas;
  *
  * It takes input and outputs it without any changes.
  */
-class ColumnDefinition extends \Plasma\ColumnDefinition {
+class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
     /**
      * @var bool
      */
