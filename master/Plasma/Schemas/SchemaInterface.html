@@ -95,7 +95,7 @@
     
 
             <div class="description">
-            <p>Schemas represent data rows and as such can be used to interact with the DBMS through the Repository and Schema Builder.</p>                                </div>
+            <p>Schemas represent data rows and as such can be used to interact with the DBMS through the Repository and AbstractSchema Builder.</p>                                </div>
     
     
     
@@ -120,7 +120,17 @@
                 <div class="col-md-8 type">
                     <a href="#method_delete">delete</a>()
         
-                                            <p>Deletes the row.</p>                </div>
+                                            <p>Deletes the row. Resolves with a <code>QueryResultInterface</code> instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getAsyncResolver">getAsyncResolver</a>(bool $autoloading = false)
+        
+                                            <p>Returns the asynchronous resolver to wait for before returning the schema.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -247,7 +257,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L69">line 69</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L77">line 77</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>delete</strong>()
         </code>
@@ -257,7 +267,7 @@
     
 
                     <div class="method-description">
-                                    <p>Deletes the row.</p>                                                </div>
+                                    <p>Deletes the row. Resolves with a <code>QueryResultInterface</code> instance.</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -279,6 +289,48 @@
             </tr>
             </table>
 
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAsyncResolver">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L55">line 55</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null
+    <strong>getAsyncResolver</strong>(bool $autoloading = false)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the asynchronous resolver to wait for before returning the schema.</p>                    <p>May resolve with a new schema, which will get used instead.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$autoloading</td>
+                <td>Whether this method gets called for autoloading (not manually).</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
             
                         
                         
@@ -416,7 +468,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_insert">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L54">line 54</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L62">line 62</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>insert</strong>()
         </code>
@@ -457,7 +509,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L62">line 62</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaInterface.php#L70">line 70</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>update</strong>(array $data)
         </code>

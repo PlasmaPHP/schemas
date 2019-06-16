@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Plasma\Schemas\SchemaCollection | schemas</title>
+    <title>Plasma\Schemas\AbstractDirectory | schemas</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -21,7 +21,7 @@
     
     </head>
 
-    <body id="class" data-name="class:Plasma_Schemas_SchemaCollection" data-root-path="../../">
+    <body id="class" data-name="class:Plasma_Schemas_AbstractDirectory" data-root-path="../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,27 +75,28 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Plasma.html">Plasma</a></li><li class="backslash">\</li><li><a href="../../Plasma/Schemas.html">Schemas</a></li><li class="backslash">\</li><li>SchemaCollection</li>
+                        <li><a href="../../Plasma.html">Plasma</a></li><li class="backslash">\</li><li><a href="../../Plasma/Schemas.html">Schemas</a></li><li class="backslash">\</li><li>AbstractDirectory</li>
             </ol>
         </div>
                 <div id="page-content">
                 
     <div class="page-header">
         <h1>
-            SchemaCollection
+            AbstractDirectory
                 
         </h1>
     </div>
 
-    <p>    class
-    <strong>SchemaCollection</strong>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaCollection.php" target="_blank">View source</a>)
+    <p>abstract     class
+    <strong>AbstractDirectory</strong>        implements
+        <a href="../../Plasma/Schemas/DirectoryInterface.html"><abbr title="Plasma\Schemas\DirectoryInterface">DirectoryInterface</abbr></a>        (<a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractDirectory.php" target="_blank">View source</a>)
 </p>
 
         
     
 
             <div class="description">
-            <p>AbstractSchema Collections hold schemas and the associated query result together.</p>                                </div>
+            <p>This is an abstract Directory implementation for reuse in complete Directories.</p>                                </div>
     
     
     
@@ -108,29 +109,39 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(array $schemas, <abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result)
+                    <a href="#method___construct">__construct</a>(string $schema)
         
                                             <p>Constructor.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>
+                    <a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getResult">getResult</a>()
+                    <a href="#method_buildSchemas">buildSchemas</a>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result)
         
-                                            <p>Get the query result.</p>                </div>
+                                            <p>Builds schemas for the given SELECT query result.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <a href="../../Plasma/Schemas/SchemaInterface.html"><abbr title="Plasma\Schemas\SchemaInterface">SchemaInterface</abbr></a>[]
+                    <a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getSchemas">getSchemas</a>()
+                    <a href="#method_getRepository">getRepository</a>()
         
-                                            <p>Get the stored schemas.</p>                </div>
+                                            <p>Gets the repository.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setRepository">setRepository</a>(<a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a> $repository)
+        
+                                            <p>Sets the repository to use.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -141,9 +152,9 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaCollection.php#L31">line 31</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractDirectory.php#L31">line 31</a></div>
         <code>                    
-    <strong>__construct</strong>(array $schemas, <abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result)
+    <strong>__construct</strong>(string $schema)
         </code>
     </h3>
     <div class="details">
@@ -157,19 +168,23 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
-                <td>$schemas</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr></td>
-                <td>$result</td>
-                <td></td>
+                <td>string</td>
+                <td>$schema</td>
+                <td>The class name of the schema to build for.</td>
             </tr>
             </table>
 
             
             
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
             
                         
                         
@@ -178,10 +193,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getResult">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaCollection.php#L48">line 48</a></div>
-        <code>                    <abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr>
-    <strong>getResult</strong>()
+                    <h3 id="method_buildSchemas">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractDirectory.php#L65">line 65</a></div>
+        <code>                    <a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a>
+    <strong>buildSchemas</strong>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result)
         </code>
     </h3>
     <div class="details">
@@ -189,14 +204,65 @@
     
 
                     <div class="method-description">
-                                    <p>Get the query result.</p>                                                </div>
+                                    <p>Builds schemas for the given SELECT query result.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr></td>
+                <td>$result</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Plasma/Schemas/SchemaCollection.html"><abbr title="Plasma\Schemas\SchemaCollection">SchemaCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRepository">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractDirectory.php#L46">line 46</a></div>
+        <code>                    <a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a>
+    <strong>getRepository</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Gets the repository.</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr></td>
+            <td><a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a></td>
             <td></td>
         </tr>
     </table>
@@ -210,10 +276,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getSchemas">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SchemaCollection.php#L40">line 40</a></div>
-        <code>                    <a href="../../Plasma/Schemas/SchemaInterface.html"><abbr title="Plasma\Schemas\SchemaInterface">SchemaInterface</abbr></a>[]
-    <strong>getSchemas</strong>()
+                    <h3 id="method_setRepository">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractDirectory.php#L55">line 55</a></div>
+        <code>                    void
+    <strong>setRepository</strong>(<a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a> $repository)
         </code>
     </h3>
     <div class="details">
@@ -221,14 +287,24 @@
     
 
                     <div class="method-description">
-                                    <p>Get the stored schemas.</p>                                                </div>
+                                    <p>Sets the repository to use.</p>                                                </div>
                 <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a></td>
+                <td>$repository</td>
+                <td></td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../Plasma/Schemas/SchemaInterface.html"><abbr title="Plasma\Schemas\SchemaInterface">SchemaInterface</abbr></a>[]</td>
+            <td>void</td>
             <td></td>
         </tr>
     </table>
