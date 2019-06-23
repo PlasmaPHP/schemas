@@ -693,7 +693,7 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads_2', 'rescue', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads2', 'rescue', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -747,5 +747,131 @@ class SQLDirectoryTest extends TestCase {
         
         $this->assertNull($result->rescueID);
         $this->assertSame(5, $result->help);
+    }
+    
+    function testResolveForeignTargets() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help' => 5, 'rescueID' => 51)) extends \Plasma\Schemas\AbstractSchema {
+            public $help;
+            public $rescueID;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory72_preloads', 'help', 'BIGINT', '', 20, 0, null)),
+                    static::getColDefBuilder()
+                        ->name('rescueID')
+                        ->type('BIGINT')
+                        ->length(20)
+                        ->foreignKey('test_Directory72_preloads2', 'rescue')
+                        ->foreignFetchMode(\Plasma\Schemas\PreloadInterface::FETCH_MODE_LAZY)
+                        ->getDefinition()
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_Directory72_preloads';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help';
+            }
+        });
+        
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema->getTableName(), $builder);
+        
+        $schema2 = (new class($repo, array('rescue' => 51)) extends \Plasma\Schemas\AbstractSchema {
+            public $rescue;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory72_preloads2', 'rescue', 'BIGINT', '', 20, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_Directory72_preloads2';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'rescue';
+            }
+        });
+        
+        $builder2 = new \Plasma\Schemas\SQLDirectory(\get_class($schema2), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema2->getTableName(), $builder2);
+        
+        $queryResult = new \Plasma\QueryResult(
+            1,
+            0,
+            null,
+            array(
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory72_preloads', 'help', 'BIGINT', null, 20, 0, null)),
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory72_preloads', 'rescueID', 'BIGINT', null, 20, 0, null))
+            ),
+            array(
+                array(
+                    'help' => 5,
+                    'rescueID' => 51
+                )
+            )
+        );
+        
+        $client
+            ->expects($this->at(0))
+            ->method('execute')
+            ->with(
+                'SELECT * FROM `test_Directory72_preloads` AS t0 WHERE `help` = ?',
+                array(5)
+            )
+            ->will($this->returnValue(\React\Promise\resolve($queryResult)));
+    
+        $queryResult2 = new \Plasma\QueryResult(
+            1,
+            0,
+            null,
+            array(
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory72_preloads2', 'rescue', 'BIGINT', null, 20, 0, null))
+            ),
+            array(
+                array(
+                    'rescue' => 51
+                )
+            )
+        );
+    
+        $client
+            ->expects($this->at(1))
+            ->method('execute')
+            ->with(
+                'SELECT * FROM `test_Directory72_preloads2` AS t0 WHERE `rescue` = ?',
+                array(51)
+            )
+            ->will($this->returnValue(\React\Promise\resolve($queryResult2)));
+        
+        $promise = $builder->fetch(5);
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $value = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $value);
+        
+        $result = $value->getSchemas()[0];
+        $this->assertInstanceOf(\get_class($schema), $result);
+        
+        /** @var \Plasma\Schemas\SchemaInterface  $result */
+        
+        $this->assertSame(51, $result->rescueID);
+        $this->assertSame(5, $result->help);
+        
+        $promise2 = $result->resolveForeignTargets();
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise2);
+        
+        $value2 = $this->await($promise2);
+        $this->assertInstanceOf(\get_class($result), $value2);
+        
+        $this->assertInstanceOf(\get_class($schema2), $value2->rescueID);
+        $this->assertSame(51, $value2->rescueID->rescue);
     }
 }

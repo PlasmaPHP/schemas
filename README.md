@@ -96,7 +96,7 @@ Preloads are a way to load foreign references at the same time as a schema gets 
 How the preloads are exactly loaded depends on the Directory implementation.
 
 Preloads are foreign targets with fetch mode `ALWAYS` and are automatically handled.
-Foreign target with fetch mode `LAZY` are not automatically loaded and need to be explicitely asked for by calling `getAsyncResolver` on the schema.
+Foreign target with fetch mode `LAZY` are not automatically loaded and need to be explicitely asked for by calling `resolveForeignTargets` on the schema.
 
 Whether one uses one over the other fetch mode depends on the use case. It makes sense to only preload schemas you actually really always need.
 

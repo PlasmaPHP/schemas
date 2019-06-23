@@ -59,11 +59,10 @@ interface SchemaInterface {
     function afterPreloadHook(\Plasma\QueryResultInterface $result, array $preloads): void;
     
     /**
-     * Returns the asynchronous resolver to wait for before returning the schema.
-     * Resolves with a new schema, which will get used instead, or null.
+     * Resolves the outstanding foreign targets. Resolves with a new schema.
      * @return \React\Promise\PromiseInterface|null
      */
-    function getAsyncResolver(): ?\React\Promise\PromiseInterface;
+    function resolveForeignTargets(): ?\React\Promise\PromiseInterface;
     
     /**
      * Inserts the row.

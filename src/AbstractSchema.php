@@ -22,6 +22,11 @@ abstract class AbstractSchema implements SchemaInterface {
     protected $repo;
     
     /**
+     * @var \React\Promise\PromiseInterface|null
+     */
+    protected $resolvedAsyncForeignTargets;
+    
+    /**
      * @var array
      */
     protected static $schemaFieldsMapper = array();
@@ -71,35 +76,34 @@ abstract class AbstractSchema implements SchemaInterface {
      * @throws \Plasma\Exception
      */
     static function getPreloads(): array {
-        static $columns;
+        $table = static::getTableName();
+    
+        if(isset(static::$schemaFieldsMapper[$table]['__preloads__'])) {
+            return static::$schemaFieldsMapper[$table]['__preloads__'];
+        } elseif(!isset(static::$schemaFieldsMapper[$table]['__definition__'])) {
+            static::buildSchemaDefinition();
+        }
         
-        if($columns === null) {
-            $table = static::getTableName();
-            
-            if(!isset(static::$schemaFieldsMapper[$table]['__definition__'])) {
-                static::buildSchemaDefinition();
-            }
-            
-            $fetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS;
-            $columns = array();
-            
-            /** @var \Plasma\ColumnDefinitionInterface $column */
-            foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
-                if(
-                    $column instanceof \Plasma\Schemas\ColumnDefinitionInterface &&
-                    $column->getForeignTarget() !== null &&
-                    $column->getForeignKey() !== null &&
-                    $column->getForeignFetchMode() === $fetchMode
-                ) {
-                    $columns[] = new \Plasma\Schemas\Preload(
-                        $column->getForeignTarget(),
-                        $column->getForeignKey(),
-                        $column->getName()
-                    );
-                }
+        $fetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS;
+        $columns = array();
+        
+        /** @var \Plasma\ColumnDefinitionInterface $column */
+        foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
+            if(
+                $column instanceof \Plasma\Schemas\ColumnDefinitionInterface &&
+                $column->getForeignTarget() !== null &&
+                $column->getForeignKey() !== null &&
+                $column->getForeignFetchMode() === $fetchMode
+            ) {
+                $columns[] = new \Plasma\Schemas\Preload(
+                    $column->getForeignTarget(),
+                    $column->getForeignKey(),
+                    $column->getName()
+                );
             }
         }
         
+        static::$schemaFieldsMapper[$table]['__preloads__'] = $columns;
         return $columns;
     }
     
@@ -139,18 +143,16 @@ abstract class AbstractSchema implements SchemaInterface {
     }
     
     /**
-     * Returns the asynchronous resolver to wait for before returning the schema.
-     * Resolves with a new schema, which will get used instead, or null.
+     * Resolves the outstanding foreign targets. Resolves with a new schema.
      * @return \React\Promise\PromiseInterface|null
      */
-    function getAsyncResolver(): ?\React\Promise\PromiseInterface {
-        static $promise;
-        
-        if($promise !== null) {
-            return $promise;
+    function resolveForeignTargets(): ?\React\Promise\PromiseInterface {
+        if($this->resolvedAsyncForeignTargets !== null) {
+            return $this->resolvedAsyncForeignTargets;
         }
         
         $table = static::getTableName();
+        $promise = \React\Promise\resolve($this);
         
         /** @var \Plasma\ColumnDefinitionInterface  $column */
         foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
@@ -163,10 +165,6 @@ abstract class AbstractSchema implements SchemaInterface {
                 ($this->$name ?? null) !== null &&
                 !($this->$name instanceof \Plasma\Schemas\SchemaInterface)
             ) {
-                if($promise === null) {
-                    $promise = \React\Promise\resolve($this);
-                }
-                
                 $promise = $promise->then(function (self $schema) use ($column, $name) {
                     $table = $column->getForeignTarget();
                     $key = $column->getForeignKey();
@@ -174,9 +172,9 @@ abstract class AbstractSchema implements SchemaInterface {
                     return $this->repo
                         ->getDirectory($table)
                         ->fetchBy($key, $this->$name)
-                        ->then(function (\Plasma\Schemas\SchemaInterface $foreign) use ($schema, $name) {
+                        ->then(function (\Plasma\Schemas\SchemaCollection $foreign) use ($schema, $name) {
                             $schema = clone $schema;
-                            $schema->$name = $foreign;
+                            $schema->$name = $foreign->getSchemas()[0];
                             
                             return $schema;
                         });
@@ -184,6 +182,7 @@ abstract class AbstractSchema implements SchemaInterface {
             }
         }
         
+        $this->resolvedAsyncForeignTargets = $promise;
         return $promise;
     }
     

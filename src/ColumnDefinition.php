@@ -53,7 +53,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
     /**
      * @var string|null
      */
-    protected $foreignTable;
+    protected $foreignTarget;
     
     /**
      * @var string|null
@@ -81,7 +81,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
      * @param bool         $composite
      * @param bool         $unsigned
      * @param bool         $zerofilled
-     * @param string|null  $foreignTable
+     * @param string|null  $foreignTarget
      * @param string|null  $foreignKey
      * @param int|null     $foreignFetchMode
      * @internal
@@ -101,7 +101,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
         bool $composite,
         bool $unsigned,
         bool $zerofilled,
-        ?string $foreignTable,
+        ?string $foreignTarget,
         ?string $foreignKey,
         ?int $foreignFetchMode
     ) {
@@ -114,7 +114,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
         $this->composite = $composite;
         $this->unsigned = $unsigned;
         $this->zerofilled = $zerofilled;
-        $this->foreignTable = $foreignTable;
+        $this->foreignTarget = $foreignTarget;
         $this->foreignKey = $foreignKey;
         $this->foreignFetchMode = ($foreignFetchMode !== null ? $foreignFetchMode : $this->foreignFetchMode);
     }
@@ -180,7 +180,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
      * @return string|null
      */
     function getForeignTarget(): ?string {
-        return $this->foreignTable;
+        return $this->foreignTarget;
     }
     
     /**
