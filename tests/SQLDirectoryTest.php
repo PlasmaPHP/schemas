@@ -654,4 +654,98 @@ class SQLDirectoryTest extends TestCase {
         $this->assertSame(5, $result->help);
         $this->assertSame(51, $result->rescueID->rescue);
     }
+    
+    function testPreloadsWithNull() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help' => 5, 'rescueID' => 51)) extends \Plasma\Schemas\AbstractSchema {
+            public $help;
+            public $rescueID;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads', 'help', 'BIGINT', '', 20, 0, null)),
+                    static::getColDefBuilder()
+                        ->name('rescueID')
+                        ->type('BIGINT')
+                        ->length(20)
+                        ->foreignKey('test_Directory71_preloads2', 'rescue')
+                        ->foreignFetchMode(\Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS)
+                        ->getDefinition()
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_Directory71_preloads';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help';
+            }
+        });
+        
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema->getTableName(), $builder);
+        
+        $schema2 = (new class($repo, array('rescue' => 51)) extends \Plasma\Schemas\AbstractSchema {
+            public $rescue;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads_2', 'rescue', 'BIGINT', '', 20, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_Directory71_preloads2';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'rescue';
+            }
+        });
+        
+        $builder2 = new \Plasma\Schemas\SQLDirectory(\get_class($schema2), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema2->getTableName(), $builder2);
+        
+        $queryResult = new \Plasma\QueryResult(
+            1,
+            0,
+            null,
+            array(
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads', 'help', 'BIGINT', null, 20, 0, null)),
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads', 'rescueID', 'BIGINT', null, 20, 0, null)),
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads2', 'rescue', 'BIGINT', null, 20, 0, null))
+            ),
+            array(
+                array(
+                    'help' => 5,
+                    'rescueID' => null,
+                    'rescue' => null
+                )
+            )
+        );
+        
+        $client
+            ->expects($this->once())
+            ->method('execute')
+            ->with(
+                'SELECT * FROM `test_Directory71_preloads` AS t0 LEFT JOIN `test_Directory71_preloads2` AS t1 ON t0.rescueID = t1.rescue WHERE `help` = ?',
+                array(5)
+            )
+            ->will($this->returnValue(\React\Promise\resolve($queryResult)));
+        
+        $promise = $builder->fetch(5);
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $value = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $value);
+        
+        $result = $value->getSchemas()[0];
+        $this->assertInstanceOf(\get_class($schema), $result);
+        
+        $this->assertNull($result->rescueID);
+        $this->assertSame(5, $result->help);
+    }
 }

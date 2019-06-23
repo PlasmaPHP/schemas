@@ -127,7 +127,7 @@ abstract class AbstractSchema implements SchemaInterface {
             }
             
             foreach($columns as $column) {
-                if($column->getTableName() === $target && $column->getName() === $key) {
+                if($column->getTableName() === $target && $column->getName() === $key && ($result->getRows()[0][$key] ?? null) !== null) {
                     $this->$local = $this->repo
                         ->getDirectory($target)
                         ->buildSchemas($result)
