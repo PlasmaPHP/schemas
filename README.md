@@ -29,13 +29,13 @@ $repository = new \Plasma\Schemas\Repository($client);
  * - id ; auto incremented integer (length 12) primary
  * - name ; varchar(255) utf8mb4_generl_ci
  */
-class Users extends \Plasma\Schemas\SQLSchema {
+class Users extends \Plasma\Schemas\AbstractSchema {
     public $id;
     public $name;
     
     /**
      * Returns the schema definition.
-     * @return \Plasma\Schemas\SQLColumnDefinitionInterface[]
+     * @return \Plasma\Schemas\ColumnDefinitionInterface[]
      */
     static function getDefinition(): array {
         return array(
