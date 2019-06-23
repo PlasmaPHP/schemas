@@ -29,13 +29,13 @@ $repository = new \Plasma\Schemas\Repository($client);
  * - id ; auto incremented integer (length 12) primary
  * - name ; varchar(255) utf8mb4_generl_ci
  */
-class Users implements \Plasma\Schemas\SchemaInterface {
+class Users extends \Plasma\Schemas\AbstractSchema {
     public $id;
     public $name;
     
     /**
      * Returns the schema definition.
-     * @return \Plasma\ColumnDefinitionInterface[]
+     * @return \Plasma\Schemas\ColumnDefinitionInterface[]
      */
     static function getDefinition(): array {
         return array(
@@ -45,27 +45,19 @@ class Users implements \Plasma\Schemas\SchemaInterface {
             // Any Plasma Column Definition
             // can be used.
             
-            $this->getColDefBuilder()
+            static::getColDefBuilder()
                 ->name('id')
                 ->type('INTEGER')
                 ->length(12)
                 ->autoIncrement()
                 ->primary()
                 ->getDefinition(),
-            $this->getColDefBuilder()
+            static::getColDefBuilder()
                 ->name('name')
                 ->type('VARCHAR')
                 ->length(255)
                 ->getDefinition()
         );
-    }
-    
-    /**
-     * Returns the name of the database.
-     * @return string
-     */
-    static function getDatabaseName(): string {
-        return 'my_database';
     }
     
     /**
@@ -96,6 +88,19 @@ $repository->execute('SELECT * FROM `users`', array())
 
 $loop->run();
 ```
+
+# Preloads
+Schemas has a mechanism called Preloads.
+
+Preloads are a way to load foreign references at the same time as a schema gets loaded, and let your schema be always filled with the foreign reference schema.
+How the preloads are exactly loaded depends on the Directory implementation.
+
+Preloads are foreign targets with fetch mode `ALWAYS` and are automatically handled.
+Foreign target with fetch mode `LAZY` are not automatically loaded and need to be explicitely asked for by calling `resolveForeignTargets` on the schema.
+
+Whether one uses one over the other fetch mode depends on the use case. It makes sense to only preload schemas you actually really always need.
+
+Preloads are supported through the `ColumnDefinitionInterface`. Current implementations are the `ColumnDefinition` implementation and the `ColumnDefinitionBuilder`.
 
 # Documentation
 https://plasmaphp.github.io/schemas/

@@ -294,26 +294,9 @@ class Repository implements RepositoryInterface {
             $table = \reset($fields)->getTableName();
             
             if(isset($this->builders[$table])) {
-                $schemas = $this->getDirectory($table)->buildSchemas($result);
-                $promises = array();
-                
-                /** @var \Plasma\Schemas\SchemaInterface  $schema */
-                foreach($schemas as $pos => $schema) {
-                    $resolver = $schema->getAsyncResolver(true);
-                    if($resolver !== null) {
-                        $promises[] = $resolver->then(function (?\Plasma\Schemas\SchemaInterface $newSchema = null) use ($pos, &$schemas) {
-                            if($newSchema !== null) {
-                                $schemas[$pos] = $newSchema;
-                            }
-                        });
-                    }
-                }
-                
-                if(!empty($promises)) {
-                    return \React\Promise\all($promises)->then(function () use (&$schemas) {
-                        return $schemas;
-                    });
-                }
+                $schemas = $this
+                    ->getDirectory($table)
+                    ->buildSchemas($result);
                 
                 return $schemas;
             }
