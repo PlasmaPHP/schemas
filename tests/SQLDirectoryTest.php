@@ -5,6 +5,8 @@
  *
  * Website: https://github.com/PlasmaPHP
  * License: https://github.com/PlasmaPHP/schemas/blob/master/LICENSE
+ * @noinspection PhpUnhandledExceptionInspection *//**
+ * @noinspection SqlResolve
 */
 
 namespace Plasma\Schemas\Tests;
@@ -19,12 +21,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory_fetchall', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory_fetchall', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -36,7 +34,7 @@ class SQLDirectoryTest extends TestCase {
             }
         });
         
-        $query = 'SELECT * FROM `test_Directory_fetchall`';
+        $query = 'SELECT * FROM `test_Directory_fetchall` AS t0';
         
         $client
             ->expects($this->any())
@@ -67,12 +65,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory2', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory2', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -84,7 +78,7 @@ class SQLDirectoryTest extends TestCase {
             }
         });
         
-        $query = 'SELECT * FROM `test_Directory2` WHERE `help` = ?';
+        $query = 'SELECT * FROM `test_Directory2` AS t0 WHERE `help` = ?';
         
         $client
             ->expects($this->any())
@@ -115,12 +109,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory8', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory8', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -158,13 +148,9 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory3', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory3', 'help2', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory3', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory3', 'help2', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -225,14 +211,10 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help2', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory9', 'help3', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory9', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory9', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory9', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -247,7 +229,7 @@ class SQLDirectoryTest extends TestCase {
         $query = 'INSERT INTO `test_Directory9` (`help2`) VALUES (?)';
         $result = new \Plasma\QueryResult(1, 0, 1, null, null);
         
-        $query2 = 'SELECT * FROM `test_Directory9` WHERE `help` = ?';
+        $query2 = 'SELECT * FROM `test_Directory9` AS t0 WHERE `help` = ?';
         $result2 = new \Plasma\QueryResult(0, 0, 0, $schema::getDefinition(), array(array('help' => 1, 'help2' => 5, 'help3' => 0)));
         
         $client
@@ -296,14 +278,10 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help2', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory10', 'help3', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory10', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory10', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory10', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -352,12 +330,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory4', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory4', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -387,12 +361,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory5', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory5', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -431,14 +401,10 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help2', 'BIGINT', '', 20, 0, null)),
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory101', 'help3', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory101', 'help', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory101', 'help2', 'BIGINT', '', 20, 0, null)),
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory101', 'help3', 'BIGINT', '', 20, 0, null)),
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -515,12 +481,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory2112', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory2112', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -563,12 +525,8 @@ class SQLDirectoryTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test_Directory7', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory7', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -600,5 +558,100 @@ class SQLDirectoryTest extends TestCase {
         
         $this->assertEquals($expectedSchemas, $collection->getSchemas());
         $this->assertSame($result, $collection->getResult());
+    }
+    
+    function testPreloads() {
+        $client = $this->getClientMock();
+        $repo = new \Plasma\Schemas\Repository($client);
+        
+        $schema = (new class($repo, array('help' => 5, 'rescueID' => 51)) extends \Plasma\Schemas\AbstractSchema {
+            public $help;
+            public $rescueID;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads', 'help', 'BIGINT', '', 20, 0, null)),
+                    static::getColDefBuilder()
+                        ->name('rescueID')
+                        ->type('BIGINT')
+                        ->length(20)
+                        ->foreignKey('test_Directory71_preloads2', 'rescue')
+                        ->foreignFetchMode(\Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS)
+                        ->getDefinition()
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_Directory71_preloads';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'help';
+            }
+        });
+        
+        $builder = new \Plasma\Schemas\SQLDirectory(\get_class($schema), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema->getTableName(), $builder);
+        
+        $schema2 = (new class($repo, array('rescue' => 51)) extends \Plasma\Schemas\AbstractSchema {
+            public $rescue;
+            
+            static function getDefinition(): array {
+                return array(
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads_2', 'rescue', 'BIGINT', '', 20, 0, null))
+                );
+            }
+            
+            static function getTableName(): string {
+                return 'test_Directory71_preloads2';
+            }
+            
+            static function getIdentifierColumn(): ?string {
+                return 'rescue';
+            }
+        });
+        
+        $builder2 = new \Plasma\Schemas\SQLDirectory(\get_class($schema2), (new \Plasma\SQL\Grammar\MySQL()));
+        $repo->registerDirectory($schema2->getTableName(), $builder2);
+        
+        $queryResult = new \Plasma\QueryResult(
+            1,
+            0,
+            null,
+            array(
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads', 'help', 'BIGINT', null, 20, 0, null)),
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads', 'rescueID', 'BIGINT', null, 20, 0, null)),
+                (new \Plasma\Schemas\Tests\ColumnDefinition('test_Directory71_preloads2', 'rescue', 'BIGINT', null, 20, 0, null))
+            ),
+            array(
+                array(
+                    'help' => 5,
+                    'rescueID' => 51,
+                    'rescue' => 51
+                )
+            )
+        );
+        
+        $client
+            ->expects($this->once())
+            ->method('execute')
+            ->with(
+                'SELECT * FROM `test_Directory71_preloads` AS t0 LEFT JOIN `test_Directory71_preloads2` AS t1 ON t0.rescueID = t1.rescue WHERE `help` = ?',
+                array(5)
+            )
+            ->will($this->returnValue(\React\Promise\resolve($queryResult)));
+        
+        $promise = $builder->fetch(5);
+        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        
+        $value = $this->await($promise);
+        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $value);
+        
+        $result = $value->getSchemas()[0];
+        $this->assertInstanceOf(\get_class($schema), $result);
+        $this->assertInstanceOf(\get_class($schema2), $result->rescueID);
+        
+        $this->assertSame(5, $result->help);
+        $this->assertSame(51, $result->rescueID->rescue);
     }
 }

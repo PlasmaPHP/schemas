@@ -14,6 +14,8 @@ namespace Plasma\Schemas;
  *
  * This class must be extended and the properties must be provided by the extending class (but not as private).
  * This allows validation and match expectations.
+ *
+ * This abstract Schema class has no preloading or async resolving functionality.
  */
 abstract class AbstractSchema implements SchemaInterface {
     /**
@@ -34,7 +36,7 @@ abstract class AbstractSchema implements SchemaInterface {
      */
     function __construct(\Plasma\Schemas\Repository $repo, array $row) {
         $this->repo = $repo;
-        $table = $this->getTableName();
+        $table = static::getTableName();
         
         if(!isset(static::$schemaFieldsMapper[$table])) {
             static::$schemaFieldsMapper[$table] = array(
@@ -72,9 +74,7 @@ abstract class AbstractSchema implements SchemaInterface {
             $this->$name = $row[$colname];
         }
         
-        if(!$this->hasAsyncResolver(true)) {
-            $this->validateData();
-        }
+        $this->validateData();
     }
     
     /**
@@ -87,13 +87,129 @@ abstract class AbstractSchema implements SchemaInterface {
     }
     
     /**
+     * Lets the directory preload the foreign references on schema request.
+     * Returns an array of `PreloadInterface`.
+     * @return \Plasma\Schemas\PreloadInterface[]
+     */
+    static function getPreloads(): array {
+        static $columns;
+        
+        if($columns === null) {
+            $table = static::getTableName();
+            
+            if(!isset(static::$schemaFieldsMapper[$table]['__definition__'])) {
+                return array();
+            }
+            
+            $fetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS;
+            $columns = array();
+            
+            /** @var \Plasma\ColumnDefinitionInterface $column */
+            foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
+                if(
+                    $column instanceof \Plasma\Schemas\ColumnDefinitionInterface &&
+                    $column->getForeignTarget() !== null &&
+                    $column->getForeignKey() !== null &&
+                    $column->getForeignFetchMode() === $fetchMode
+                ) {
+                    $columns[] = new \Plasma\Schemas\Preload(
+                        $column->getForeignTarget(),
+                        $column->getForeignKey(),
+                        $column->getName()
+                    );
+                }
+            }
+        }
+        
+        return $columns;
+    }
+    
+    /**
+     * This is the after preload hook, which gets called with the preloads
+     * which were used to create the schema. The hook is responsible for
+     * creating the other schemas from the preloads and the table result.
+     * @param \Plasma\QueryResultInterface        $result    This is always a query result with only a single row.
+     * @param \Plasma\Schemas\PreloadInterface[]  $preloads
+     * @return void
+     * @throws \Plasma\Exception  Thrown when the foreign directory does not exist.
+     * @throws \Plasma\Exception  Thrown when the preload local key does not exist.
+     */
+    function afterPreloadHook(\Plasma\QueryResultInterface $result, array $preloads): void {
+        $columns = $result->getFieldDefinitions();
+        $table = static::getTableName();
+        
+        foreach($preloads as $preload) {
+            $target = $preload->getForeignTarget();
+            $key = $preload->getForeignKey();
+            $local = static::$schemaFieldsMapper[$table][$preload->getLocalKey()] ?? null;
+            
+            if($local === null) {
+                throw new \Plasma\Exception('Unknown preload local key "'.$preload->getLocalKey().'"');
+            }
+            
+            foreach($columns as $column) {
+                if($column->getTableName() === $target && $column->getName() === $key) {
+                    $this->$local = $this->repo
+                        ->getDirectory($target)
+                        ->buildSchemas($result)
+                        ->getSchemas()[0];
+                    break 1;
+                }
+            }
+        }
+    }
+    
+    /**
      * Returns the asynchronous resolver to wait for before returning the schema.
-     * May resolve with a new schema, which will get used instead.
-     * @param bool  $autoloading  Whether this method gets called for autoloading (not manually).
+     * Resolves with a new schema, which will get used instead, or null.
      * @return \React\Promise\PromiseInterface|null
      */
-    function getAsyncResolver(bool $autoloading = false): ?\React\Promise\PromiseInterface {
-        return null;
+    function getAsyncResolver(): ?\React\Promise\PromiseInterface {
+        static $promise;
+        
+        if($promise !== null) {
+            return $promise;
+        }
+        
+        $table = static::getTableName();
+        
+        if(!isset(static::$schemaFieldsMapper[$table]['__definition__'])) {
+            return null;
+        }
+        
+        /** @var \Plasma\ColumnDefinitionInterface  $column */
+        foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
+            $name = static::$schemaFieldsMapper[$table][$column->getName()] ?? null;
+            
+            if(
+                $column instanceof \Plasma\Schemas\ColumnDefinitionInterface &&
+                $column->getForeignTarget() !== null &&
+                $column->getForeignKey() !== null &&
+                ($this->$name ?? null) !== null &&
+                !($this->$name instanceof \Plasma\Schemas\SchemaInterface)
+            ) {
+                if($promise === null) {
+                    $promise = \React\Promise\resolve($this);
+                }
+                
+                $promise = $promise->then(function (self $schema) use ($column, $name) {
+                    $table = $column->getForeignTarget();
+                    $key = $column->getForeignKey();
+                    
+                    return $this->repo
+                        ->getDirectory($table)
+                        ->fetchBy($key, $this->$name)
+                        ->then(function (\Plasma\Schemas\SchemaInterface $foreign) use ($schema, $name) {
+                            $schema = clone $schema;
+                            $schema->$name = $foreign;
+                            
+                            return $schema;
+                        });
+                });
+            }
+        }
+        
+        return $promise;
     }
     
     /**
@@ -200,8 +316,9 @@ abstract class AbstractSchema implements SchemaInterface {
      * @return \Plasma\Schemas\ColumnDefinitionBuilder
      * @see \Plasma\Schemas\ColumnDefinitionBuilder::create()
      */
-    function getColDefBuilder(): \Plasma\Schemas\ColumnDefinitionBuilder {
-        return \Plasma\Schemas\ColumnDefinitionBuilder::createWithSchema($this);
+    static function getColDefBuilder(): \Plasma\Schemas\ColumnDefinitionBuilder {
+        return (new \Plasma\Schemas\ColumnDefinitionBuilder())
+            ->table(static::getTableName());
     }
     
     /**
@@ -215,15 +332,6 @@ abstract class AbstractSchema implements SchemaInterface {
         }
         
         return \lcfirst(\str_replace('_', '', \ucwords($name, '_')));
-    }
-    
-    /**
-     * Whether we have an async resolver.
-     * @param bool  $autoloading
-     * @return bool
-     */
-    protected function hasAsyncResolver(bool $autoloading): bool {
-        return false;
     }
     
     /**

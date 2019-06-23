@@ -16,11 +16,6 @@ class ColumnDefinitionBuilder {
     /**
      * @var string
      */
-    protected $database = '';
-    
-    /**
-     * @var string
-     */
     protected $table = '';
     
     /**
@@ -89,26 +84,30 @@ class ColumnDefinitionBuilder {
     protected $zerofilled = false;
     
     /**
-     * Builds a new builder instance and pre-sets the database and table name.
+     * @var string|null
+     */
+    protected $foreignTable;
+    
+    /**
+     * @var string|null
+     */
+    protected $foreignKey;
+    
+    /**
+     * @var int|null
+     */
+    protected $foreignFetchMode;
+    
+    /**
+     * Builds a new builder instance and pre-sets the table name.
      * @param \Plasma\Schemas\SchemaInterface  $schema
      * @return \Plasma\Schemas\ColumnDefinitionBuilder
      */
-    static function createWithSchema(\Plasma\Schemas\SchemaInterface $schema): self {
+    static function createFromSchema(\Plasma\Schemas\SchemaInterface $schema): self {
         $builder = new static();
-        $builder->database = $schema->getDatabaseName();
         $builder->table = $schema->getTableName();
         
         return $builder;
-    }
-    
-    /**
-     * Set the database name.
-     * @param string  $database
-     * @return $this
-     */
-    function database(string $database): self {
-        $this->database = $database;
-        return $this;
     }
     
     /**
@@ -252,12 +251,33 @@ class ColumnDefinitionBuilder {
     }
     
     /**
+     * Set the foreign key for this column.
+     * @param string|null  $foreignTable
+     * @param string|null  $foreignKey
+     * @return $this
+     */
+    function foreignKey(?string $foreignTable, ?string $foreignKey): self {
+        $this->foreignTable = $foreignTable;
+        $this->foreignKey = $foreignKey;
+        return $this;
+    }
+    
+    /**
+     * Get the foreign fetch mode. See the constants.
+     * @param int|null  $foreignFetchMode
+     * @return $this
+     */
+    function foreignFetchMode(?int $foreignFetchMode): self {
+        $this->foreignFetchMode = $foreignFetchMode;
+        return $this;
+    }
+    
+    /**
      * Build the definition.
      * @return \Plasma\Schemas\ColumnDefinition
      */
     function getDefinition(): \Plasma\Schemas\ColumnDefinition {
         return (new \Plasma\Schemas\ColumnDefinition(
-            $this->database,
             $this->table,
             $this->name,
             $this->type,
@@ -271,7 +291,10 @@ class ColumnDefinitionBuilder {
             $this->unique,
             $this->composite,
             $this->unsigned,
-            $this->zerofilled
+            $this->zerofilled,
+            $this->foreignTable,
+            $this->foreignKey,
+            $this->foreignFetchMode
         ));
     }
 }

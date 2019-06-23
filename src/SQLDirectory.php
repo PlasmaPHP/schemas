@@ -20,9 +20,10 @@ class SQLDirectory extends AbstractDirectory {
     
     /**
      * Constructor.
-     * @param string                             $schema   The class name of the schema to build for.
+     * @param string                             $schema   The class name of the schema to build for. Must be a child of `SQLSchema`.
      * @param \Plasma\SQL\GrammarInterface|null  $grammar  The SQL grammar to use.
      * @throws \Plasma\Exception
+     * @see \Plasma\Schemas\SQLSchema
      */
     function __construct(string $schema, ?\Plasma\SQL\GrammarInterface $grammar) {
         parent::__construct($schema);
@@ -55,17 +56,32 @@ class SQLDirectory extends AbstractDirectory {
     function fetchBy(string $name, $value): \React\Promise\PromiseInterface {
         $query = \Plasma\SQL\QueryBuilder::create()
             ->select()
-            ->from($this->schema::getTableName())
+            ->from($this->schema::getTableName(), 't0')
             ->where($name, '=', $value);
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
         }
         
+        $preloads = $this->schema::getPreloads();
+        $tcount = 0;
+        
+        foreach($preloads as $preload) {
+            $query->leftJoin(
+                $preload->getForeignTarget(),
+                't'.(++$tcount)
+            )->on(
+                't0.'.$preload->getLocalKey(),
+                't'.$tcount.'.'.$preload->getForeignKey()
+            );
+        }
+        
         return $this->repo->execute(
             $query->getQuery(),
             $query->getParameters()
-        );
+        )->then(function (\Plasma\Schemas\SchemaCollection $schemaCollection) use ($preloads) {
+            return $this->handlePreloadResult($schemaCollection, $preloads);
+        });
     }
     
     /**
@@ -76,16 +92,31 @@ class SQLDirectory extends AbstractDirectory {
     function fetchAll(): \React\Promise\PromiseInterface {
         $query = \Plasma\SQL\QueryBuilder::create()
             ->select()
-            ->from($this->schema::getTableName());
+            ->from($this->schema::getTableName(), 't0');
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
         }
         
+        $preloads = $this->schema::getPreloads();
+        $tcount = 0;
+        
+        foreach($preloads as $preload) {
+            $query->leftJoin(
+                $preload->getForeignTarget(),
+                't'.(++$tcount)
+            )->on(
+                't0.'.$preload->getLocalKey(),
+                't'.$tcount.'.'.$preload->getForeignKey()
+            );
+        }
+        
         return $this->repo->execute(
             $query->getQuery(),
             array()
-        );
+        )->then(function (\Plasma\Schemas\SchemaCollection $schemaCollection) use ($preloads) {
+            return $this->handlePreloadResult($schemaCollection, $preloads);
+        });
     }
     
     /**
@@ -207,15 +238,17 @@ class SQLDirectory extends AbstractDirectory {
             $options['transactionIsolation'] = \Plasma\TransactionInterface::ISOLATION_COMMITTED;
         }
         
-        $query = \Plasma\SQL\QueryBuilder::create()
-            ->insert($params, array(
-                'onConflict' => $onConflict
-            ))
-            ->into($table);
+        $query = \Plasma\SQL\QueryBuilder::create();
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
         }
+        
+        $query
+            ->insert($params, array(
+                'onConflict' => $onConflict
+            ))
+            ->into($table);
         
         return $this->repo->getClient()
             ->beginTransaction($options['transactionIsolation'])
@@ -299,6 +332,46 @@ class SQLDirectory extends AbstractDirectory {
             $query->getQuery(),
             $query->getParameters()
         );
+    }
+    
+    /**
+     * Handles a preload result.
+     * @param \Plasma\Schemas\SchemaCollection     $schemaCollection
+     * @param \Plasma\Schemas\PreloadInterface[]  $preloads
+     * @return \Plasma\Schemas\SchemaCollection
+     * @throws \Plasma\Exception
+     */
+    protected function handlePreloadResult(\Plasma\Schemas\SchemaCollection $schemaCollection, array $preloads): \Plasma\Schemas\SchemaCollection {
+        if(empty($preloads)) {
+            return $schemaCollection;
+        }
+        
+        $result = $schemaCollection->getResult();
+        $schemas = $schemaCollection->getSchemas();
+        
+        $affRows = $result->getAffectedRows();
+        $warnings = $result->getWarningsCount();
+        $fields = $result->getFieldDefinitions();
+        $rows = $result->getRows();
+        
+        $i = 0;
+        foreach($schemas as $schema) {
+            $sResult = new \Plasma\QueryResult(
+                $affRows,
+                $warnings,
+                null,
+                $fields,
+                array($rows[$i++])
+            );
+            
+            $schema->afterPreloadHook($sResult, $preloads);
+            
+            if($schema instanceof \Plasma\Schemas\AbstractSchema) {
+                $schema->validateData();
+            }
+        }
+        
+        return $schemaCollection;
     }
     
     /**

@@ -14,7 +14,7 @@ namespace Plasma\Schemas;
  *
  * It takes input and outputs it without any changes.
  */
-class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
+class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements ColumnDefinitionInterface {
     /**
      * @var bool
      */
@@ -51,8 +51,22 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
     protected $zerofilled;
     
     /**
+     * @var string|null
+     */
+    protected $foreignTable;
+    
+    /**
+     * @var string|null
+     */
+    protected $foreignKey;
+    
+    /**
+     * @var int
+     */
+    protected $foreignFetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_LAZY;
+    
+    /**
      * Constructor.
-     * @param string       $database
      * @param string       $table
      * @param string       $name
      * @param string       $type
@@ -67,10 +81,12 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
      * @param bool         $composite
      * @param bool         $unsigned
      * @param bool         $zerofilled
+     * @param string|null  $foreignTable
+     * @param string|null  $foreignKey
+     * @param int|null     $foreignFetchMode
      * @internal
      */
     function __construct(
-        string $database,
         string $table,
         string $name,
         string $type,
@@ -84,9 +100,12 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
         bool $unique,
         bool $composite,
         bool $unsigned,
-        bool $zerofilled
+        bool $zerofilled,
+        ?string $foreignTable,
+        ?string $foreignKey,
+        ?int $foreignFetchMode
     ) {
-        parent::__construct($database, $table, $name, $type, $charset, $length, $flags, $decimals);
+        parent::__construct($table, $name, $type, $charset, $length, $flags, $decimals);
         
         $this->nullable = $nullable;
         $this->autoIncremented = $autoIncremented;
@@ -95,6 +114,9 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
         $this->composite = $composite;
         $this->unsigned = $unsigned;
         $this->zerofilled = $zerofilled;
+        $this->foreignTable = $foreignTable;
+        $this->foreignKey = $foreignKey;
+        $this->foreignFetchMode = ($foreignFetchMode !== null ? $foreignFetchMode : $this->foreignFetchMode);
     }
     
     /**
@@ -151,5 +173,29 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition {
      */
     function isZerofilled(): bool {
         return $this->zerofilled;
+    }
+    
+    /**
+     * Get the foreign table for this column, or null.
+     * @return string|null
+     */
+    function getForeignTarget(): ?string {
+        return $this->foreignTable;
+    }
+    
+    /**
+     * Get the foreign key for this column, or null.
+     * @return string|null
+     */
+    function getForeignKey(): ?string {
+        return $this->foreignKey;
+    }
+    
+    /**
+     * Get the foreign fetch mode. See the constants.
+     * @return int
+     */
+    function getForeignFetchMode(): int {
+        return $this->foreignFetchMode;
     }
 }

@@ -29,12 +29,6 @@ interface SchemaInterface {
     static function getDefinition(): array;
     
     /**
-     * Returns the name of the database (or any other equivalent).
-     * @return string
-     */
-    static function getDatabaseName(): string;
-    
-    /**
      * Returns the name of the table (or any other equivalent).
      * @return string
      */
@@ -47,12 +41,29 @@ interface SchemaInterface {
     static function getIdentifierColumn(): ?string;
     
     /**
+     * Lets the directory preload the foreign references on schema request.
+     * Returns an array of `PreloadInterface`, or null if nothing to preload.
+     * @return \Plasma\Schemas\PreloadInterface[]|null
+     */
+    static function getPreloads();
+    
+    /**
+     * This is the after preload hook, which gets called with the preloads
+     * which were used to create the schema. The hook is responsible for
+     * creating the other schemas from the preloads and the table result.
+     * @param \Plasma\QueryResultInterface        $result    This is always a query result with only a single row.
+     * @param \Plasma\Schemas\PreloadInterface[]  $preloads
+     * @return void
+     * @throws \Plasma\Exception
+     */
+    function afterPreloadHook(\Plasma\QueryResultInterface $result, array $preloads): void;
+    
+    /**
      * Returns the asynchronous resolver to wait for before returning the schema.
-     * May resolve with a new schema, which will get used instead.
-     * @param bool  $autoloading  Whether this method gets called for autoloading (not manually).
+     * Resolves with a new schema, which will get used instead, or null.
      * @return \React\Promise\PromiseInterface|null
      */
-    function getAsyncResolver(bool $autoloading = false): ?\React\Promise\PromiseInterface;
+    function getAsyncResolver(): ?\React\Promise\PromiseInterface;
     
     /**
      * Inserts the row.

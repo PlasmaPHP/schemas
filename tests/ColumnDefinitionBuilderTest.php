@@ -10,7 +10,7 @@
 namespace Plasma\Schemas\Tests;
 
 class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
-    function testCreateWithSchema() {
+    function testCreateFromSchema() {
         $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
             public $help;
     
@@ -29,12 +29,8 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test1_cbt', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test1_cbt', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-            
-            static function getDatabaseName(): string {
-                return 'test';
             }
             
             static function getTableName(): string {
@@ -46,29 +42,30 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             }
         });
         
-        $builder = \Plasma\Schemas\ColumnDefinitionBuilder::createWithSchema($schema);
+        $builder = \Plasma\Schemas\ColumnDefinitionBuilder::createFromSchema($schema);
         $this->assertInstanceOf(\Plasma\Schemas\ColumnDefinitionBuilder::class, $builder);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', '', '', '', null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', '', '', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
         $this->assertEquals($expected, $coldef);
     }
     
-    function testDatabaseTableColumn() {
+    function testTableColumn() {
         $builder = new \Plasma\Schemas\ColumnDefinitionBuilder();
     
         $builder
-            ->database('test')
             ->table('test1_cbt')
             ->name('cb');
     
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
     
         $coldef = $builder->getDefinition();
@@ -82,8 +79,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->type('VARCHAR');
     
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', 'VARCHAR', '', null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', 'VARCHAR', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
     
         $coldef = $builder->getDefinition();
@@ -97,8 +95,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->charset('utf8mb4');
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', 'utf8mb4', null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', 'utf8mb4', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -112,8 +111,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->charset(null);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', null, null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', null, null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -127,8 +127,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->length(21);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', 21, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', 21, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -142,8 +143,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->length(null);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -157,8 +159,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->flags(255);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 255, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 255, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -172,8 +175,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->decimals(2);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, 2,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, 2,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -187,8 +191,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->decimals(null);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -202,8 +207,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->nullable(true);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            true, false, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            true, false, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -217,8 +223,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->autoIncrement();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, true, false, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, true, false, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -232,8 +239,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->primary();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, true, false, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, true, false, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -247,8 +255,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->unique();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, true, false, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, true, false, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -262,8 +271,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->composite();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, false, true, false, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, true, false, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -277,8 +287,9 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->unsigned();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, false, false, true, false
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, true, false,
+            null, null, null
         );
         
         $coldef = $builder->getDefinition();
@@ -292,8 +303,41 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             ->zerofilled();
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
-            'test', 'test1_cbt', 'cb', '', '', null, 0, null,
-            false, false, false, false, false, false, true
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, false, true,
+            null, null, null
+        );
+        
+        $coldef = $builder->getDefinition();
+        $this->assertEquals($expected, $coldef);
+    }
+    
+    function testForeignTarget() {
+        $builder = $this->getCDBuilder();
+        
+        $builder
+            ->foreignKey('hello', 'world');
+        
+        $expected = new \Plasma\Schemas\ColumnDefinition(
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            'hello', 'world', \Plasma\Schemas\PreloadInterface::FETCH_MODE_LAZY
+        );
+        
+        $coldef = $builder->getDefinition();
+        $this->assertEquals($expected, $coldef);
+    }
+    
+    function testForeignFetchMode() {
+        $builder = $this->getCDBuilder();
+        
+        $builder
+            ->foreignFetchMode(5);
+        
+        $expected = new \Plasma\Schemas\ColumnDefinition(
+            'test1_cbt', 'cb', '', '', null, 0, null,
+            false, false, false, false, false, false, false,
+            null, null, 5
         );
         
         $coldef = $builder->getDefinition();
@@ -304,7 +348,6 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         $builder = new \Plasma\Schemas\ColumnDefinitionBuilder();
         
         $builder
-            ->database('test')
             ->table('test1_cbt')
             ->name('cb');
         

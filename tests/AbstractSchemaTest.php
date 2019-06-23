@@ -98,8 +98,8 @@ class AbstractSchemaTest extends TestCase {
         $name = \get_class($mock);
         
         $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
-                        ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
-                        ->getMock();
+            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
+            ->getMock();
         
         $schema = $mock->build($repo, array(
             'help' => 50
@@ -151,12 +151,8 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test3', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test3', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -233,12 +229,8 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test4', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test4', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -265,12 +257,8 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition(static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -292,15 +280,11 @@ class AbstractSchemaTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Property "helpMe" for column "help_me" does not exist');
         
-        $schema = (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\AbstractSchema {
+        (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\AbstractSchema {
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test7', 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test7', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -320,17 +304,13 @@ class AbstractSchemaTest extends TestCase {
         $this->expectException(\Plasma\Exception::class);
         $this->expectExceptionMessage('Field "help" for identifier column does not exist');
         
-        $schema = (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\AbstractSchema {
+        (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\AbstractSchema {
             protected $helpMe;
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test6', 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test6', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -352,12 +332,8 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition(static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {
@@ -398,12 +374,8 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test', 'test5', 'help', 'BIGINT', '', 20, 0, null))
+                    (new \Plasma\Schemas\Tests\ColumnDefinition('test5', 'help', 'BIGINT', '', 20, 0, null))
                 );
-            }
-    
-            static function getDatabaseName(): string {
-                return \bin2hex(\random_bytes(5));
             }
             
             static function getTableName(): string {

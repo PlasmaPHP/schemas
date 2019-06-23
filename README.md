@@ -45,27 +45,19 @@ class Users extends \Plasma\Schemas\SQLSchema {
             // Any Plasma Column Definition
             // can be used.
             
-            $this->getSQLColDefBuilder()
+            static::getColDefBuilder()
                 ->name('id')
                 ->type('INTEGER')
                 ->length(12)
                 ->autoIncrement()
                 ->primary()
                 ->getDefinition(),
-            $this->getSQLColDefBuilder()
+            static::getColDefBuilder()
                 ->name('name')
                 ->type('VARCHAR')
                 ->length(255)
                 ->getDefinition()
         );
-    }
-    
-    /**
-     * Returns the name of the database.
-     * @return string
-     */
-    static function getDatabaseName(): string {
-        return 'my_database';
     }
     
     /**
@@ -96,6 +88,19 @@ $repository->execute('SELECT * FROM `users`', array())
 
 $loop->run();
 ```
+
+# Preloads
+Schemas has a mechanism called Preloads.
+
+Preloads are a way to load foreign references at the same time as a schema gets loaded, and let your schema be always filled with the foreign reference schema.
+How the preloads are exactly loaded depends on the Directory implementation.
+
+Preloads are foreign targets with fetch mode `ALWAYS` and are automatically handled.
+Foreign target with fetch mode `LAZY` are not automatically loaded and need to be explicitely asked for by calling `getAsyncResolver` on the schema.
+
+Whether one uses one over the other fetch mode depends on the use case. It makes sense to only preload schemas you actually really always need.
+
+Preloads are supported through the `ColumnDefinitionInterface`. Current implementations are the `ColumnDefinition` implementation and the `ColumnDefinitionBuilder`.
 
 # Documentation
 https://plasmaphp.github.io/schemas/
