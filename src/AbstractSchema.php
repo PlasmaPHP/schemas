@@ -14,8 +14,6 @@ namespace Plasma\Schemas;
  *
  * This class must be extended and the properties must be provided by the extending class (but not as private).
  * This allows validation and match expectations.
- *
- * This abstract Schema class has no preloading or async resolving functionality.
  */
 abstract class AbstractSchema implements SchemaInterface {
     /**
