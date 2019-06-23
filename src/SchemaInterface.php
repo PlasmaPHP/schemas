@@ -42,10 +42,10 @@ interface SchemaInterface {
     
     /**
      * Lets the directory preload the foreign references on schema request.
-     * Returns an array of `PreloadInterface`, or null if nothing to preload.
-     * @return \Plasma\Schemas\PreloadInterface[]|null
+     * Returns an array of `PreloadInterface`.
+     * @return \Plasma\Schemas\PreloadInterface[]
      */
-    static function getPreloads();
+    static function getPreloads(): array;
     
     /**
      * This is the after preload hook, which gets called with the preloads
