@@ -262,7 +262,13 @@ class AbstractSchemaTest extends TestCase {
             }
             
             static function getTableName(): string {
-                return \bin2hex(\random_bytes(5));
+                static $name;
+                
+                if(!$name) {
+                    $name = \bin2hex(\random_bytes(5));
+                }
+                
+                return $name;
             }
             
             static function getIdentifierColumn(): ?string {

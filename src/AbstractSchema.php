@@ -37,27 +37,7 @@ abstract class AbstractSchema implements SchemaInterface {
         $table = static::getTableName();
         
         if(!isset(static::$schemaFieldsMapper[$table])) {
-            static::$schemaFieldsMapper[$table] = array(
-                '__definition__' => $this->getDefinition()
-            );
-            
-            /** @var \Plasma\ColumnDefinitionInterface  $field */
-            foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $field) {
-                $colname = $field->getName();
-                $name = $this->convertColumnName($colname);
-                
-                if(!\property_exists($this, $name)) {
-                    throw new \Plasma\Exception('Property "'.$name.'" for column "'.$colname.'" does not exist');
-                }
-                
-                static::$schemaFieldsMapper[$table][$colname] = $name;
-                static::$schemaFieldsMapper[$table][$name] = $colname;
-            }
-            
-            $uniq = $this->getIdentifierColumn();
-            if($uniq !== null && !isset(static::$schemaFieldsMapper[$table][$uniq])) {
-                throw new \Plasma\Exception('Field "'.$uniq.'" for identifier column does not exist');
-            }
+            static::buildSchemaDefinition();
         }
         
         /** @var \Plasma\ColumnDefinitionInterface  $column */
@@ -88,6 +68,7 @@ abstract class AbstractSchema implements SchemaInterface {
      * Lets the directory preload the foreign references on schema request.
      * Returns an array of `PreloadInterface`.
      * @return \Plasma\Schemas\PreloadInterface[]
+     * @throws \Plasma\Exception
      */
     static function getPreloads(): array {
         static $columns;
@@ -96,7 +77,7 @@ abstract class AbstractSchema implements SchemaInterface {
             $table = static::getTableName();
             
             if(!isset(static::$schemaFieldsMapper[$table]['__definition__'])) {
-                return array();
+                static::buildSchemaDefinition();
             }
             
             $fetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS;
@@ -170,10 +151,6 @@ abstract class AbstractSchema implements SchemaInterface {
         }
         
         $table = static::getTableName();
-        
-        if(!isset(static::$schemaFieldsMapper[$table]['__definition__'])) {
-            return null;
-        }
         
         /** @var \Plasma\ColumnDefinitionInterface  $column */
         foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
@@ -324,7 +301,7 @@ abstract class AbstractSchema implements SchemaInterface {
      * @param string  $name
      * @return string
      */
-    protected function convertColumnName(string $name): string {
+    protected static function convertColumnName(string $name): string {
         if(\strpos($name, '_') === false) {
             return $name;
         }
@@ -368,5 +345,37 @@ abstract class AbstractSchema implements SchemaInterface {
         }
         
         return $result;
+    }
+    
+    /**
+     * Builds the definition.
+     * @return void
+     * @throws \Plasma\Exception
+     * @internal
+     */
+    protected static function buildSchemaDefinition(): void {
+        $table = static::getTableName();
+        
+        static::$schemaFieldsMapper[$table] = array(
+            '__definition__' => static::getDefinition()
+        );
+        
+        /** @var \Plasma\ColumnDefinitionInterface $field */
+        foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $field) {
+            $colname = $field->getName();
+            $name = static::convertColumnName($colname);
+            
+            if(!\property_exists(\get_called_class(), $name)) {
+                throw new \Plasma\Exception('Property "'.$name.'" for column "'.$colname.'" does not exist');
+            }
+            
+            static::$schemaFieldsMapper[$table][$colname] = $name;
+            static::$schemaFieldsMapper[$table][$name] = $colname;
+        }
+        
+        $uniq = static::getIdentifierColumn();
+        if($uniq !== null && !isset(static::$schemaFieldsMapper[$table][$uniq])) {
+            throw new \Plasma\Exception('Field "'.$uniq.'" for identifier column does not exist');
+        }
     }
 }
