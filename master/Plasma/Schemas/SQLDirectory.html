@@ -231,7 +231,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L27">line 27</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L28">line 28</a></div>
         <code>                    
     <strong>__construct</strong>(string $schema, <abbr title="Plasma\SQL\GrammarInterface">GrammarInterface</abbr>|null $grammar)
         </code>
@@ -249,7 +249,7 @@
                     <tr>
                 <td>string</td>
                 <td>$schema</td>
-                <td>The class name of the schema to build for.</td>
+                <td>The class name of the schema to build for. Must be a child of <code>SQLSchema</code>.</td>
             </tr>
                     <tr>
                 <td><abbr title="Plasma\SQL\GrammarInterface">GrammarInterface</abbr>|null</td>
@@ -270,6 +270,17 @@
             </table>
 
             
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <abbr title="Plasma\Schemas\SQLSchema">SQLSchema</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
                         
                         
                     </div>
@@ -329,7 +340,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L271">line 271</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L304">line 304</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>delete</strong>(mixed $value)
         </code>
@@ -380,7 +391,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_deleteBy">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L288">line 288</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L321">line 321</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>deleteBy</strong>(string $name, mixed $value)
         </code>
@@ -436,7 +447,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_fetch">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L38">line 38</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L39">line 39</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>fetch</strong>(mixed $value)
         </code>
@@ -487,7 +498,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAll">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L76">line 76</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L92">line 92</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>fetchAll</strong>()
         </code>
@@ -528,7 +539,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchBy">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L55">line 55</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L56">line 56</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>fetchBy</strong>(string $name, mixed $value)
         </code>
@@ -616,7 +627,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_insert">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L97">line 97</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L128">line 128</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>insert</strong>(array $data)
         </code>
@@ -667,7 +678,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_insertAll">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L179">line 179</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L210">line 210</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>insertAll</strong>(array $data, array $options = array())
         </code>
@@ -780,7 +791,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L247">line 247</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/SQLDirectory.php#L280">line 280</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>update</strong>(array $data, string $field, mixed $value)
         </code>

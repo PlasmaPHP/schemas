@@ -117,6 +117,18 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_afterPreloadHook">afterPreloadHook</a>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result, array $preloads)
+        
+                                            <p>This is the after preload hook, which gets called with the preloads
+which were used to create the schema. The hook is responsible for
+creating the other schemas from the preloads and the table result.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     static&nbsp;<a href="../../Plasma/Schemas/SchemaInterface.html"><abbr title="Plasma\Schemas\SchemaInterface">SchemaInterface</abbr></a>
                 </div>
                 <div class="col-md-8 type">
@@ -137,22 +149,22 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_getAsyncResolver">getAsyncResolver</a>(bool $autoloading = false)
-        
-                                            <p>Returns the asynchronous resolver to wait for before returning the schema.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a>
+                    static&nbsp;<a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getColDefBuilder">getColDefBuilder</a>()
         
                                             <p>Get a new instance of a column definition builder.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../Plasma/Schemas/PreloadInterface.html"><abbr title="Plasma\Schemas\PreloadInterface">PreloadInterface</abbr></a>[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getPreloads">getPreloads</a>()
+        
+                                            <p>Lets the directory preload the foreign references on schema request.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -163,6 +175,16 @@ This allows validation and match expectations.</p>                    </div>
                     <a href="#method_insert">insert</a>()
         
                                             <p>Inserts the schema.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_resolveForeignTargets">resolveForeignTargets</a>()
+        
+                                            <p>Resolves the outstanding foreign targets. Resolves with a new schema.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -203,7 +225,7 @@ This allows validation and match expectations.</p>                    </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L35">line 35</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L40">line 40</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a> $repo, array $row)
         </code>
@@ -249,8 +271,70 @@ This allows validation and match expectations.</p>                    </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_afterPreloadHook">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L120">line 120</a></div>
+        <code>                    void
+    <strong>afterPreloadHook</strong>(<abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr> $result, array $preloads)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>This is the after preload hook, which gets called with the preloads
+which were used to create the schema. The hook is responsible for
+creating the other schemas from the preloads and the table result.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\QueryResultInterface">QueryResultInterface</abbr></td>
+                <td>$result</td>
+                <td>This is always a query result with only a single row.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$preloads</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td>Thrown when the foreign directory does not exist.</td>
+            </tr>
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td>Thrown when the preload local key does not exist.</td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_build">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L106">line 106</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L196">line 196</a></div>
         <code>        static            <a href="../../Plasma/Schemas/SchemaInterface.html"><abbr title="Plasma\Schemas\SchemaInterface">SchemaInterface</abbr></a>
     <strong>build</strong>(<a href="../../Plasma/Schemas/Repository.html"><abbr title="Plasma\Schemas\Repository">Repository</abbr></a> $repository, array $row)
         </code>
@@ -306,7 +390,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L168">line 168</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L258">line 258</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>delete</strong>()
         </code>
@@ -346,51 +430,9 @@ This allows validation and match expectations.</p>                    </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getAsyncResolver">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L95">line 95</a></div>
-        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null
-    <strong>getAsyncResolver</strong>(bool $autoloading = false)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Returns the asynchronous resolver to wait for before returning the schema.</p>                    <p>May resolve with a new schema, which will get used instead.</p>                            </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>bool</td>
-                <td>$autoloading</td>
-                <td>Whether this method gets called for autoloading (not manually).</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                        
-                        
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_getColDefBuilder">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L203">line 203</a></div>
-        <code>                    <a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L293">line 293</a></div>
+        <code>        static            <a href="../../Plasma/Schemas/ColumnDefinitionBuilder.html"><abbr title="Plasma\Schemas\ColumnDefinitionBuilder">ColumnDefinitionBuilder</abbr></a>
     <strong>getColDefBuilder</strong>()
         </code>
     </h3>
@@ -431,8 +473,49 @@ This allows validation and match expectations.</p>                    </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getPreloads">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L78">line 78</a></div>
+        <code>        static            <a href="../../Plasma/Schemas/PreloadInterface.html"><abbr title="Plasma\Schemas\PreloadInterface">PreloadInterface</abbr></a>[]
+    <strong>getPreloads</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Lets the directory preload the foreign references on schema request.</p>                    <p>Returns an array of <code>PreloadInterface</code>.</p>                            </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Plasma/Schemas/PreloadInterface.html"><abbr title="Plasma\Schemas\PreloadInterface">PreloadInterface</abbr></a>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Plasma\Exception">Exception</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_insert">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L115">line 115</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L205">line 205</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>insert</strong>()
         </code>
@@ -472,8 +555,40 @@ This allows validation and match expectations.</p>                    </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_resolveForeignTargets">
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L149">line 149</a></div>
+        <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null
+    <strong>resolveForeignTargets</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Resolves the outstanding foreign targets. Resolves with a new schema.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                        
+                        
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_toArray">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L185">line 185</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L275">line 275</a></div>
         <code>                    array
     <strong>toArray</strong>()
         </code>
@@ -505,7 +620,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L140">line 140</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L230">line 230</a></div>
         <code>                    <abbr title="React\Promise\PromiseInterface">PromiseInterface</abbr>
     <strong>update</strong>(array $data)
         </code>
@@ -556,7 +671,7 @@ This allows validation and match expectations.</p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateData">
-        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L85">line 85</a></div>
+        <div class="location">at         <a href="https://github.com/PlasmaPHP/schemas/blob/master/src/AbstractSchema.php#L68">line 68</a></div>
         <code>                    void
     <strong>validateData</strong>()
         </code>
