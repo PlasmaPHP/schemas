@@ -34,7 +34,7 @@ class SQLDirectoryTest extends TestCase {
             }
         });
         
-        $query = 'SELECT * FROM `test_Directory_fetchall` AS t0';
+        $query = 'SELECT * FROM `test_Directory_fetchall`';
         
         $client
             ->expects($this->any())
@@ -78,7 +78,7 @@ class SQLDirectoryTest extends TestCase {
             }
         });
         
-        $query = 'SELECT * FROM `test_Directory2` AS t0 WHERE `help` = ?';
+        $query = 'SELECT * FROM `test_Directory2` WHERE `help` = ?';
         
         $client
             ->expects($this->any())
@@ -229,7 +229,7 @@ class SQLDirectoryTest extends TestCase {
         $query = 'INSERT INTO `test_Directory9` (`help2`) VALUES (?)';
         $result = new \Plasma\QueryResult(1, 0, 1, null, null);
         
-        $query2 = 'SELECT * FROM `test_Directory9` AS t0 WHERE `help` = ?';
+        $query2 = 'SELECT * FROM `test_Directory9` WHERE `help` = ?';
         $result2 = new \Plasma\QueryResult(0, 0, 0, $schema::getDefinition(), array(array('help' => 1, 'help2' => 5, 'help3' => 0)));
         
         $client
@@ -636,7 +636,7 @@ class SQLDirectoryTest extends TestCase {
             ->expects($this->once())
             ->method('execute')
             ->with(
-                'SELECT * FROM `test_Directory71_preloads` AS t0 LEFT JOIN `test_Directory71_preloads2` AS t1 ON t0.rescueID = t1.rescue WHERE `help` = ?',
+                'SELECT * FROM `test_Directory71_preloads` LEFT JOIN `test_Directory71_preloads2` ON test_Directory71_preloads.rescueID = test_Directory71_preloads2.rescue WHERE `help` = ?',
                 array(5)
             )
             ->will($this->returnValue(\React\Promise\resolve($queryResult)));
@@ -731,10 +731,10 @@ class SQLDirectoryTest extends TestCase {
             ->expects($this->once())
             ->method('execute')
             ->with(
-                'SELECT * FROM `test_Directory71_preloads` AS t0 LEFT JOIN `test_Directory71_preloads2` AS t1 ON t0.rescueID = t1.rescue WHERE `help` = ?',
+                'SELECT * FROM `test_Directory71_preloads` LEFT JOIN `test_Directory71_preloads2` ON test_Directory71_preloads.rescueID = test_Directory71_preloads2.rescue WHERE `help` = ?',
                 array(5)
             )
-            ->will($this->returnValue(\React\Promise\resolve($queryResult)));
+            ->willReturn(\React\Promise\resolve($queryResult));
         
         $promise = $builder->fetch(5);
         $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
@@ -823,7 +823,7 @@ class SQLDirectoryTest extends TestCase {
             ->expects($this->at(0))
             ->method('execute')
             ->with(
-                'SELECT * FROM `test_Directory72_preloads` AS t0 WHERE `help` = ?',
+                'SELECT * FROM `test_Directory72_preloads` WHERE `help` = ?',
                 array(5)
             )
             ->will($this->returnValue(\React\Promise\resolve($queryResult)));
@@ -846,7 +846,7 @@ class SQLDirectoryTest extends TestCase {
             ->expects($this->at(1))
             ->method('execute')
             ->with(
-                'SELECT * FROM `test_Directory72_preloads2` AS t0 WHERE `rescue` = ?',
+                'SELECT * FROM `test_Directory72_preloads2` WHERE `rescue` = ?',
                 array(51)
             )
             ->will($this->returnValue(\React\Promise\resolve($queryResult2)));

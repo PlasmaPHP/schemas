@@ -56,7 +56,7 @@ class SQLDirectory extends AbstractDirectory {
     function fetchBy(string $name, $value): \React\Promise\PromiseInterface {
         $query = \Plasma\SQL\QueryBuilder::create()
             ->select()
-            ->from($this->schema::getTableName(), 't0')
+            ->from($this->schema::getTableName())
             ->where($name, '=', $value);
         
         if($this->grammar !== null) {
@@ -64,15 +64,13 @@ class SQLDirectory extends AbstractDirectory {
         }
         
         $preloads = $this->schema::getPreloads();
-        $tcount = 0;
         
         foreach($preloads as $preload) {
             $query->leftJoin(
-                $preload->getForeignTarget(),
-                't'.(++$tcount)
+                $preload->getForeignTarget()
             )->on(
-                't0.'.$preload->getLocalKey(),
-                't'.$tcount.'.'.$preload->getForeignKey()
+                $this->schema::getTableName().'.'.$preload->getLocalKey(),
+                $preload->getForeignTarget().'.'.$preload->getForeignKey()
             );
         }
         
@@ -92,22 +90,20 @@ class SQLDirectory extends AbstractDirectory {
     function fetchAll(): \React\Promise\PromiseInterface {
         $query = \Plasma\SQL\QueryBuilder::create()
             ->select()
-            ->from($this->schema::getTableName(), 't0');
+            ->from($this->schema::getTableName());
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
         }
         
         $preloads = $this->schema::getPreloads();
-        $tcount = 0;
         
         foreach($preloads as $preload) {
             $query->leftJoin(
-                $preload->getForeignTarget(),
-                't'.(++$tcount)
+                $preload->getForeignTarget()
             )->on(
-                't0.'.$preload->getLocalKey(),
-                't'.$tcount.'.'.$preload->getForeignKey()
+                $this->schema::getTableName().'.'.$preload->getLocalKey(),
+                $preload->getForeignTarget().'.'.$preload->getForeignKey()
             );
         }
         
