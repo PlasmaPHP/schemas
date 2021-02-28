@@ -9,6 +9,17 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\ClientInterface;
+use Plasma\CommandInterface;
+use Plasma\DriverInterface;
+use Plasma\Exception;
+use Plasma\QueryBuilderInterface;
+use Plasma\QueryResultInterface;
+use Plasma\StatementInterface;
+use Plasma\StreamQueryResultInterface;
+use Plasma\TransactionInterface;
+use React\Promise\PromiseInterface;
+
 /**
  * The repository is responsible for turning row results into specified PHP object.
  *
@@ -20,40 +31,40 @@ namespace Plasma\Schemas;
  */
 class Repository implements RepositoryInterface {
     /**
-     * @var \Plasma\ClientInterface
+     * @var ClientInterface
      */
     protected $client;
     
     /**
-     * @var \Plasma\Schemas\DirectoryInterface[]
+     * @var DirectoryInterface[]
      */
     protected $builders = array();
     
     /**
      * Constructor.
-     * @param \Plasma\ClientInterface  $client
+     * @param ClientInterface  $client
      */
-    function __construct(\Plasma\ClientInterface $client) {
+    function __construct(ClientInterface $client) {
         $this->client = $client;
     }
     
     /**
      * Get the internally used client.
-     * @return \Plasma\ClientInterface
+     * @return ClientInterface
      */
-    function getClient(): \Plasma\ClientInterface {
+    function getClient(): ClientInterface {
         return $this->client;
     }
     
     /**
      * Get the directory for the schema.
      * @param string  $schemaName  The schema name. This would be the table name.
-     * @return \Plasma\Schemas\DirectoryInterface
-     * @throws \Plasma\Exception
+     * @return DirectoryInterface
+     * @throws Exception
      */
-    function getDirectory(string $schemaName): \Plasma\Schemas\DirectoryInterface {
+    function getDirectory(string $schemaName): DirectoryInterface {
         if(!isset($this->builders[$schemaName])) {
-            throw new \Plasma\Exception('The schema is not registered');
+            throw new Exception('The schema is not registered');
         }
         
         return $this->builders[$schemaName];
@@ -61,14 +72,14 @@ class Repository implements RepositoryInterface {
     
     /**
      * Register a directory for the schema to be used by the repository.
-     * @param string                              $schemaName  The schema name. This would be the table name.
-     * @param \Plasma\Schemas\DirectoryInterface  $directory   The directory for the schema.
+     * @param string              $schemaName  The schema name. This would be the table name.
+     * @param DirectoryInterface  $directory   The directory for the schema.
      * @return $this
-     * @throws \Plasma\Exception
+     * @throws Exception
      */
-    function registerDirectory(string $schemaName, \Plasma\Schemas\DirectoryInterface $directory) {
+    function registerDirectory(string $schemaName, DirectoryInterface $directory): RepositoryInterface {
         if(isset($this->builders[$schemaName])) {
-            throw new \Plasma\Exception('The schema is already registered');
+            throw new Exception('The schema is already registered');
         }
     
         $directory->setRepository($this);
@@ -82,7 +93,7 @@ class Repository implements RepositoryInterface {
      * @param string  $schemaName  The schema name. This would be the table name.
      * @return $this
      */
-    function unregisterDirectory(string $schemaName) {
+    function unregisterDirectory(string $schemaName): RepositoryInterface {
         unset($this->builders[$schemaName]);
         return $this;
     }
@@ -97,10 +108,10 @@ class Repository implements RepositoryInterface {
     
     /**
      * Checks a connection back in, if usable and not closing.
-     * @param \Plasma\DriverInterface  $driver
+     * @param DriverInterface  $driver
      * @return void
      */
-    function checkinConnection(\Plasma\DriverInterface $driver): void {
+    function checkinConnection(DriverInterface $driver): void {
         $this->client->checkinConnection($driver);
     }
     
@@ -115,21 +126,21 @@ class Repository implements RepositoryInterface {
      * statement such as DROP TABLE or CREATE TABLE is issued within a transaction.
      * The implicit COMMIT will prevent you from rolling back any other changes within the transaction boundary.
      * @param int  $isolation  See the `TransactionInterface` constants.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      * @see \Plasma\TransactionInterface
      */
-    function beginTransaction(int $isolation = \Plasma\TransactionInterface::ISOLATION_COMMITTED): \React\Promise\PromiseInterface {
-        return $this->client->beginTransaction($isolation)->then(function (\Plasma\TransactionInterface $transaction) {
-            return (new \Plasma\Schemas\Transaction($this, $transaction));
+    function beginTransaction(int $isolation = TransactionInterface::ISOLATION_COMMITTED): PromiseInterface {
+        return $this->client->beginTransaction($isolation)->then(function (TransactionInterface $transaction) {
+            return (new Transaction($this, $transaction));
         });
     }
     
     /**
      * Closes all connections gracefully after processing all outstanding requests.
-     * @return \React\Promise\PromiseInterface
+     * @return PromiseInterface
      */
-    function close(): \React\Promise\PromiseInterface {
+    function close(): PromiseInterface {
         return $this->client->close();
     }
     
@@ -143,11 +154,11 @@ class Repository implements RepositoryInterface {
     
     /**
      * Runs the given command.
-     * @param \Plasma\CommandInterface  $command
+     * @param CommandInterface  $command
      * @return mixed  Return depends on command and driver.
-     * @throws \Plasma\Exception  Thrown if the client is closing all connections.
+     * @throws Exception  Thrown if the client is closing all connections.
      */
-    function runCommand(\Plasma\CommandInterface $command) {
+    function runCommand(CommandInterface $command) {
         return $this->client->runCommand($command);
     }
     
@@ -155,11 +166,11 @@ class Repository implements RepositoryInterface {
      * Runs the given querybuilder on an underlying driver instance.
      * The driver CAN throw an exception if the given querybuilder is not supported.
      * An example would be a SQL querybuilder and a Cassandra driver.
-     * @param \Plasma\QueryBuilderInterface  $query
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @param QueryBuilderInterface  $query
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function runQuery(\Plasma\QueryBuilderInterface $query): \React\Promise\PromiseInterface {
+    function runQuery(QueryBuilderInterface $query): PromiseInterface {
         return $this->client->runQuery($query)->then(array($this, 'handleQueryResult'));
     }
     
@@ -167,33 +178,33 @@ class Repository implements RepositoryInterface {
      * Creates a new cursor to seek through SELECT query results. Resolves with a `CursorInterface` instance.
      * @param string                   $query
      * @param array                    $params
-     * @return \React\Promise\PromiseInterface
+     * @return PromiseInterface
      * @throws \LogicException  Thrown if the driver or DBMS does not support cursors.
-     * @throws \Plasma\Exception
+     * @throws Exception
      */
-    function createReadCursor(string $query, array $params = array()): \React\Promise\PromiseInterface {
+    function createReadCursor(string $query, array $params = array()): PromiseInterface {
         return $this->client->createReadCursor($query, $params);
     }
     
     /**
      * Executes a plain query. Resolves with a `QueryResultInterface` instance.
      * @param string  $query
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      * @see \Plasma\QueryResultInterface
      */
-    function query(string $query): \React\Promise\PromiseInterface {
+    function query(string $query): PromiseInterface {
         return $this->client->query($query)->then(array($this, 'handleQueryResult'));
     }
     
     /**
      * Prepares a query. Resolves with a `StatementInterface` instance.
      * @param string  $query
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      * @see \Plasma\StatementInterface
      */
-    function prepare(string $query): \React\Promise\PromiseInterface {
+    function prepare(string $query): PromiseInterface {
         return $this->client->prepare($query)->then(array($this, 'handlePrepareStatement'));
     }
     
@@ -203,11 +214,11 @@ class Repository implements RepositoryInterface {
      * If you need to execute a query multiple times, prepare the query manually for performance reasons.
      * @param string  $query
      * @param array   $params
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      * @see \Plasma\StatementInterface
      */
-    function execute(string $query, array $params = array()): \React\Promise\PromiseInterface {
+    function execute(string $query, array $params = array()): PromiseInterface {
         return $this->client->execute($query, $params)->then(array($this, 'handleQueryResult'));
     }
     
@@ -217,9 +228,9 @@ class Repository implements RepositoryInterface {
      * @param int     $type  For types, see the driver interface constants.
      * @return string
      * @throws \LogicException  Thrown if the driver does not support quoting.
-     * @throws \Plasma\Exception
+     * @throws Exception
      */
-    function quote(string $str, int $type = \Plasma\DriverInterface::QUOTE_TYPE_VALUE): string {
+    function quote(string $str, int $type = DriverInterface::QUOTE_TYPE_VALUE): string {
         return $this->client->quote($str, $type);
     }
     
@@ -273,13 +284,13 @@ class Repository implements RepositoryInterface {
     
     /**
      * Handles a query result and maps it. Rows get buffered. Returns a `SchemaCollection`, if a SELECT query.
-     * @param \Plasma\QueryResultInterface  $result
-     * @return \Plasma\Schemas\SchemaCollection|\Plasma\QueryResultInterface|\React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @param QueryResultInterface  $result
+     * @return SchemaCollection|QueryResultInterface|PromiseInterface
+     * @throws Exception
      * @internal
      */
-    function handleQueryResult(\Plasma\QueryResultInterface $result) {
-        if($result instanceof \Plasma\StreamQueryResultInterface) {
+    function handleQueryResult(QueryResultInterface $result) {
+        if($result instanceof StreamQueryResultInterface) {
             return $result->all()->then(array($this, 'handleQueryResult'));
         }
         
@@ -287,18 +298,16 @@ class Repository implements RepositoryInterface {
         
         if($rows !== null) {
             if(empty($rows)) {
-                return (new \Plasma\Schemas\SchemaCollection(array(), $result));
+                return (new SchemaCollection(array(), $result));
             }
             
             $fields = $result->getFieldDefinitions();
             $table = \reset($fields)->getTableName();
             
             if(isset($this->builders[$table])) {
-                $schemas = $this
+                return $this
                     ->getDirectory($table)
                     ->buildSchemas($result);
-                
-                return $schemas;
             }
         }
         
@@ -307,11 +316,11 @@ class Repository implements RepositoryInterface {
     
     /**
      * Handles a prepared statement and wraps it.
-     * @param \Plasma\StatementInterface  $statement
-     * @return \Plasma\Schemas\Statement
+     * @param StatementInterface  $statement
+     * @return Statement
      * @internal
      */
-    function handlePrepareStatement(\Plasma\StatementInterface $statement) {
-        return (new \Plasma\Schemas\Statement($this, $statement));
+    function handlePrepareStatement(StatementInterface $statement): Statement {
+        return (new Statement($this, $statement));
     }
 }

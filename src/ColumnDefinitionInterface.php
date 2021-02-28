@@ -9,10 +9,12 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\ColumnDefinitionInterface as BaseColumnDefinitionInterface;
+
 /**
  * An extension interface for the generic Column Definition implementation for some features.
  */
-interface ColumnDefinitionInterface extends \Plasma\ColumnDefinitionInterface {
+interface ColumnDefinitionInterface extends BaseColumnDefinitionInterface {
     /**
      * Get the foreign target for this column, or null.
      * @return string|null

@@ -100,10 +100,10 @@ class ColumnDefinitionBuilder {
     
     /**
      * Builds a new builder instance and pre-sets the table name.
-     * @param \Plasma\Schemas\SchemaInterface  $schema
-     * @return \Plasma\Schemas\ColumnDefinitionBuilder
+     * @param SchemaInterface  $schema
+     * @return ColumnDefinitionBuilder
      */
-    static function createFromSchema(\Plasma\Schemas\SchemaInterface $schema): self {
+    static function createFromSchema(SchemaInterface $schema): self {
         $builder = new static();
         $builder->table = $schema->getTableName();
         
@@ -274,10 +274,10 @@ class ColumnDefinitionBuilder {
     
     /**
      * Build the definition.
-     * @return \Plasma\Schemas\ColumnDefinition
+     * @return ColumnDefinition
      */
-    function getDefinition(): \Plasma\Schemas\ColumnDefinition {
-        return (new \Plasma\Schemas\ColumnDefinition(
+    function getDefinition(): ColumnDefinition {
+        return (new ColumnDefinition(
             $this->table,
             $this->name,
             $this->type,

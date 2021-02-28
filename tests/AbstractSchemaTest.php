@@ -5,138 +5,155 @@
  *
  * Website: https://github.com/PlasmaPHP
  * License: https://github.com/PlasmaPHP/schemas/blob/master/LICENSE
+ * @noinspection PhpUnhandledExceptionInspection
 */
 
 namespace Plasma\Schemas\Tests;
 
+use Plasma\Exception;
+use Plasma\QueryResult;
+use Plasma\QueryResultInterface;
+use Plasma\Schemas\AbstractSchema;
+use Plasma\Schemas\Repository;
+use Plasma\Schemas\SchemaCollection;
+use Plasma\Schemas\SQLDirectory;
+use Plasma\SQL\Grammar\MySQL;
+use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
+
 class AbstractSchemaTest extends TestCase {
     function testBuild() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         $mock = $this->getSchema();
         
         $name = \get_class($mock);
+        /** @noinspection PhpUndefinedMethodInspection */
         $expected = $name::custom($repo, 50);
         
-        $actual = $mock->build($repo, array(
+        $actual = $mock::build($repo, array(
             'help' => 50
         ));
         
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
     
     function testInsert() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
-            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
+        $builder = $this->getMockBuilder(SQLDirectory::class)
+            ->setConstructorArgs(array($name, (new MySQL())))
             ->getMock();
         
-        $result = new \Plasma\QueryResult(1, 0, null, null, null);
-        $result = new \Plasma\Schemas\SchemaCollection(array((new $name($repo, array('help' => 0)))), $result);
+        $result = new QueryResult(1, 0, null, null, null);
+        $result = new SchemaCollection(array((new $name($repo, array('help' => 0)))), $result);
         
         $builder
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('insert')
             ->with(array(
                 'help' => 5
             ))
-            ->will($this->returnValue(\React\Promise\resolve($result)));
+            ->willReturn(resolve($result));
         
         $repo->registerDirectory('test5', $builder);
         
         $schema = new $name($repo, array('help' => 5));
         
         $insert = $schema->insert();
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $insert);
+        self::assertInstanceOf(PromiseInterface::class, $insert);
         
         $res = $this->await($insert);
-        $this->assertSame($schema, $res);
+        self::assertSame($schema, $res);
     }
     
     function testInsertQueryResult() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
-            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
+        $builder = $this->getMockBuilder(SQLDirectory::class)
+            ->setConstructorArgs(array($name, (new MySQL())))
             ->getMock();
         
-        $result = new \Plasma\QueryResult(1, 0, null, null, null);
+        $result = new QueryResult(1, 0, null, null, null);
         
         $builder
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('insert')
             ->with(array(
                 'help' => 5
             ))
-            ->will($this->returnValue(\React\Promise\resolve($result)));
+            ->willReturn(resolve($result));
         
         $repo->registerDirectory('test5', $builder);
         
         $schema = new $name($repo, array('help' => 5));
         
         $insert = $schema->insert();
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $insert);
+        self::assertInstanceOf(PromiseInterface::class, $insert);
         
         $res = $this->await($insert);
-        $this->assertSame($result, $res);
+        self::assertSame($result, $res);
     }
     
     function testUpdate() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getSchema();
         $name = \get_class($mock);
         
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
-            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
+        $builder = $this->getMockBuilder(SQLDirectory::class)
+            ->setConstructorArgs(array($name, (new MySQL())))
             ->getMock();
         
-        $schema = $mock->build($repo, array(
+        $schema = $mock::build($repo, array(
             'help' => 50
         ));
         
-        $result = new \Plasma\QueryResult(1, 0, null, null, null);
+        $result = new QueryResult(1, 0, null, null, null);
         
         $builder
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with(array(
                'help' => 10
             ), 'help', 50)
-            ->will($this->returnValue(\React\Promise\resolve($result)));
+            ->willReturn(resolve($result));
         
         $repo->registerDirectory('test5', $builder);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $client
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('quote')
-            ->will($this->returnCallback(function ($a) {
-                return '`'.$a.'`';
-            }));
+            ->willReturnCallback(
+                function ($a) {
+                    return '`'.$a.'`';
+                }
+            );
         
         $promise = $schema->update(array('help' => 10));
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        self::assertInstanceOf(PromiseInterface::class, $promise);
         
         $res = $this->await($promise);
-        $this->assertInstanceOf(\Plasma\QueryResultInterface::class, $res);
+        self::assertInstanceOf(QueryResultInterface::class, $res);
         
-        $this->assertSame($result, $res);
+        self::assertSame($result, $res);
     }
     
     function testUpdateNoUnique() {
-        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
+        $schema = (new class() extends AbstractSchema {
             public $help;
             
+            /** @noinspection PhpMissingParentConstructorInspection */
             function __construct() {
                 
             }
@@ -151,7 +168,7 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test3', 'help', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition('test3', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -164,7 +181,7 @@ class AbstractSchemaTest extends TestCase {
             }
         });
         
-        $this->expectException(\Plasma\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('AbstractSchema has no unique or primary column');
         
         $schema->update(array('help' => 10));
@@ -172,49 +189,51 @@ class AbstractSchemaTest extends TestCase {
     
     function testDelete() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getSchema();
         $name = \get_class($mock);
-    
-        $builder = $this->getMockBuilder(\Plasma\Schemas\SQLDirectory::class)
-            ->setConstructorArgs(array($name, (new \Plasma\SQL\Grammar\MySQL())))
+        
+        $builder = $this->getMockBuilder(SQLDirectory::class)
+            ->setConstructorArgs(array($name, (new MySQL())))
             ->getMock();
-    
-        $result = new \Plasma\QueryResult(1, 0, null, null, null);
-    
+        
+        $result = new QueryResult(1, 0, null, null, null);
+        
         $builder
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('deleteBy')
             ->with('help', 50)
-            ->will($this->returnValue(\React\Promise\resolve($result)));
-    
+            ->willReturn(resolve($result));
+        
         $repo->registerDirectory('test5', $builder);
         
-        $schema = $mock->build($repo, array(
+        $schema = $mock::build($repo, array(
             'help' => 50
         ));
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $client
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('quote')
-            ->will($this->returnCallback(function ($a) {
+            ->willReturnCallback(function ($a) {
                 return '`'.$a.'`';
-            }));
+            });
         
         $promise = $schema->delete();
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        self::assertInstanceOf(PromiseInterface::class, $promise);
         
         $res = $this->await($promise);
-        $this->assertInstanceOf(\Plasma\QueryResultInterface::class, $res);
+        self::assertInstanceOf(QueryResultInterface::class, $res);
         
-        $this->assertSame($result, $res);
+        self::assertSame($result, $res);
     }
     
     function testDeleteNoUnique() {
-        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
+        $schema = (new class() extends AbstractSchema {
             public $help;
             
+            /** @noinspection PhpMissingParentConstructorInspection */
             function __construct() {
                 
             }
@@ -229,7 +248,7 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test4', 'help', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition('test4', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -242,7 +261,7 @@ class AbstractSchemaTest extends TestCase {
             }
         });
         
-        $this->expectException(\Plasma\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('AbstractSchema has no unique or primary column');
         
         $schema->delete();
@@ -250,14 +269,14 @@ class AbstractSchemaTest extends TestCase {
     
     function testSnakeToCamelCase() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
-        $schema = (new class($repo, array('help_me' => \PHP_INT_MAX)) extends \Plasma\Schemas\AbstractSchema {
+        $schema = (new class($repo, array('help_me' => \PHP_INT_MAX)) extends AbstractSchema {
             public $helpMe;
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition(static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition(static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -276,20 +295,20 @@ class AbstractSchemaTest extends TestCase {
             }
         });
         
-        $this->assertSame(\PHP_INT_MAX, $schema->helpMe);
+        self::assertSame(\PHP_INT_MAX, $schema->helpMe);
     }
     
     function testConstructorMissingProperty() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
-        $this->expectException(\Plasma\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Property "helpMe" for column "help_me" does not exist');
         
-        (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\AbstractSchema {
+        (new class($repo, array('help_me' => 50)) extends AbstractSchema {
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test7', 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition('test7', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -305,17 +324,17 @@ class AbstractSchemaTest extends TestCase {
     
     function testConstructorMissingUniqueField() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
-        $this->expectException(\Plasma\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Field "help" for identifier column does not exist');
         
-        (new class($repo, array('help_me' => 50)) extends \Plasma\Schemas\AbstractSchema {
-            protected $helpMe;
+        (new class($repo, array('help_me' => 50)) extends AbstractSchema {
+            public $helpMe;
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test6', 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition('test6', 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -331,14 +350,14 @@ class AbstractSchemaTest extends TestCase {
     
     function testToArray() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
-        $schema = (new class($repo, array('help_me' => \PHP_INT_MAX)) extends \Plasma\Schemas\AbstractSchema {
+        $schema = (new class($repo, array('help_me' => \PHP_INT_MAX)) extends AbstractSchema {
             public $helpMe;
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition(static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition(static::getTableName(), 'help_me', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -357,16 +376,16 @@ class AbstractSchemaTest extends TestCase {
             }
         });
         
-        $this->assertSame(array('helpMe' => \PHP_INT_MAX), $schema->toArray());
+        self::assertSame(array('helpMe' => \PHP_INT_MAX), $schema->toArray());
     }
     
-    function getSchema(...$args): \Plasma\Schemas\AbstractSchema {
-        return (new class(...$args) extends \Plasma\Schemas\AbstractSchema {
+    function getSchema(...$args): AbstractSchema {
+        return (new class(...$args) extends AbstractSchema {
             public $help;
             
-            function __construct() {
+            function __construct(...$args) {
                 if(\func_num_args() > 0) {
-                    parent::__construct(...\func_get_args());
+                    parent::__construct(...$args);
                 }
             }
             
@@ -380,7 +399,7 @@ class AbstractSchemaTest extends TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test5', 'help', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition('test5', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             

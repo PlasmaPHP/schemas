@@ -9,6 +9,11 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\Exception;
+use Plasma\QueryResultInterface;
+use React\Promise;
+use React\Promise\PromiseInterface;
+
 /**
  * This is a schema class which maps each rows column to a camelcase property.
  *
@@ -17,12 +22,12 @@ namespace Plasma\Schemas;
  */
 abstract class AbstractSchema implements SchemaInterface {
     /**
-     * @var \Plasma\Schemas\Repository
+     * @var Repository
      */
     protected $repo;
     
     /**
-     * @var \React\Promise\PromiseInterface|null
+     * @var PromiseInterface|null
      */
     protected $resolvedAsyncForeignTargets;
     
@@ -33,11 +38,11 @@ abstract class AbstractSchema implements SchemaInterface {
     
     /**
      * Constructor.
-     * @param \Plasma\Schemas\Repository  $repo
-     * @param array                       $row
-     * @throws \Plasma\Exception
+     * @param Repository  $repo
+     * @param array       $row
+     * @throws Exception
      */
-    function __construct(\Plasma\Schemas\Repository $repo, array $row) {
+    function __construct(Repository $repo, array $row) {
         $this->repo = $repo;
         $table = static::getTableName();
         
@@ -48,7 +53,7 @@ abstract class AbstractSchema implements SchemaInterface {
         /** @var \Plasma\ColumnDefinitionInterface  $column */
         foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
             $colname = $column->getName();
-            $name = $this->convertColumnName($colname);
+            $name = static::convertColumnName($colname);
             
             if(!isset($row[$colname])) {
                 continue;
@@ -72,8 +77,8 @@ abstract class AbstractSchema implements SchemaInterface {
     /**
      * Lets the directory preload the foreign references on schema request.
      * Returns an array of `PreloadInterface`.
-     * @return \Plasma\Schemas\PreloadInterface[]
-     * @throws \Plasma\Exception
+     * @return PreloadInterface[]
+     * @throws Exception
      */
     static function getPreloads(): array {
         $table = static::getTableName();
@@ -84,18 +89,18 @@ abstract class AbstractSchema implements SchemaInterface {
             static::buildSchemaDefinition();
         }
         
-        $fetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_ALWAYS;
+        $fetchMode = PreloadInterface::FETCH_MODE_ALWAYS;
         $columns = array();
         
         /** @var \Plasma\ColumnDefinitionInterface $column */
         foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
             if(
-                $column instanceof \Plasma\Schemas\ColumnDefinitionInterface &&
+                $column instanceof ColumnDefinitionInterface &&
                 $column->getForeignTarget() !== null &&
                 $column->getForeignKey() !== null &&
                 $column->getForeignFetchMode() === $fetchMode
             ) {
-                $columns[] = new \Plasma\Schemas\Preload(
+                $columns[] = new Preload(
                     $column->getForeignTarget(),
                     $column->getForeignKey(),
                     $column->getName()
@@ -111,13 +116,13 @@ abstract class AbstractSchema implements SchemaInterface {
      * This is the after preload hook, which gets called with the preloads
      * which were used to create the schema. The hook is responsible for
      * creating the other schemas from the preloads and the table result.
-     * @param \Plasma\QueryResultInterface        $result    This is always a query result with only a single row.
-     * @param \Plasma\Schemas\PreloadInterface[]  $preloads
+     * @param QueryResultInterface  $result    This is always a query result with only a single row.
+     * @param PreloadInterface[]    $preloads
      * @return void
-     * @throws \Plasma\Exception  Thrown when the foreign directory does not exist.
-     * @throws \Plasma\Exception  Thrown when the preload local key does not exist.
+     * @throws Exception  Thrown when the foreign directory does not exist.
+     * @throws Exception  Thrown when the preload local key does not exist.
      */
-    function afterPreloadHook(\Plasma\QueryResultInterface $result, array $preloads): void {
+    function afterPreloadHook(QueryResultInterface $result, array $preloads): void {
         $columns = $result->getFieldDefinitions();
         $table = static::getTableName();
         
@@ -127,7 +132,7 @@ abstract class AbstractSchema implements SchemaInterface {
             $local = static::$schemaFieldsMapper[$table][$preload->getLocalKey()] ?? null;
             
             if($local === null) {
-                throw new \Plasma\Exception('Unknown preload local key "'.$preload->getLocalKey().'"');
+                throw new Exception('Unknown preload local key "'.$preload->getLocalKey().'"');
             }
             
             foreach($columns as $column) {
@@ -144,26 +149,26 @@ abstract class AbstractSchema implements SchemaInterface {
     
     /**
      * Resolves the outstanding foreign targets. Resolves with a new schema.
-     * @return \React\Promise\PromiseInterface|null
+     * @return PromiseInterface|null
      */
-    function resolveForeignTargets(): ?\React\Promise\PromiseInterface {
+    function resolveForeignTargets(): ?PromiseInterface {
         if($this->resolvedAsyncForeignTargets !== null) {
             return $this->resolvedAsyncForeignTargets;
         }
         
         $table = static::getTableName();
-        $promise = \React\Promise\resolve($this);
+        $promise = Promise\resolve($this);
         
         /** @var \Plasma\ColumnDefinitionInterface  $column */
         foreach(static::$schemaFieldsMapper[$table]['__definition__'] as $column) {
             $name = static::$schemaFieldsMapper[$table][$column->getName()] ?? null;
             
             if(
-                $column instanceof \Plasma\Schemas\ColumnDefinitionInterface &&
-                $column->getForeignTarget() !== null &&
-                $column->getForeignKey() !== null &&
                 ($this->$name ?? null) !== null &&
-                !($this->$name instanceof \Plasma\Schemas\SchemaInterface)
+                $column instanceof ColumnDefinitionInterface &&
+                !($this->$name instanceof SchemaInterface) &&
+                $column->getForeignTarget() !== null &&
+                $column->getForeignKey() !== null
             ) {
                 $promise = $promise->then(function (self $schema) use ($column, $name) {
                     $table = $column->getForeignTarget();
@@ -172,7 +177,7 @@ abstract class AbstractSchema implements SchemaInterface {
                     return $this->repo
                         ->getDirectory($table)
                         ->fetchBy($key, $this->$name)
-                        ->then(function (\Plasma\Schemas\SchemaCollection $foreign) use ($schema, $name) {
+                        ->then(function (SchemaCollection $foreign) use ($schema, $name) {
                             $schema = clone $schema;
                             $schema->$name = $foreign->getSchemas()[0];
                             
@@ -188,22 +193,22 @@ abstract class AbstractSchema implements SchemaInterface {
     
     /**
      * Builds a schema instance.
-     * @param \Plasma\Schemas\Repository  $repository
-     * @param array                       $row
-     * @return \Plasma\Schemas\SchemaInterface
-     * @throws \Plasma\Exception
+     * @param Repository  $repository
+     * @param array       $row
+     * @return SchemaInterface
+     * @throws Exception
      */
-    static function build(\Plasma\Schemas\Repository $repository, array $row): \Plasma\Schemas\SchemaInterface {
+    static function build(Repository $repository, array $row): SchemaInterface {
         return (new static($repository, $row));
     }
     
     /**
      * Inserts the schema.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function insert(): \React\Promise\PromiseInterface {
-        $table = $this->getTableName();
+    function insert(): PromiseInterface {
+        $table = static::getTableName();
         $values = array();
         
         foreach(static::$schemaFieldsMapper[$table] as $name) {
@@ -224,22 +229,22 @@ abstract class AbstractSchema implements SchemaInterface {
     /**
      * Updates the row with the new data. Resolves with a `QueryResultInterface` instance.
      * @param array  $data
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function update(array $data): \React\Promise\PromiseInterface {
-        $uniqcol = $this->getIdentifierColumn();
+    function update(array $data): PromiseInterface {
+        $uniqcol = static::getIdentifierColumn();
         if($uniqcol === null) {
-            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
+            throw new Exception('AbstractSchema has no unique or primary column');
         }
     
-        $table = $this->getTableName();
+        $table = static::getTableName();
         $uniq = static::$schemaFieldsMapper[$table][$uniqcol];
         
         $values = array();
         foreach($data as $name => $val) {
             if(!\property_exists($this, $name)) {
-                throw new \Plasma\Exception('Unknown field given "'.$name.'", make sure you use the property name');
+                throw new Exception('Unknown field given "'.$name.'", make sure you use the property name');
             }
             
             $values[static::$schemaFieldsMapper[$table][$name]] = $val;
@@ -252,16 +257,16 @@ abstract class AbstractSchema implements SchemaInterface {
     
     /**
      * Deletes the row. Resolves with a `QueryResultInterface` instance.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function delete(): \React\Promise\PromiseInterface {
-        $uniqcol = $this->getIdentifierColumn();
+    function delete(): PromiseInterface {
+        $uniqcol = static::getIdentifierColumn();
         if($uniqcol === null) {
-            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
+            throw new Exception('AbstractSchema has no unique or primary column');
         }
         
-        $table = $this->getTableName();
+        $table = static::getTableName();
         $uniq = static::$schemaFieldsMapper[$table][$uniqcol];
         
         return $this->repo->getDirectory($table)
@@ -273,7 +278,7 @@ abstract class AbstractSchema implements SchemaInterface {
      * @return array
      */
     function toArray(): array {
-        $table = $this->getTableName();
+        $table = static::getTableName();
         $row = array();
         
         foreach($this as $key => $val) {
@@ -287,11 +292,11 @@ abstract class AbstractSchema implements SchemaInterface {
     
     /**
      * Get a new instance of a column definition builder.
-     * @return \Plasma\Schemas\ColumnDefinitionBuilder
+     * @return ColumnDefinitionBuilder
      * @see \Plasma\Schemas\ColumnDefinitionBuilder::create()
      */
-    static function getColDefBuilder(): \Plasma\Schemas\ColumnDefinitionBuilder {
-        return (new \Plasma\Schemas\ColumnDefinitionBuilder())
+    static function getColDefBuilder(): ColumnDefinitionBuilder {
+        return (new ColumnDefinitionBuilder())
             ->table(static::getTableName());
     }
     
@@ -320,16 +325,18 @@ abstract class AbstractSchema implements SchemaInterface {
     
     /**
      * Handles the query result.
-     * @param \Plasma\QueryResultInterface|\Plasma\Schemas\SchemaCollection  $result
-     * @return \Plasma\QueryResultInterface|\Plasma\Schemas\SchemaCollection|self
+     * @param QueryResultInterface|SchemaCollection  $result
+     * @return QueryResultInterface|SchemaCollection|self
      * @internal
      */
     function handleQueryResult($result) {
-        if($result instanceof \Plasma\Schemas\SchemaCollection) {
+        if($result instanceof SchemaCollection) {
             $schemas = $result->getSchemas();
             $schema = \reset($schemas);
             
             if($schema instanceof static) {
+                /** @noinspection PhpNonStrictObjectEqualityInspection */
+                /** @noinspection TypeUnsafeComparisonInspection */
                 if($schema != $this) { // Whether the two objects are not equal in terms of properties
                     $vars = \get_object_vars($schema);
                     unset($vars['repo'], $vars['schemaFieldsMapper']);
@@ -349,7 +356,7 @@ abstract class AbstractSchema implements SchemaInterface {
     /**
      * Builds the definition.
      * @return void
-     * @throws \Plasma\Exception
+     * @throws Exception
      * @internal
      */
     protected static function buildSchemaDefinition(): void {
@@ -364,8 +371,8 @@ abstract class AbstractSchema implements SchemaInterface {
             $colname = $field->getName();
             $name = static::convertColumnName($colname);
             
-            if(!\property_exists(\get_called_class(), $name)) {
-                throw new \Plasma\Exception('Property "'.$name.'" for column "'.$colname.'" does not exist');
+            if(!\property_exists(static::class, $name)) {
+                throw new Exception('Property "'.$name.'" for column "'.$colname.'" does not exist');
             }
             
             static::$schemaFieldsMapper[$table][$colname] = $name;
@@ -374,7 +381,7 @@ abstract class AbstractSchema implements SchemaInterface {
         
         $uniq = static::getIdentifierColumn();
         if($uniq !== null && !isset(static::$schemaFieldsMapper[$table][$uniq])) {
-            throw new \Plasma\Exception('Field "'.$uniq.'" for identifier column does not exist');
+            throw new Exception('Field "'.$uniq.'" for identifier column does not exist');
         }
     }
 }

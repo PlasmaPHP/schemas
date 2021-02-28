@@ -9,18 +9,22 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\Exception;
+use Plasma\QueryResultInterface;
+use React\Promise\PromiseInterface;
+
 /**
  * Schemas represent data rows and as such can be used to interact with the DBMS through the Repository and AbstractSchema Builder.
  */
 interface SchemaInterface {
     /**
      * Builds a schema instance.
-     * @param \Plasma\Schemas\Repository  $repository
-     * @param array                       $row
-     * @return \Plasma\Schemas\SchemaInterface
-     * @throws \Plasma\Exception
+     * @param Repository  $repository
+     * @param array       $row
+     * @return SchemaInterface
+     * @throws Exception
      */
-    static function build(\Plasma\Schemas\Repository $repository, array $row): \Plasma\Schemas\SchemaInterface;
+    static function build(Repository $repository, array $row): SchemaInterface;
     
     /**
      * Returns the schema definition.
@@ -43,7 +47,7 @@ interface SchemaInterface {
     /**
      * Lets the directory preload the foreign references on schema request.
      * Returns an array of `PreloadInterface`.
-     * @return \Plasma\Schemas\PreloadInterface[]
+     * @return PreloadInterface[]
      */
     static function getPreloads(): array;
     
@@ -51,38 +55,38 @@ interface SchemaInterface {
      * This is the after preload hook, which gets called with the preloads
      * which were used to create the schema. The hook is responsible for
      * creating the other schemas from the preloads and the table result.
-     * @param \Plasma\QueryResultInterface        $result    This is always a query result with only a single row.
-     * @param \Plasma\Schemas\PreloadInterface[]  $preloads
+     * @param QueryResultInterface  $result    This is always a query result with only a single row.
+     * @param PreloadInterface[]    $preloads
      * @return void
-     * @throws \Plasma\Exception
+     * @throws Exception
      */
-    function afterPreloadHook(\Plasma\QueryResultInterface $result, array $preloads): void;
+    function afterPreloadHook(QueryResultInterface $result, array $preloads): void;
     
     /**
      * Resolves the outstanding foreign targets. Resolves with a new schema.
-     * @return \React\Promise\PromiseInterface|null
+     * @return PromiseInterface|null
      */
-    function resolveForeignTargets(): ?\React\Promise\PromiseInterface;
+    function resolveForeignTargets(): ?PromiseInterface;
     
     /**
      * Inserts the row.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function insert(): \React\Promise\PromiseInterface;
+    function insert(): PromiseInterface;
     
     /**
      * Updates the row with the new data.
      * @param array  $data
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function update(array $data): \React\Promise\PromiseInterface;
+    function update(array $data): PromiseInterface;
     
     /**
      * Deletes the row. Resolves with a `QueryResultInterface` instance.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function delete(): \React\Promise\PromiseInterface;
+    function delete(): PromiseInterface;
 }

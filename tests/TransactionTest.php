@@ -5,32 +5,50 @@
  *
  * Website: https://github.com/PlasmaPHP
  * License: https://github.com/PlasmaPHP/schemas/blob/master/LICENSE
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 namespace Plasma\Schemas\Tests;
 
+use Plasma\DriverInterface;
+use Plasma\QueryBuilderInterface;
+use Plasma\QueryResult;
+use Plasma\QueryResultInterface;
+use Plasma\Schemas\Repository;
+use Plasma\Schemas\SchemaCollection;
+use Plasma\Schemas\Statement;
+use Plasma\StatementInterface;
+use Plasma\TransactionInterface;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
+
 class TransactionTest extends TestCase {
     /**
+     * @param $method
+     * @param $args
+     * @param $returnValue
      * @dataProvider providerInherited
      */
     function testInherited($method, $args, $returnValue) {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
         $transaction = new \Plasma\Schemas\Transaction($repo, $mock);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method($method)
             ->with(...$args)
-            ->will($this->returnValue($returnValue));
+            ->willReturn($returnValue);
         
         $transaction->$method(...$args);
     }
     
     function providerInherited() {
-        $query = $this->getMockBuilder(\Plasma\QueryBuilderInterface::class)
+        $query = $this->getMockBuilder(QueryBuilderInterface::class)
             ->setMethods(array(
                 'create',
                 'getQuery',
@@ -41,47 +59,49 @@ class TransactionTest extends TestCase {
         return array(
             array('getIsolationLevel', array(), 0),
             array('isActive', array(), true),
-            array('commit', array(), (new \React\Promise\Promise(function () {}))),
-            array('rollback', array(), (new \React\Promise\Promise(function () {}))),
-            array('createSavepoint', array('test'), (new \React\Promise\Promise(function () {}))),
-            array('rollbackTo', array('test'), (new \React\Promise\Promise(function () {}))),
-            array('releaseSavepoint', array('test'), (new \React\Promise\Promise(function () {}))),
-            array('query', array('SELECT 1'), (new \React\Promise\Promise(function () {}))),
-            array('prepare', array('SELECT 1'), (new \React\Promise\Promise(function () {}))),
-            array('execute', array('SELECT 1', array()), (new \React\Promise\Promise(function () {}))),
+            array('commit', array(), (new Promise(static function () {}))),
+            array('rollback', array(), (new Promise(static function () {}))),
+            array('createSavepoint', array('test'), (new Promise(static function () {}))),
+            array('rollbackTo', array('test'), (new Promise(static function () {}))),
+            array('releaseSavepoint', array('test'), (new Promise(static function () {}))),
+            array('query', array('SELECT 1'), (new Promise(static function () {}))),
+            array('prepare', array('SELECT 1'), (new Promise(static function () {}))),
+            array('execute', array('SELECT 1', array()), (new Promise(static function () {}))),
             array('quote', array('test'), '`test`'),
-            array('runQuery', array($query), (new \React\Promise\Promise(function () {})))
+            array('runQuery', array($query), (new Promise(static function () {})))
         );
     }
     
     /**
+     * @param $method
+     * @param $args
+     * @param $returnValue
+     * @param $expectedReturnType
      * @dataProvider providerInheritedType
      */
     function testInheritedType($method, $args, $returnValue, $expectedReturnType) {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
         $transaction = new \Plasma\Schemas\Transaction($repo, $mock);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method($method)
             ->with(...$args)
-            ->will($this->returnValue($returnValue));
+            ->willReturn($returnValue);
         
         $return = $transaction->$method(...$args);
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $return);
+        self::assertInstanceOf(PromiseInterface::class, $return);
         
         $return = $this->await($return);
-        $this->assertInstanceOf($expectedReturnType, $return);
+        self::assertInstanceOf($expectedReturnType, $return);
     }
     
     function providerInheritedType() {
-        $client = $this->getClientMock();
-        $driver = $this->getDriverMock();
-        
-        $query = $this->getMockBuilder(\Plasma\QueryBuilderInterface::class)
+        $query = $this->getMockBuilder(QueryBuilderInterface::class)
             ->setMethods(array(
                'create',
                'getQuery',
@@ -89,7 +109,7 @@ class TransactionTest extends TestCase {
             ))
             ->getMock();
         
-        $stmt = $this->getMockBuilder(\Plasma\StatementInterface::class)
+        $stmt = $this->getMockBuilder(StatementInterface::class)
             ->setMethods(array(
                 'getID',
                 'getQuery',
@@ -100,23 +120,21 @@ class TransactionTest extends TestCase {
             ))
             ->getMock();
         
-        $transaction = new \Plasma\Transaction($client, $driver, 0);
-        
-        $qr1 = new \Plasma\QueryResult(0, 0, null, array(), array());
-        $qr2 = new \Plasma\QueryResult(0, 0, null, null, null);
+        $qr1 = new QueryResult(0, 0, null, array(), array());
+        $qr2 = new QueryResult(0, 0, null, null, null);
         
         return array(
-            array('query', array('SELECT 1'), \React\Promise\resolve($qr2), \Plasma\QueryResultInterface::class),
-            array('query', array('SELECT 1'), \React\Promise\resolve($qr1), \Plasma\Schemas\SchemaCollection::class),
-            array('prepare', array('SELECT 1'), \React\Promise\resolve($stmt), \Plasma\Schemas\Statement::class),
-            array('execute', array('SELECT 1', array()), \React\Promise\resolve($qr2), \Plasma\QueryResultInterface::class),
-            array('execute', array('SELECT 1', array()), \React\Promise\resolve($qr1), \Plasma\Schemas\SchemaCollection::class),
-            array('runQuery', array($query), \React\Promise\resolve($qr1), \Plasma\Schemas\SchemaCollection::class),
+            array('query', array('SELECT 1'), resolve($qr2), QueryResultInterface::class),
+            array('query', array('SELECT 1'), resolve($qr1), SchemaCollection::class),
+            array('prepare', array('SELECT 1'), resolve($stmt), Statement::class),
+            array('execute', array('SELECT 1', array()), resolve($qr2), QueryResultInterface::class),
+            array('execute', array('SELECT 1', array()), resolve($qr1), SchemaCollection::class),
+            array('runQuery', array($query), resolve($qr1), SchemaCollection::class),
         );
     }
     
-    function getDriverMock(): \Plasma\DriverInterface {
-        return $this->getMockBuilder(\Plasma\DriverInterface::class)
+    function getDriverMock(): DriverInterface {
+        return $this->getMockBuilder(DriverInterface::class)
             ->setMethods(array(
                 'getConnectionState',
                 'getBusyState',
@@ -146,8 +164,8 @@ class TransactionTest extends TestCase {
             ->getMock();
     }
     
-    function getMock(): \Plasma\TransactionInterface {
-        return $this->getMockBuilder(\Plasma\TransactionInterface::class)
+    function getMock(): TransactionInterface {
+        return $this->getMockBuilder(TransactionInterface::class)
             ->setMethods(array(
                 '__destruct',
                 'getIsolationLevel',

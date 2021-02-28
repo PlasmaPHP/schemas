@@ -9,48 +9,52 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\Exception;
+use Plasma\QueryResultInterface;
+use React\Promise\PromiseInterface;
+
 /**
  * Directories are responsible for building schemas from query results and interfaces with the repository for queries.
  */
 interface DirectoryInterface {
     /**
      * Sets the repository to use.
-     * @param \Plasma\Schemas\Repository  $repository
+     * @param Repository  $repository
      * @return void
      */
-    function setRepository(\Plasma\Schemas\Repository $repository): void;
+    function setRepository(Repository $repository): void;
     
     /**
      * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function fetch($value): \React\Promise\PromiseInterface;
+    function fetch($value): PromiseInterface;
     
     /**
      * Fetch a row by the specified column. Resolves with an instance of `SchemaCollection`.
      * @param string  $name
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function fetchBy(string $name, $value): \React\Promise\PromiseInterface;
+    function fetchBy(string $name, $value): PromiseInterface;
     
     /**
      * Fetches all rows. Resolves with an instance of `SchemaCollection`.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function fetchAll(): \React\Promise\PromiseInterface;
+    function fetchAll(): PromiseInterface;
     
     /**
      * Inserts a row. Resolves with an instance of `SchemaCollection`.
      * @param array  $data
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function insert(array $data): \React\Promise\PromiseInterface;
+    function insert(array $data): PromiseInterface;
     
     /**
      * Inserts a list of rows. Resolves with an instance of `SchemaCollection`.
@@ -66,42 +70,42 @@ interface DirectoryInterface {
      *
      * @param array  $data
      * @param array  $options
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function insertAll(array $data, array $options = array()): \React\Promise\PromiseInterface;
+    function insertAll(array $data, array $options = array()): PromiseInterface;
     
     /**
      * Updates the row with the given data, identified by a specific field.
      * @param array   $data
      * @param string  $field
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function update(array $data, string $field, $value): \React\Promise\PromiseInterface;
+    function update(array $data, string $field, $value): PromiseInterface;
     
     /**
      * Deletes a row by the unique identifier. Resolves with a `QueryResultInterface` instance.
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function delete($value): \React\Promise\PromiseInterface;
+    function delete($value): PromiseInterface;
     
     /**
      * Deletes a row by the specified column. Resolves with a `QueryResultInterface` instance.
      * @param string  $name
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function deleteBy(string $name, $value): \React\Promise\PromiseInterface;
+    function deleteBy(string $name, $value): PromiseInterface;
     
     /**
      * Builds schemas for the given SELECT query result.
-     * @param \Plasma\QueryResultInterface  $result
-     * @return \Plasma\Schemas\SchemaCollection
+     * @param QueryResultInterface  $result
+     * @return SchemaCollection
      */
-    function buildSchemas(\Plasma\QueryResultInterface $result): \Plasma\Schemas\SchemaCollection;
+    function buildSchemas(QueryResultInterface $result): SchemaCollection;
 }

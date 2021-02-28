@@ -9,23 +9,35 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\Exception;
+use Plasma\QueryResult;
+use Plasma\QueryResultInterface;
+use Plasma\SQL\GrammarInterface;
+use Plasma\SQL\OnConflict;
+use Plasma\SQL\QueryBuilder;
+use Plasma\SQL\QueryExpressions\Parameter;
+use Plasma\StatementInterface;
+use Plasma\TransactionInterface;
+use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
+
 /**
  * This is a SQL Directory implementation.
  */
 class SQLDirectory extends AbstractDirectory {
     /**
-     * @var \Plasma\SQL\GrammarInterface
+     * @var GrammarInterface
      */
     protected $grammar;
     
     /**
      * Constructor.
-     * @param string                             $schema   The class name of the schema to build for. Must be a child of `SQLSchema`.
-     * @param \Plasma\SQL\GrammarInterface|null  $grammar  The SQL grammar to use.
-     * @throws \Plasma\Exception
+     * @param string                 $schema   The class name of the schema to build for. Must be a child of `SQLSchema`.
+     * @param GrammarInterface|null  $grammar  The SQL grammar to use.
+     * @throws Exception
      * @see \Plasma\Schemas\SQLSchema
      */
-    function __construct(string $schema, ?\Plasma\SQL\GrammarInterface $grammar) {
+    function __construct(string $schema, ?GrammarInterface $grammar) {
         parent::__construct($schema);
         $this->grammar = $grammar;
     }
@@ -33,14 +45,14 @@ class SQLDirectory extends AbstractDirectory {
     /**
      * Fetch a row by the unique identifier. Resolves with an instance of `SchemaCollection`.
      * @param mixed  $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function fetch($value): \React\Promise\PromiseInterface {
+    function fetch($value): PromiseInterface {
         $column = $this->schema::getIdentifierColumn();
         
         if($column === null) {
-            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
+            throw new Exception('AbstractSchema has no unique or primary column');
         }
         
         return $this->fetchBy($column, $value);
@@ -50,11 +62,11 @@ class SQLDirectory extends AbstractDirectory {
      * Fetch a row by the specified column. Resolves with an instance of `SchemaCollection`.
      * @param string  $name
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function fetchBy(string $name, $value): \React\Promise\PromiseInterface {
-        $query = \Plasma\SQL\QueryBuilder::create()
+    function fetchBy(string $name, $value): PromiseInterface {
+        $query = QueryBuilder::create()
             ->select()
             ->from($this->schema::getTableName())
             ->where($name, '=', $value);
@@ -77,18 +89,18 @@ class SQLDirectory extends AbstractDirectory {
         return $this->repo->execute(
             $query->getQuery(),
             $query->getParameters()
-        )->then(function (\Plasma\Schemas\SchemaCollection $schemaCollection) use ($preloads) {
+        )->then(function (SchemaCollection $schemaCollection) use ($preloads) {
             return $this->handlePreloadResult($schemaCollection, $preloads);
         });
     }
     
     /**
      * Fetches all rows. Resolves with an instance of `SchemaCollection`.
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function fetchAll(): \React\Promise\PromiseInterface {
-        $query = \Plasma\SQL\QueryBuilder::create()
+    function fetchAll(): PromiseInterface {
+        $query = QueryBuilder::create()
             ->select()
             ->from($this->schema::getTableName());
         
@@ -110,7 +122,7 @@ class SQLDirectory extends AbstractDirectory {
         return $this->repo->execute(
             $query->getQuery(),
             array()
-        )->then(function (\Plasma\Schemas\SchemaCollection $schemaCollection) use ($preloads) {
+        )->then(function (SchemaCollection $schemaCollection) use ($preloads) {
             return $this->handlePreloadResult($schemaCollection, $preloads);
         });
     }
@@ -118,57 +130,57 @@ class SQLDirectory extends AbstractDirectory {
     /**
      * Inserts a row. Resolves with an instance of `SchemaCollection`, if there is a primary column. Otherwise resolves with the query result.
      * @param array  $data
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function insert(array $data): \React\Promise\PromiseInterface {
+    function insert(array $data): PromiseInterface {
         if(empty($data)) {
-            throw new \Plasma\Exception('Nothing to insert, empty data set');
+            throw new Exception('Nothing to insert, empty data set');
         }
         
         $table = $this->schema::getTableName();
-        $mapper = \Plasma\Schemas\AbstractSchema::getMapper()[$table] ?? null;
+        $mapper = AbstractSchema::getMapper()[$table] ?? null;
         
         if($mapper === null) {
             $this->schema::build($this->repo, $data); // Create a schema, so the mapper gets created
-            $mapper = \Plasma\Schemas\AbstractSchema::getMapper()[$table] ?? array();
+            $mapper = AbstractSchema::getMapper()[$table] ?? array();
         }
         
         $realValues = array();
         
         foreach($data as $colname => $value) {
-            if(empty($mapper[$colname]) && !\array_search($colname, $mapper)) {
-                throw new \Plasma\Exception('Unknown field "'.$colname.'"');
+            if(empty($mapper[$colname]) && !\in_array($colname, $mapper, true)) {
+                throw new Exception('Unknown field "'.$colname.'"');
             }
             
             $realValues[($mapper[$colname] ?? $colname)] = $value;
         }
         
         if($this->schema::getIdentifierColumn() === null) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues) {
-                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
+            $callback = function (QueryResultInterface $result) use ($realValues) {
+                return (new SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
             };
         } elseif(\count($data) >= \count($this->schema::getDefinition()) - 1) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues) {
+            $callback = function (QueryResultInterface $result) use ($realValues) {
                 if($result->getInsertID() !== null) {
                     $realValues[$this->schema::getIdentifierColumn()] = $result->getInsertID();
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
+                return (new SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
             };
         } else {
             // If not all columns were filled by the user, we fetch the row from the DB instead
             // but only if it has an inserted ID, otherwise we just build the schema as is
-            $callback = function (\Plasma\QueryResultInterface $result) use ($realValues) {
+            $callback = function (QueryResultInterface $result) use ($realValues) {
                 if($result->getInsertID() !== null) {
                     return $this->fetch($result->getInsertID());
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
+                return (new SchemaCollection(array($this->schema::build($this->repo, $realValues)), $result));
             };
         }
         
-        $query = \Plasma\SQL\QueryBuilder::create()
+        $query = QueryBuilder::create()
             ->insert($realValues)
             ->into($table);
         
@@ -199,15 +211,15 @@ class SQLDirectory extends AbstractDirectory {
      *
      * @param array  $data
      * @param array  $options
-     * @return \React\Promise\PromiseInterface
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @throws \Plasma\Exception
+     * @throws Exception
      */
-    function insertAll(array $data, array $options = array()): \React\Promise\PromiseInterface {
+    function insertAll(array $data, array $options = array()): PromiseInterface {
         $table = $this->schema::getTableName();
         
         $params = array();
-        $columns = \array_reduce($data, function ($carry, $item) {
+        $columns = \array_reduce($data, static function ($carry, $item) {
             $c = \count($item);
             $d = \count($carry);
             
@@ -219,22 +231,22 @@ class SQLDirectory extends AbstractDirectory {
         }, array());
         
         foreach($columns as $column => $_) {
-            $params[$column] = new \Plasma\SQL\QueryExpressions\Parameter();
+            $params[$column] = new Parameter();
         }
         
         if(!empty($options['conflictResolution'])) {
             $onConflict = $options['conflictResolution'];
         } elseif(($options['ignoreConflict'] ?? false) === true) {
-            $onConflict = new \Plasma\SQL\OnConflict(\Plasma\SQL\OnConflict::RESOLUTION_DO_NOTHING);
+            $onConflict = new OnConflict(OnConflict::RESOLUTION_DO_NOTHING);
         } else {
             $onConflict = null;
         }
         
         if(!isset($options['transactionIsolation'])) {
-            $options['transactionIsolation'] = \Plasma\TransactionInterface::ISOLATION_COMMITTED;
+            $options['transactionIsolation'] = TransactionInterface::ISOLATION_COMMITTED;
         }
         
-        $query = \Plasma\SQL\QueryBuilder::create();
+        $query = QueryBuilder::create();
         
         if($this->grammar !== null) {
             $query = $query->withGrammar($this->grammar);
@@ -248,10 +260,10 @@ class SQLDirectory extends AbstractDirectory {
         
         return $this->repo->getClient()
             ->beginTransaction($options['transactionIsolation'])
-            ->then(function (\Plasma\TransactionInterface $transaction) use ($data, $params, $query) {
+            ->then(function (TransactionInterface $transaction) use ($data, $params, $query) {
                 return $transaction
                     ->prepare($query->getQuery())
-                    ->then(function (\Plasma\StatementInterface $stmt) use ($data, $params, $query) {
+                    ->then(function (StatementInterface $stmt) use ($data, $params, $query) {
                         return $this->executeNextRowInsert($query, $stmt, $data, $params, array(), null);
                     })
                     ->then(function ($result) use ($transaction) {
@@ -270,11 +282,11 @@ class SQLDirectory extends AbstractDirectory {
      * @param array   $data
      * @param string  $field
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function update(array $data, string $field, $value): \React\Promise\PromiseInterface {
-        $query = \Plasma\SQL\QueryBuilder::create()
+    function update(array $data, string $field, $value): PromiseInterface {
+        $query = QueryBuilder::create()
             ->update($data)
             ->from($this->schema::getTableName())
             ->where($field, '=', $value);
@@ -294,14 +306,14 @@ class SQLDirectory extends AbstractDirectory {
     /**
      * Deletes a row by the unique identifier. Resolves with a `QueryResultInterface` instance.
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function delete($value): \React\Promise\PromiseInterface {
+    function delete($value): PromiseInterface {
         $column = $this->schema::getIdentifierColumn();
         
         if($column === null) {
-            throw new \Plasma\Exception('AbstractSchema has no unique or primary column');
+            throw new Exception('AbstractSchema has no unique or primary column');
         }
         
         return $this->deleteBy($column, $value);
@@ -311,11 +323,11 @@ class SQLDirectory extends AbstractDirectory {
      * Deletes a row by the specified column. Resolves with a `QueryResultInterface` instance.
      * @param string  $name
      * @param mixed   $value
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function deleteBy(string $name, $value): \React\Promise\PromiseInterface {
-        $query = \Plasma\SQL\QueryBuilder::create()
+    function deleteBy(string $name, $value): PromiseInterface {
+        $query = QueryBuilder::create()
             ->delete()
             ->from($this->schema::getTableName())
             ->where($name, '=', $value);
@@ -332,12 +344,12 @@ class SQLDirectory extends AbstractDirectory {
     
     /**
      * Handles a preload result.
-     * @param \Plasma\Schemas\SchemaCollection     $schemaCollection
-     * @param \Plasma\Schemas\PreloadInterface[]  $preloads
-     * @return \Plasma\Schemas\SchemaCollection
-     * @throws \Plasma\Exception
+     * @param SchemaCollection    $schemaCollection
+     * @param PreloadInterface[]  $preloads
+     * @return SchemaCollection
+     * @throws Exception
      */
-    protected function handlePreloadResult(\Plasma\Schemas\SchemaCollection $schemaCollection, array $preloads): \Plasma\Schemas\SchemaCollection {
+    protected function handlePreloadResult(SchemaCollection $schemaCollection, array $preloads): SchemaCollection {
         if(empty($preloads)) {
             return $schemaCollection;
         }
@@ -352,7 +364,7 @@ class SQLDirectory extends AbstractDirectory {
         
         $i = 0;
         foreach($schemas as $schema) {
-            $sResult = new \Plasma\QueryResult(
+            $sResult = new QueryResult(
                 $affRows,
                 $warnings,
                 null,
@@ -362,7 +374,7 @@ class SQLDirectory extends AbstractDirectory {
             
             $schema->afterPreloadHook($sResult, $preloads);
             
-            if($schema instanceof \Plasma\Schemas\AbstractSchema) {
+            if($schema instanceof AbstractSchema) {
                 $schema->validateData();
             }
         }
@@ -372,28 +384,34 @@ class SQLDirectory extends AbstractDirectory {
     
     /**
      * Executes the next set of the rows to be inserted.
-     * @param \Plasma\SQL\QueryBuilder                  $query
-     * @param \Plasma\StatementInterface                $stmt
-     * @param array                                     $rows
-     * @param \Plasma\SQL\QueryExpressions\Parameter[]  $params
-     * @param array                                     $insertedRows
-     * @param \Plasma\QueryResultInterface|null         $result
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @param QueryBuilder               $query
+     * @param StatementInterface         $stmt
+     * @param array                      $rows
+     * @param Parameter[]                $params
+     * @param array                      $insertedRows
+     * @param QueryResultInterface|null  $result
+     * @return PromiseInterface
+     * @throws Exception
      */
     protected function executeNextRowInsert(
-        \Plasma\SQL\QueryBuilder $query,
-        \Plasma\StatementInterface $stmt,
+        QueryBuilder $query,
+        StatementInterface $stmt,
         array $rows,
         array $params,
         array $insertedRows,
-        ?\Plasma\QueryResultInterface $result
-    ): \React\Promise\PromiseInterface {
+        ?QueryResultInterface $result
+    ): PromiseInterface {
         $data = \array_shift($rows);
         
         if($data === null) {
-            $result = new \Plasma\QueryResult(\count($insertedRows), 0, null, $result->getFieldDefinitions(), null);
-            return \React\Promise\resolve((new \Plasma\Schemas\SchemaCollection($insertedRows, $result)));
+            $result2 = new QueryResult(\count($insertedRows),
+                0,
+                null,
+                ($result ? $result->getFieldDefinitions() : null),
+                null
+            );
+            
+            return resolve((new SchemaCollection($insertedRows, $result2)));
         }
         
         foreach($params as $par) {
@@ -405,32 +423,32 @@ class SQLDirectory extends AbstractDirectory {
         }
         
         if($this->schema::getIdentifierColumn() === null) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($data) {
-                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
+            $callback = function (QueryResultInterface $result) use ($data) {
+                return (new SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
             };
         } elseif(\count($data) >= \count($this->schema::getDefinition()) - 1) {
-            $callback = function (\Plasma\QueryResultInterface $result) use ($data) {
+            $callback = function (QueryResultInterface $result) use ($data) {
                 if($result->getInsertID() !== null) {
                     $data[$this->schema::getIdentifierColumn()] = $result->getInsertID();
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
+                return (new SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
             };
         } else {
             // If not all columns were filled by the user, we fetch the row from the DB instead
             // but only if it has an inserted ID, otherwise we just build the schema as is
-            $callback = function (\Plasma\QueryResultInterface $result) use ($data) {
+            $callback = function (QueryResultInterface $result) use ($data) {
                 if($result->getInsertID() !== null) {
                     return $this->fetch($result->getInsertID());
                 }
                 
-                return (new \Plasma\Schemas\SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
+                return (new SchemaCollection(array($this->schema::build($this->repo, $data)), $result));
             };
         }
         
         return $stmt->execute($query->getParameters())
             ->then($callback)
-            ->then(function (\Plasma\Schemas\SchemaCollection $result) use ($query, $stmt, $rows, $params, $insertedRows) {
+            ->then(function (SchemaCollection $result) use ($query, $stmt, $rows, $params, $insertedRows) {
                 $qr = $result->getResult();
                 $irows = $result->getSchemas();
                 

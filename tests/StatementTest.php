@@ -5,104 +5,121 @@
  *
  * Website: https://github.com/PlasmaPHP
  * License: https://github.com/PlasmaPHP/schemas/blob/master/LICENSE
+ * @noinspection PhpUnhandledExceptionInspection
 */
 
 namespace Plasma\Schemas\Tests;
 
+use Plasma\QueryBuilderInterface;
+use Plasma\QueryResult;
+use Plasma\Schemas\Repository;
+use Plasma\Schemas\SchemaCollection;
+use Plasma\Schemas\Statement;
+use Plasma\SQLQueryBuilderInterface;
+use Plasma\StatementInterface;
+use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
+
 class StatementTest extends TestCase {
     function testGetID() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
-        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        $statement = new Statement($repo, $mock);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getID')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
         
         $statement->getID();
     }
     
     function testGetQuery() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
-        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        $statement = new Statement($repo, $mock);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getQuery')
-            ->will($this->returnValue('SELECT 1'));
+            ->willReturn('SELECT 1');
         
         $statement->getQuery();
     }
     
     function testIsClosed() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
-        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        $statement = new Statement($repo, $mock);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isClosed')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         
         $statement->isClosed();
     }
     
     function testClose() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
-        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        $statement = new Statement($repo, $mock);
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('close')
-            ->will($this->returnValue(\React\Promise\resolve()));
+            ->willReturn(resolve());
         
         $statement->close();
     }
     
     function testExecute() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
-        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        $statement = new Statement($repo, $mock);
         
-        $result = new \Plasma\QueryResult(0, 0, null, array(), array());
+        $result = new QueryResult(0, 0, null, array(), array());
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('execute')
             ->with(array())
-            ->will($this->returnValue(\React\Promise\resolve($result)));
+            ->willReturn(resolve($result));
         
         $promise = $statement->execute();
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        self::assertInstanceOf(PromiseInterface::class, $promise);
         
         $res = $this->await($promise);
-        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
+        self::assertInstanceOf(SchemaCollection::class, $res);
     }
     
     function testRunQuery() {
         $client = $this->getClientMock();
-        $repo = new \Plasma\Schemas\Repository($client);
+        $repo = new Repository($client);
         
         $mock = $this->getMock();
-        $statement = new \Plasma\Schemas\Statement($repo, $mock);
+        $statement = new Statement($repo, $mock);
         
-        $result = new \Plasma\QueryResult(0, 0, null, array(), array());
+        $result = new QueryResult(0, 0, null, array(), array());
         
-        $qb = (new class() implements \Plasma\SQLQueryBuilderInterface {
-            static function create(): \Plasma\QueryBuilderInterface {}
+        $qb = (new class() implements SQLQueryBuilderInterface {
+            /** @noinspection PhpInconsistentReturnPointsInspection */
+            static function create(): QueryBuilderInterface {}
             
             function getQuery() {
                 return 'SELECT 1';
@@ -113,21 +130,22 @@ class StatementTest extends TestCase {
             }
         });
         
+        /** @noinspection PhpUndefinedMethodInspection */
         $mock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('runQuery')
             ->with($qb)
-            ->will($this->returnValue(\React\Promise\resolve($result)));
+            ->willReturn(resolve($result));
         
         $promise = $statement->runQuery($qb);
-        $this->assertInstanceOf(\React\Promise\PromiseInterface::class, $promise);
+        self::assertInstanceOf(PromiseInterface::class, $promise);
         
         $res = $this->await($promise);
-        $this->assertInstanceOf(\Plasma\Schemas\SchemaCollection::class, $res);
+        self::assertInstanceOf(SchemaCollection::class, $res);
     }
     
-    function getMock(): \Plasma\StatementInterface {
-        return $this->getMockBuilder(\Plasma\StatementInterface::class)
+    function getMock(): StatementInterface {
+        return $this->getMockBuilder(StatementInterface::class)
             ->setMethods(array(
                 'getID',
                 'getQuery',

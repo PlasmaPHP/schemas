@@ -9,12 +9,14 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\AbstractColumnDefinition;
+
 /**
  * A generic Column Definition implementation.
  *
  * It takes input and outputs it without any changes.
  */
-class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements ColumnDefinitionInterface {
+class ColumnDefinition extends AbstractColumnDefinition implements ColumnDefinitionInterface {
     /**
      * @var bool
      */
@@ -63,7 +65,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
     /**
      * @var int
      */
-    protected $foreignFetchMode = \Plasma\Schemas\PreloadInterface::FETCH_MODE_LAZY;
+    protected $foreignFetchMode = PreloadInterface::FETCH_MODE_LAZY;
     
     /**
      * Constructor.
@@ -116,7 +118,7 @@ class ColumnDefinition extends \Plasma\AbstractColumnDefinition implements Colum
         $this->zerofilled = $zerofilled;
         $this->foreignTarget = $foreignTarget;
         $this->foreignKey = $foreignKey;
-        $this->foreignFetchMode = ($foreignFetchMode !== null ? $foreignFetchMode : $this->foreignFetchMode);
+        $this->foreignFetchMode = ($foreignFetchMode ?? $this->foreignFetchMode);
     }
     
     /**

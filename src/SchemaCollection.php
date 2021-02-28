@@ -9,33 +9,35 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\QueryResultInterface;
+
 /**
  * AbstractSchema Collections hold schemas and the associated query result together.
  */
 class SchemaCollection {
     /**
-     * @var \Plasma\Schemas\SchemaInterface[]
+     * @var SchemaInterface[]
      */
     protected $schemas;
     
     /**
-     * @var \Plasma\QueryResultInterface
+     * @var QueryResultInterface
      */
     protected $result;
     
     /**
      * Constructor.
-     * @param \Plasma\Schemas\SchemaInterface[]  $schemas
-     * @param \Plasma\QueryResultInterface       $result
+     * @param SchemaInterface[]     $schemas
+     * @param QueryResultInterface  $result
      */
-    function __construct(array $schemas, \Plasma\QueryResultInterface $result) {
+    function __construct(array $schemas, QueryResultInterface $result) {
         $this->schemas = $schemas;
         $this->result = $result;
     }
     
     /**
      * Get the stored schemas.
-     * @return \Plasma\Schemas\SchemaInterface[]
+     * @return SchemaInterface[]
      */
     function getSchemas(): array {
         return $this->schemas;
@@ -43,9 +45,9 @@ class SchemaCollection {
     
     /**
      * Get the query result.
-     * @return \Plasma\QueryResultInterface
+     * @return QueryResultInterface
      */
-    function getResult(): \Plasma\QueryResultInterface {
+    function getResult(): QueryResultInterface {
         return $this->result;
     }
 }

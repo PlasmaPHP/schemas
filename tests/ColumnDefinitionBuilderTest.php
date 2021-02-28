@@ -5,15 +5,20 @@
  *
  * Website: https://github.com/PlasmaPHP
  * License: https://github.com/PlasmaPHP/schemas/blob/master/LICENSE
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 namespace Plasma\Schemas\Tests;
 
+use Plasma\Schemas\AbstractSchema;
+use Plasma\Schemas\ColumnDefinitionBuilder;
+use Plasma\Schemas\PreloadInterface;
+
 class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
     function testCreateFromSchema() {
-        $schema = (new class() extends \Plasma\Schemas\AbstractSchema {
+        $schema = (new class() extends AbstractSchema {
             public $help;
-    
+            
             /** @noinspection PhpMissingParentConstructorInspection */
             function __construct() {
             
@@ -29,7 +34,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             
             static function getDefinition(): array {
                 return array(
-                    (new \Plasma\Schemas\Tests\ColumnDefinition('test1_cbt', 'help', 'BIGINT', '', 20, 0, null))
+                    (new ColumnDefinition('test1_cbt', 'help', 'BIGINT', '', 20, 0, null))
                 );
             }
             
@@ -42,8 +47,8 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
             }
         });
         
-        $builder = \Plasma\Schemas\ColumnDefinitionBuilder::createFromSchema($schema);
-        $this->assertInstanceOf(\Plasma\Schemas\ColumnDefinitionBuilder::class, $builder);
+        $builder = ColumnDefinitionBuilder::createFromSchema($schema);
+        self::assertInstanceOf(ColumnDefinitionBuilder::class, $builder);
         
         $expected = new \Plasma\Schemas\ColumnDefinition(
             'test1_cbt', '', '', '', null, 0, null,
@@ -52,11 +57,11 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testTableColumn() {
-        $builder = new \Plasma\Schemas\ColumnDefinitionBuilder();
+        $builder = new ColumnDefinitionBuilder();
     
         $builder
             ->table('test1_cbt')
@@ -69,7 +74,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
     
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testType() {
@@ -85,7 +90,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
     
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testCharset() {
@@ -101,7 +106,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testCharsetNull() {
@@ -117,7 +122,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testLength() {
@@ -133,7 +138,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testLengthNull() {
@@ -149,7 +154,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testFlags() {
@@ -165,7 +170,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testDecimals() {
@@ -181,7 +186,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testDecimalsNull() {
@@ -197,7 +202,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testNullable() {
@@ -213,7 +218,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testAutoIncrement() {
@@ -229,7 +234,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testPrimary() {
@@ -245,7 +250,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testUnique() {
@@ -261,7 +266,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testComposite() {
@@ -277,7 +282,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testUnsigned() {
@@ -293,7 +298,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testZerofilled() {
@@ -309,7 +314,7 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testForeignTarget() {
@@ -321,11 +326,11 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         $expected = new \Plasma\Schemas\ColumnDefinition(
             'test1_cbt', 'cb', '', '', null, 0, null,
             false, false, false, false, false, false, false,
-            'hello', 'world', \Plasma\Schemas\PreloadInterface::FETCH_MODE_LAZY
+            'hello', 'world', PreloadInterface::FETCH_MODE_LAZY
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
     function testForeignFetchMode() {
@@ -341,11 +346,11 @@ class ColumnDefinitionBuilderTest extends \PHPUnit\Framework\TestCase {
         );
         
         $coldef = $builder->getDefinition();
-        $this->assertEquals($expected, $coldef);
+        self::assertEquals($expected, $coldef);
     }
     
-    function getCDBuilder(): \Plasma\Schemas\ColumnDefinitionBuilder {
-        $builder = new \Plasma\Schemas\ColumnDefinitionBuilder();
+    function getCDBuilder(): ColumnDefinitionBuilder {
+        $builder = new ColumnDefinitionBuilder();
         
         $builder
             ->table('test1_cbt')

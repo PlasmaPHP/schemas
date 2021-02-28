@@ -9,26 +9,31 @@
 
 namespace Plasma\Schemas;
 
+use Plasma\Exception;
+use Plasma\QueryBuilderInterface;
+use Plasma\StatementInterface;
+use React\Promise\PromiseInterface;
+
 /**
  * Represents a Prepared Statement. This class however wraps a statement instance.
  */
-class Statement implements \Plasma\StatementInterface {
+class Statement implements StatementInterface {
     /**
-     * @var \Plasma\Schemas\Repository
+     * @var Repository
      */
     protected $repo;
     
     /**
-     * @var \Plasma\StatementInterface
+     * @var StatementInterface
      */
     protected $statement;
     
     /**
      * Constructor.
-     * @param \Plasma\Schemas\Repository  $repo
-     * @param \Plasma\StatementInterface  $statement
+     * @param Repository          $repo
+     * @param StatementInterface  $statement
      */
-    function __construct(\Plasma\Schemas\Repository $repo, \Plasma\StatementInterface $statement) {
+    function __construct(Repository $repo, StatementInterface $statement) {
         $this->repo = $repo;
         $this->statement = $statement;
     }
@@ -61,20 +66,20 @@ class Statement implements \Plasma\StatementInterface {
     /**
      * Closes the prepared statement and frees the associated resources on the server.
      * Closing a statement more than once SHOULD have no effect.
-     * @return \React\Promise\PromiseInterface
+     * @return PromiseInterface
      */
-    function close(): \React\Promise\PromiseInterface {
+    function close(): PromiseInterface {
         return $this->statement->close();
     }
     
     /**
      * Executes the prepared statement. Resolves with a `QueryResult` instance.
      * @param array  $params
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @return PromiseInterface
+     * @throws Exception
      * @see \Plasma\QueryResultInterface
      */
-    function execute(array $params = array()): \React\Promise\PromiseInterface {
+    function execute(array $params = array()): PromiseInterface {
         return $this->statement->execute($params)->then(array($this->repo, 'handleQueryResult'));
     }
     
@@ -82,11 +87,11 @@ class Statement implements \Plasma\StatementInterface {
      * Runs the given querybuilder on an underlying driver instance.
      * The driver CAN throw an exception if the given querybuilder is not supported.
      * An example would be a SQL querybuilder and a Cassandra driver.
-     * @param \Plasma\QueryBuilderInterface  $query
-     * @return \React\Promise\PromiseInterface
-     * @throws \Plasma\Exception
+     * @param QueryBuilderInterface  $query
+     * @return PromiseInterface
+     * @throws Exception
      */
-    function runQuery(\Plasma\QueryBuilderInterface $query): \React\Promise\PromiseInterface {
+    function runQuery(QueryBuilderInterface $query): PromiseInterface {
         return $this->statement->runQuery($query)->then(array($this->repo, 'handleQueryResult'));
     }
 }
