@@ -1,4 +1,4 @@
-# Schemas [![Build Status](https://travis-ci.org/PlasmaPHP/schemas.svg?branch=master)](https://travis-ci.org/PlasmaPHP/schemas) [![Build Status](https://scrutinizer-ci.com/g/PlasmaPHP/schemas/badges/build.png?b=master)](https://scrutinizer-ci.com/g/PlasmaPHP/schemas/build-status/master) [![Code Coverage](https://scrutinizer-ci.com/g/PlasmaPHP/schemas/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/PlasmaPHP/schemas/?branch=master)
+# Schemas [![CI status](https://github.com/PlasmaPHP/schemas/workflows/CI/badge.svg)](https://github.com/PlasmaPHP/schemas/actions)
 
 Schemas is a simple Object Relational Mapper (ORM) for Plasma. Schemas maps any data source into a PHP object.
 
